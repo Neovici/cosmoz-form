@@ -1,0 +1,93 @@
+{
+	"name": "@neovici/cosmoz-form",
+	"version": "0.0.0",
+	"description": "A pionjs component",
+	"keywords": [
+		"web-components",
+		"form",
+		"pion",
+		"lit-html"
+	],
+	"homepage": "https://github.com/neovici/cosmoz-form#readme",
+	"bugs": {
+		"url": "https://github.com/neovici/cosmoz-form/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/neovici/cosmoz-form.git"
+	},
+	"license": "Apache-2.0",
+	"author": "",
+	"main": "dist/index.js",
+	"type": "module",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"lint": "tsc && eslint --cache .",
+		"build": "tsc -p tsconfig.build.json",
+		"start": "wds",
+		"test": "wtr --coverage",
+		"test:watch": "wtr --watch",
+		"dev": "npm run storybook:start",
+		"storybook:start": "storybook dev -p 8000",
+		"storybook:build": "storybook build",
+		"storybook:deploy": "storybook-to-ghpages",
+		"storybook:preview": "npm run storybook:build && http-server -d ./storybook-static/",
+		"prepare": "husky"
+	},
+	"release": {
+		"plugins": [
+			"@semantic-release/commit-analyzer",
+			"@semantic-release/release-notes-generator",
+			"@semantic-release/changelog",
+			"@semantic-release/github",
+			"@semantic-release/npm",
+			"@semantic-release/git"
+		],
+		"branch": "master",
+		"preset": "conventionalcommits"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": [
+		"dist/",
+		"types"
+	],
+	"exports": {
+		".": "./dist/index.js"
+	},
+	"dependencies": {
+		"@pionjs/pion": "^2.5.2",
+		"lit-html": "^3.3.1"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^19.2.1",
+		"@commitlint/config-conventional": "^19.1.0",
+		"@neovici/cfg": "^2.0.0",
+		"@neovici/testing": "^2.0.0",
+		"@open-wc/testing": "^4.0.0",
+		"@open-wc/testing-helpers": "^3.0.1",
+		"@semantic-release/changelog": "^6.0.0",
+		"@semantic-release/git": "^10.0.0",
+		"@storybook/addon-links": "^10.0.0",
+		"@storybook/web-components": "^10.0.0",
+		"@storybook/web-components-vite": "^10.0.0",
+		"@types/mocha": "^10.0.6",
+		"@types/node": "^22.10.2",
+		"@web/dev-server-esbuild": "^1.0.4",
+		"@web/test-runner-playwright": "^0.11.1",
+		"esbuild": "^0.27.0",
+		"http-server": "^14.1.1",
+		"husky": "^9.0.11",
+		"semantic-release": "^24.0.0",
+		"sinon": "^19.0.0",
+		"storybook": "^10.0.0",
+		"typescript": "^5.4.3"
+	},
+	"overrides": {
+		"conventional-changelog-conventionalcommits": ">= 8.0.0",
+		"@polymer/polymer": "^3.5.2"
+	}
+}

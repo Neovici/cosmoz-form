@@ -1,0 +1,9 @@
+name: Automerge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  automerge:
+    uses: Neovici/cfg/.github/workflows/automerge.yml@master

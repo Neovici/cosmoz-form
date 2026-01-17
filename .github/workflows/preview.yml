@@ -1,0 +1,9 @@
+name: Preview
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  preview:
+    uses: Neovici/cfg/.github/workflows/preview.yml@master

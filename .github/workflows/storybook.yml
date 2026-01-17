@@ -1,0 +1,9 @@
+name: Storybook
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  storybook:
+    uses: Neovici/cfg/.github/workflows/story.yml@master

@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"noEmit": true,
+		"module": "esnext",
+		"moduleResolution": "bundler",
+		"strict": true,
+		"target": "esnext",
+		"allowJs": true,
+		"types": ["node", "mocha"],
+		"baseUrl": ".",
+		"paths": {
+			"@neovici/cosmoz-form/*": ["./src/*"]
+		}
+	},
+	"include": ["src/**/*", "test/**/*", "stories/**/*"]
+}
