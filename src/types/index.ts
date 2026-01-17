@@ -6,7 +6,6 @@ import {
 } from '../inputs';
 import { ProgressLineProps } from '../inputs/progress-line';
 import { ReadOnlyNumberProps } from '../inputs/read-only-number';
-import { ReasonProps } from '../inputs/reason';
 import { UseForm } from '../use-form-core';
 import { ItemRule } from '../use-items';
 
