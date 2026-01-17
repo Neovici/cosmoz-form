@@ -1,6 +1,6 @@
 import { _ } from '@neovici/cosmoz-i18next';
-import { luhn as isLuhn } from '../../../util/luhn';
-import { gln as isGln } from '../../../util/gln';
+import { luhn as isLuhn } from '../util/luhn';
+import { gln as isGln } from '../util/gln';
 import { ensureDate } from '@neovici/cosmoz-utils/date';
 import { Rule } from '../types';
 import { format } from 'date-fns/format';
