@@ -1,7 +1,7 @@
 import { invoke } from '@neovici/cosmoz-utils/function';
 import { html } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
-import { ensureNumber } from '../../../util/number';
+import { ensureNumber } from '../utils/number';
 import { renderContents } from './render';
 import { InputProps } from '../types';
 
