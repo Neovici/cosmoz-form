@@ -2,7 +2,7 @@ import { css, sheet } from '@neovici/cosmoz-utils';
 import { component, html, useCallback } from '@pionjs/pion';
 import { live } from 'lit-html/directives/live.js';
 import { when } from 'lit-html/directives/when.js';
-import toggleStyles from '../../../styles/toggle';
+import toggleStyles from '../styles/toggle';
 
 interface Host extends Element {
 	label: string;
