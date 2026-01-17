@@ -59,12 +59,16 @@
 		".": "./dist/index.js"
 	},
 	"dependencies": {
+		"@lit-labs/virtualizer": "^2.1.1",
+		"@neovici/cosmoz-i18next": "^3.5.1",
+		"@neovici/cosmoz-utils": "^6.17.0",
 		"@pionjs/pion": "^2.5.2",
+		"date-fns": "^4.1.0",
 		"lit-html": "^3.3.1"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^19.2.1",
-		"@commitlint/config-conventional": "^19.1.0",
+		"@commitlint/cli": "^20.0.0",
+		"@commitlint/config-conventional": "^20.0.0",
 		"@neovici/cfg": "^2.0.0",
 		"@neovici/testing": "^2.0.0",
 		"@open-wc/testing": "^4.0.0",
@@ -81,7 +85,7 @@
 		"esbuild": "^0.27.0",
 		"http-server": "^14.1.1",
 		"husky": "^9.0.11",
-		"semantic-release": "^24.0.0",
+		"semantic-release": "^25.0.0",
 		"sinon": "^19.0.0",
 		"storybook": "^10.0.0",
 		"typescript": "^5.4.3"
