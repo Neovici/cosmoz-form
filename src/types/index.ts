@@ -3,12 +3,12 @@ import {
 	CommonFieldProps,
 	FileProps,
 	TextareaProps,
-} from './inputs';
-import { ProgressLineProps } from './inputs/progress-line';
-import { ReadOnlyNumberProps } from './inputs/read-only-number';
-import { ReasonProps } from './inputs/reason';
-import { UseForm } from './use-form-core';
-import { ItemRule } from './use-items';
+} from '../inputs';
+import { ProgressLineProps } from '../inputs/progress-line';
+import { ReadOnlyNumberProps } from '../inputs/read-only-number';
+import { ReasonProps } from '../inputs/reason';
+import { UseForm } from '../use-form-core';
+import { ItemRule } from '../use-items';
 
 export type Invoked<T, F, V, R> = (value: V, values: T, field: F) => R;
 
@@ -115,4 +115,4 @@ export type Fields<T extends object> = readonly {
 	[K in keyof T]-?: Readonly<Field<T, K, T[K]>>;
 }[keyof T][];
 
-export { InputBaseProps as InputBaseOpts } from './inputs/base';
+export { InputBaseProps as InputBaseOpts } from '../inputs/base';
