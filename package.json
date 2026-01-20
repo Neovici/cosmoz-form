@@ -8,13 +8,13 @@
 		"pion",
 		"lit-html"
 	],
-	"homepage": "https://github.com/neovici/cosmoz-form#readme",
+	"homepage": "https://github.com/Neovici/cosmoz-form#readme",
 	"bugs": {
-		"url": "https://github.com/neovici/cosmoz-form/issues"
+		"url": "https://github.com/Neovici/cosmoz-form/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/neovici/cosmoz-form.git"
+		"url": "git+https://github.com/Neovici/cosmoz-form.git"
 	},
 	"license": "Apache-2.0",
 	"author": "",
