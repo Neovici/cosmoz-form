@@ -60,7 +60,9 @@
 	},
 	"dependencies": {
 		"@lit-labs/virtualizer": "^2.1.1",
+		"@neovici/cosmoz-dialog-next": "^0.0.0",
 		"@neovici/cosmoz-i18next": "^3.5.1",
+		"@neovici/cosmoz-spinner": "^1.0.2",
 		"@neovici/cosmoz-utils": "^6.17.0",
 		"@pionjs/pion": "^2.5.2",
 		"date-fns": "^4.1.0",
