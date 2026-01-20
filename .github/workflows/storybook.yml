@@ -2,7 +2,7 @@ name: Storybook
 
 on:
   push:
-    branches: [master]
+    branches: [master, main]
 
 jobs:
   storybook:
