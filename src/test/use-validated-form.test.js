@@ -1,11 +1,14 @@
-import { assert, nextFrame } from '@open-wc/testing';
-import { renderHook } from '../../../testing/render-hook';
+/* eslint-disable mocha/max-top-level-suites */
+
+import { assert } from '@open-wc/testing';
+import { renderHook } from '@neovici/testing';
 
 import { useValidatedForm } from '../use-validated-form';
 import { required, tooLong, tooShort } from '../validation';
 
 suite('useValidatedForm', () => {
 	let result;
+	let nextUpdate;
 
 	setup(async () => {
 		const initial = { name: 'Foo', lastName: 'Barbara' };
@@ -15,7 +18,10 @@ suite('useValidatedForm', () => {
 			{ id: 'lastName', validate: [required, tooLong(5)] },
 		];
 
-		result = await renderHook(useValidatedForm, { fields, initial });
+		({ result, nextUpdate } = await renderHook(
+			({ fields, initial }) => useValidatedForm({ fields, initial }),
+			{ initialProps: { fields, initial } },
+		));
 	});
 
 	test('validate the initial data', async () => {
@@ -32,13 +38,14 @@ suite('useValidatedForm', () => {
 
 	test('validate after update', async () => {
 		result.current.onValues({ name: 'Feefee', lastName: 'Bar' });
-		await nextFrame();
+		await nextUpdate();
 		assert.isFalse(result.current.invalid);
 	});
 });
 
 suite('useValidatedForm with field rules', () => {
 	let result;
+	let nextUpdate;
 
 	setup(async () => {
 		let id = 0;
@@ -58,7 +65,10 @@ suite('useValidatedForm with field rules', () => {
 			{ id: 'fullName', validate: required },
 		];
 
-		result = await renderHook(useValidatedForm, { fields, initial });
+		({ result, nextUpdate } = await renderHook(
+			({ fields, initial }) => useValidatedForm({ fields, initial }),
+			{ initialProps: { fields, initial } },
+		));
 	});
 
 	test('initialize with data and rules', async () => {
@@ -79,7 +89,7 @@ suite('useValidatedForm with field rules', () => {
 	suite('onValues', () => {
 		test('update values', async () => {
 			result.current.onValues({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.fullName, 'Fee');
 			assert.isUndefined(
 				result.current.values.id,
@@ -101,7 +111,7 @@ suite('useValidatedForm with field rules', () => {
 				name: values.name + 'Fee',
 				job: 'Manager',
 			}));
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.fullName, 'FooFee Bar');
 			assert.equal(
 				result.current.values.id,
@@ -116,9 +126,9 @@ suite('useValidatedForm with field rules', () => {
 	suite('onReset', () => {
 		test('resets to initial value and does not re-apply rules', async () => {
 			result.current.onValues({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			result.current.onReset();
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.fullName, 'Foo Bar');
 			assert.equal(result.current.values.id, 1);
 		});
@@ -127,7 +137,7 @@ suite('useValidatedForm with field rules', () => {
 	suite('onChange', () => {
 		test('applies rules to all changes', async () => {
 			result.current.onChange({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.fullName, 'Fee Bar');
 			assert.equal(result.current.values.id, 1);
 		});

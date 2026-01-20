@@ -1,18 +1,12 @@
 import { component } from '@pionjs/pion';
 import { html } from 'lit-html';
 import { when } from 'lit-html/directives/when.js';
-import { invoke } from '../helpers';
-import { autocomplete, date, file, number, toggle } from '../inputs';
-import { renderFields } from '../render';
-import { InputProps, Renderable } from '../types';
-import { useValidatedForm } from '../use-validated-form';
-import { requireEither, tooShort, tooSmall } from '../validation';
-import { comment } from '../inputs/comment';
-import { dateRange } from '../inputs/date-range';
-import { fileDrop } from '../inputs/file-drop';
-import { inlineFile } from '../inputs/inline-file';
-import { month } from '../inputs/month';
-import { numberRange } from '../inputs/number-range';
+import { invoke } from '../src/helpers';
+import { autocomplete, date, file, number, toggle } from '../src/inputs';
+import { renderFields } from '../src/render';
+import { InputProps, Renderable } from '../src/types';
+import { useValidatedForm } from '../src/use-validated-form';
+import { requireEither, tooShort, tooSmall } from '../src/validation';
 
 type User = {
 	isActive: boolean;
@@ -159,39 +153,9 @@ const TestComponent = () => {
 				input: date,
 			},
 			{
-				id: 'comment',
-				label: 'Comment',
-				input: comment,
-			},
-			{
-				id: 'employmentRange',
-				label: 'Employment range',
-				input: dateRange,
-			},
-			{
-				id: 'attachments',
-				label: 'Attachments',
-				input: fileDrop,
-			},
-			{
 				id: 'cv',
 				label: 'CV',
 				input: file,
-			},
-			{
-				id: 'inlineFile',
-				label: 'Inline file',
-				input: inlineFile,
-			},
-			{
-				id: 'month',
-				label: 'Month',
-				input: month,
-			},
-			{
-				id: 'numberRange',
-				label: 'NumberRange',
-				input: numberRange,
 			},
 		],
 	});
