@@ -1,7 +1,7 @@
 import { useCallback, useState } from '@pionjs/pion';
-import { useOpened } from '../../../hooks/use-opened';
-import type { Dialog } from './form-dialog';
+import { useOpened } from '../hooks/use-opened';
 import { Progress } from '../use-validated-form$';
+import type { Dialog } from './form-dialog';
 
 export interface Dialogable<T extends object> extends Dialog<T> {
 	preventClose?: boolean;
