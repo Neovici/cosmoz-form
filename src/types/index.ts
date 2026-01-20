@@ -3,12 +3,10 @@ import {
 	CommonFieldProps,
 	FileProps,
 	TextareaProps,
-} from './inputs';
-import { ProgressLineProps } from './inputs/progress-line';
-import { ReadOnlyNumberProps } from './inputs/read-only-number';
-import { ReasonProps } from './inputs/reason';
-import { UseForm } from './use-form-core';
-import { ItemRule } from './use-items';
+} from '../inputs';
+import { ReadOnlyNumberProps } from '../inputs/read-only-number';
+import { UseForm } from '../use-form-core';
+import { ItemRule } from '../use-items';
 
 export type Invoked<T, F, V, R> = (value: V, values: T, field: F) => R;
 
@@ -53,8 +51,11 @@ export type Renderable =
 	| { toString(): string }
 	| ReadonlyArray<Renderable>;
 
-export interface InputProps<T extends object, K extends keyof T, V extends T[K]>
-	extends UseForm<T> {
+export interface InputProps<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+> extends UseForm<T> {
 	value: V;
 	field: Field<T, K, V>;
 	error: false | string;
@@ -77,18 +78,17 @@ export type Codec<
 ];
 
 export interface Field<
-		T extends object,
-		K extends keyof T,
-		V extends T[K] = T[K],
-	>
+	T extends object,
+	K extends keyof T,
+	V extends T[K] = T[K],
+>
 	// TODO: drop all of the following props by moving them to input constructors
-	extends CommonFieldProps<T, K, V>,
+	extends
+		CommonFieldProps<T, K, V>,
 		TextareaProps,
 		AutocompleteProps<T, K, V>,
 		FileProps<T, K, V>,
-		ProgressLineProps,
-		ReadOnlyNumberProps,
-		ReasonProps {
+		ReadOnlyNumberProps {
 	id: K;
 	path?: keyof T;
 	label?: Invokable<T, Field<T, K, V>, V, string>;
@@ -115,4 +115,4 @@ export type Fields<T extends object> = readonly {
 	[K in keyof T]-?: Readonly<Field<T, K, T[K]>>;
 }[keyof T][];
 
-export { InputBaseProps as InputBaseOpts } from './inputs/base';
+export { InputBaseProps as InputBaseOpts } from '../inputs/base';

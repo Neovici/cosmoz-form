@@ -1,9 +1,7 @@
 import { tagged as css } from '@neovici/cosmoz-utils';
-import { useSharedStyles } from '../../../hooks/use-shared-styles';
-import buttonStyles from '../../../styles/button';
+import buttonStyles from '../styles/button';
 
 export const renderAddStyles = () => css`
-	${useSharedStyles()}
 	:host {
 		display: flex;
 		flex-direction: column;

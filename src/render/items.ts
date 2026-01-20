@@ -4,7 +4,7 @@ import { TemplateResult, html } from 'lit-html';
 import { when } from 'lit-html/directives/when.js';
 import { Fields } from '../types';
 import { renderFields, renderHeaders, renderStyles } from './fields';
-import { cancelIcon } from '../../cz-icon/cancel.js';
+import { cancelIcon } from '@neovici/cosmoz-icons';
 import { styles } from './styles';
 import { invoke, noop } from '@neovici/cosmoz-utils/function';
 
