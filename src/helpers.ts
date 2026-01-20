@@ -4,16 +4,13 @@ import { Field } from './types';
 
 export { invoke } from '@neovici/cosmoz-utils/function';
 
+type InvokeValueReturn<F, V> = F extends (...args: any) => infer R ? R : V;
 export function invokeValue<
 	V,
 	A extends any[],
 	F extends ((value: V, ...args: A) => any) | undefined | null,
->(
-	valueFn: F,
-	value: V,
-	...args: A
-): F extends (...args: any) => infer R ? R : V {
-	return valueFn ? valueFn(value, ...args) : value;
+>(valueFn: F, value: V, ...args: A): InvokeValueReturn<F, V> {
+	return valueFn ? valueFn(value, ...args) : (value as InvokeValueReturn<F, V>);
 }
 
 interface Initiatable<T extends object, K extends keyof T, V extends T[K]> {

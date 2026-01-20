@@ -11,15 +11,19 @@ interface Props<T extends object> {
 const changes = <T>(
 	indexOrChanges: number | readonly [number, Partial<T>][],
 	update: Partial<T>,
-): [number, Partial<T>][] =>
-	Array.isArray(indexOrChanges) ? indexOrChanges : [[indexOrChanges, update]];
+): readonly [number, Partial<T>][] => {
+	if (Array.isArray(indexOrChanges)) {
+		return indexOrChanges;
+	}
+	return [[indexOrChanges as number, update]];
+};
 
 export type UseItemsCore<T extends object> = {
 	items: T[];
 	setItems: StateUpdater<T[]>;
 	touched: boolean;
 	update: (
-		indexOrChanges: number | [number, Partial<T>][],
+		indexOrChanges: number | readonly [number, Partial<T>][],
 		update: Partial<T>,
 	) => void;
 	updateAll: (updateOrFn: Partial<T> | ((i: T) => Partial<T>)) => void;
