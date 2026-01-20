@@ -1,5 +1,5 @@
 import { html } from 'lit-html';
-import '../src/form/index.js';
+import '../src/index.js';
 
 export default {
 	title: 'Form',

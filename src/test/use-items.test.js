@@ -1,11 +1,14 @@
-import { assert, nextFrame } from '@open-wc/testing';
-import { renderHook } from '../../../testing/render-hook';
+/* eslint-disable mocha/max-top-level-suites */
+
+import { assert } from '@open-wc/testing';
+import { renderHook } from '@neovici/testing';
 
 import { useItems } from '../use-items';
 import { TOUCHED } from '../touch';
 
 suite('useItems', () => {
 	let result;
+	let nextUpdate;
 
 	let id = 0;
 
@@ -59,10 +62,10 @@ suite('useItems', () => {
 				addIndex,
 			];
 
-		result = await renderHook(useItems, {
-			initial,
-			rules,
-		});
+		({ result, nextUpdate } = await renderHook(
+			({ initial, rules }) => useItems({ initial, rules }),
+			{ initialProps: { initial, rules } },
+		));
 	});
 
 	test('initialize with data', async () => {
@@ -71,39 +74,39 @@ suite('useItems', () => {
 
 	test('add items', async () => {
 		result.current.update(1, { name: 'added' });
-		await nextFrame();
+		await nextUpdate();
 		assert.equal(result.current.items.length, 2);
 		assert.equal(result.current.items[1].name, 'added');
 	});
 
 	test('add items to out of bounds index', async () => {
 		result.current.update(10, { name: 'added' });
-		await nextFrame();
+		await nextUpdate();
 		assert.equal(result.current.items.length, 2);
 		assert.equal(result.current.items[1].name, 'added');
 	});
 
 	test('remove items', async () => {
 		result.current.remove(0);
-		await nextFrame();
+		await nextUpdate();
 		assert.equal(result.current.items.length, 0);
 	});
 
 	test('clear items', async () => {
 		result.current.clear();
-		await nextFrame();
+		await nextUpdate();
 		assert.equal(result.current.items.length, 0);
 	});
 
 	test('reset items', async () => {
 		result.current.update(0, { name: 'updated' });
 		result.current.update(1, { name: 'added' });
-		await nextFrame();
+		await nextUpdate();
 
 		assert.equal(result.current.items.length, 2);
 
 		result.current.reset();
-		await nextFrame();
+		await nextUpdate();
 
 		assert.equal(result.current.items.length, 1);
 		assert.equal(result.current.items[0].name, 'initial');
@@ -115,7 +118,7 @@ suite('useItems', () => {
 			[1, { name: 'added 1' }],
 			[2, { name: 'added 2' }],
 		]);
-		await nextFrame();
+		await nextUpdate();
 		assert.equal(result.current.items.length, 3);
 		assert.equal(result.current.items[0].name, 'updated');
 		assert.equal(result.current.items[1].name, 'added 1');
@@ -129,14 +132,14 @@ suite('useItems', () => {
 
 		test('applies rules on updates', async () => {
 			result.current.update(0, { name: 'short' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].nameLength, 5);
 		});
 
 		test('applies rules on new items', async () => {
 			result.current.update(1, { name: 'new' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].nameLength, 7);
 			assert.equal(result.current.items[1].nameLength, 3);
@@ -147,7 +150,7 @@ suite('useItems', () => {
 				[0, { name: 'short' }],
 				[1, { name: 'new' }],
 			]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].nameLength, 5);
 			assert.equal(result.current.items[1].nameLength, 3);
@@ -157,7 +160,7 @@ suite('useItems', () => {
 			assert.equal(result.current.items[0].doubledNameLength, 14);
 
 			result.current.update(0, { name: 'short' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].doubledNameLength, 10);
 		});
@@ -169,7 +172,7 @@ suite('useItems', () => {
 				[0, { name: 'short' }],
 				[1, { name: 'new' }],
 			]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(
 				result.current.items[0].history,
@@ -183,7 +186,7 @@ suite('useItems', () => {
 			assert.equal(result.current.items[0].id, 0);
 
 			result.current.update(0, { name: 'short' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].originalName, 'initial');
 			assert.equal(result.current.items[0].id, 0);
@@ -191,10 +194,10 @@ suite('useItems', () => {
 
 		test('applies rules after reset', async () => {
 			result.current.clear();
-			await nextFrame();
+			await nextUpdate();
 
 			result.current.reset();
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].nameLength, 7);
 		});
@@ -203,13 +206,13 @@ suite('useItems', () => {
 			assert.equal(result.current.items[0].index, 0);
 
 			result.current.update(1, { name: 'second item' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].index, 0);
 			assert.equal(result.current.items[1].index, 1);
 
 			result.current.remove(0);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].name, 'second item');
 			assert.equal(result.current.items[0].index, 0);
@@ -221,7 +224,7 @@ suite('useItems', () => {
 				{ name: 'second item' },
 				{ name: 'third item' },
 			]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].index, 0);
 			assert.equal(result.current.items[1].index, 1);
@@ -231,7 +234,7 @@ suite('useItems', () => {
 			assert.equal(result.current.items[2].history, '#2: third item(10)');
 
 			result.current.remove(1);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].index, 0);
 			assert.equal(result.current.items[1].index, 1);
@@ -247,7 +250,7 @@ suite('useItems', () => {
 	suite('setItems', () => {
 		test('can replace items', async () => {
 			result.current.setItems([{ name: 'hello' }, { name: 'world' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].name, 'hello');
 			assert.equal(result.current.items[1].name, 'world');
@@ -256,17 +259,17 @@ suite('useItems', () => {
 
 		test('replacing items ignores rules', async () => {
 			result.current.setItems([{ name: 'hello' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.deepEqual(result.current.items[0], { name: 'hello' });
 		});
 
 		test('updates done after replacing items apply the rules', async () => {
 			result.current.setItems([{ name: 'hello' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			result.current.update(0, { name: 'short' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.deepEqual(result.current.items[0], {
 				index: 0,
@@ -279,10 +282,10 @@ suite('useItems', () => {
 
 		test('one-off rules are never applied after replacing items', async () => {
 			result.current.setItems([{ name: 'hello' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			result.current.update(0, { name: 'short' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isUndefined(result.current.items[0].originalName);
 		});
@@ -291,14 +294,14 @@ suite('useItems', () => {
 	suite('load', () => {
 		test('can load items', async () => {
 			result.current.load([{ name: 'hello' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.equal(result.current.items[0].name, 'hello');
 		});
 
 		test('rules are applied on loaded items', async () => {
 			result.current.load([{ name: 'hello' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.deepEqual(result.current.items[0], {
 				id: 1,
@@ -316,7 +319,7 @@ suite('useItems', () => {
 				[{ name: 'hi' }],
 				[computesNameLength, reverseOriginalName],
 			);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.deepEqual(
 				result.current.items[0],
@@ -329,7 +332,7 @@ suite('useItems', () => {
 			);
 
 			result.current.update(0, { name: 'hello' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.deepEqual(
 				result.current.items[0],
@@ -353,28 +356,28 @@ suite('useItems', () => {
 
 		test('updating an item marks it as touched', async () => {
 			result.current.update(0, { name: 'updated' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isTrue(result.current.items[0][TOUCHED]);
 		});
 
 		test('adding an item marks it as touched', async () => {
 			result.current.update(1, { name: 'added' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isTrue(result.current.items[1][TOUCHED]);
 		});
 
 		test('replaced items are not touched', async () => {
 			result.current.setItems([{ name: 'replaced' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isTrue(!result.current.items[0][TOUCHED]);
 		});
 
 		test('loaded items are not touched', async () => {
 			result.current.load([{ name: 'replaced' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isTrue(!result.current.items[0][TOUCHED]);
 		});
@@ -387,52 +390,52 @@ suite('useItems', () => {
 
 		test('touched after update', async () => {
 			result.current.update(0, { name: 'updated' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isTrue(result.current.touched);
 		});
 
 		test('touched after add', async () => {
 			result.current.update(1, { name: 'added' });
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isTrue(result.current.touched);
 		});
 
 		test('touched after remove', async () => {
 			result.current.remove(0);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isTrue(result.current.touched);
 		});
 
 		test('not touched after replace', async () => {
 			result.current.setItems([{ name: 'replaced' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isFalse(result.current.touched);
 		});
 
 		test('not touched after load', async () => {
 			result.current.load([{ name: 'loaded' }]);
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isFalse(result.current.touched);
 		});
 
 		test('touched after clear', async () => {
 			result.current.clear();
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isTrue(result.current.touched);
 		});
 
 		test('not touched after reset', async () => {
 			result.current.clear();
-			await nextFrame();
+			await nextUpdate();
 
 			result.current.reset();
-			await nextFrame();
+			await nextUpdate();
 
 			assert.isFalse(result.current.touched);
 		});

@@ -60,9 +60,11 @@
 	},
 	"dependencies": {
 		"@lit-labs/virtualizer": "^2.1.1",
+		"@neovici/cosmoz-autocomplete": "^10.10.4",
 		"@neovici/cosmoz-dialog-next": "^1.0.0",
 		"@neovici/cosmoz-i18next": "^3.5.1",
 		"@neovici/cosmoz-icons": "^1.3.0",
+		"@neovici/cosmoz-input": "^5.5.0",
 		"@neovici/cosmoz-spinner": "^1.0.2",
 		"@neovici/cosmoz-utils": "^6.17.0",
 		"@pionjs/pion": "^2.5.2",

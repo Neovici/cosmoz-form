@@ -1,5 +1,7 @@
-import { assert, nextFrame } from '@open-wc/testing';
-import { renderHook } from '../../../testing/render-hook';
+/* eslint-disable mocha/max-top-level-suites */
+
+import { assert } from '@open-wc/testing';
+import { renderHook } from '@neovici/testing';
 
 import { touched } from '../touch';
 import { useForm } from '../use-form';
@@ -16,7 +18,10 @@ suite('useFormCore', () => {
 		setState = (valueOrFn) =>
 			(state = typeof valueOrFn === 'function' ? valueOrFn(state) : valueOrFn);
 
-		result = await renderHook(useFormCore, state, setState);
+		({ result } = await renderHook(
+			({ state, setState }) => useFormCore(state, setState),
+			{ initialProps: { state, setState } },
+		));
 	});
 
 	test('initialize with data', async () => {
@@ -93,11 +98,15 @@ suite('useFormCore', () => {
 
 suite('useForm', () => {
 	let result;
+	let nextUpdate;
 
 	setup(async () => {
 		const initial = { name: 'Foo', lastName: 'Bar' };
 
-		result = await renderHook(useForm, initial);
+		({ result, nextUpdate } = await renderHook(
+			(initial) => useForm(initial),
+			{ initialProps: initial },
+		));
 	});
 
 	test('initialize with data', async () => {
@@ -108,7 +117,7 @@ suite('useForm', () => {
 	suite('onValues', () => {
 		test('update values', async () => {
 			result.current.onValues({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.name, 'Fee');
 			assert.equal(result.current.values.job, 'Manager');
 			assert.isUndefined(result.current.values.lastName);
@@ -120,7 +129,7 @@ suite('useForm', () => {
 				name: values.name + 'Fee',
 				job: 'Manager',
 			}));
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.name, 'FooFee');
 			assert.equal(result.current.values.job, 'Manager');
 			assert.equal(result.current.values.lastName, 'Bar');
@@ -130,9 +139,9 @@ suite('useForm', () => {
 	suite('onReset', () => {
 		test('resets to initial value', async () => {
 			result.current.onValues({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			result.current.onReset();
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.name, 'Foo');
 			assert.equal(result.current.values.lastName, 'Bar');
 			assert.isUndefined(result.current.values.job);
@@ -142,7 +151,7 @@ suite('useForm', () => {
 	suite('onChange', () => {
 		test('updates part of the values', async () => {
 			result.current.onChange({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.name, 'Fee');
 			assert.equal(result.current.values.lastName, 'Bar');
 			assert.equal(result.current.values.job, 'Manager');
@@ -153,7 +162,7 @@ suite('useForm', () => {
 				name: value.name + 'Fee',
 				job: 'Manager',
 			}));
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.name, 'FooFee');
 			assert.equal(result.current.values.lastName, 'Bar');
 			assert.equal(result.current.values.job, 'Manager');
@@ -167,15 +176,15 @@ suite('useForm', () => {
 
 		test('touched after onValues', async () => {
 			result.current.onValues({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			assert.isTrue(result.current.touched);
 		});
 
 		test('untouched after reset', async () => {
 			result.current.onValues({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			result.current.onReset();
-			await nextFrame();
+			await nextUpdate();
 			assert.isFalse(result.current.touched);
 		});
 	});
@@ -183,6 +192,7 @@ suite('useForm', () => {
 
 suite('useForm with rules', () => {
 	let result;
+	let nextUpdate;
 
 	setup(async () => {
 		let id = 0;
@@ -196,7 +206,10 @@ suite('useForm with rules', () => {
 			oneTimeRule = [() => ({ id: ++id }), () => []],
 			rules = [computeFullName, oneTimeRule];
 
-		result = await renderHook(useForm, initial, rules);
+		({ result, nextUpdate } = await renderHook(
+			({ initial, rules }) => useForm(initial, rules),
+			{ initialProps: { initial, rules } },
+		));
 	});
 
 	test('initialize with data and rules', async () => {
@@ -211,7 +224,7 @@ suite('useForm with rules', () => {
 	suite('onValues', () => {
 		test('update values', async () => {
 			result.current.onValues({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.fullName, 'Fee');
 			assert.isUndefined(
 				result.current.values.id,
@@ -225,7 +238,7 @@ suite('useForm with rules', () => {
 				name: values.name + 'Fee',
 				job: 'Manager',
 			}));
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.fullName, 'FooFee Bar');
 			assert.equal(
 				result.current.values.id,
@@ -238,9 +251,9 @@ suite('useForm with rules', () => {
 	suite('onReset', () => {
 		test('resets to initial value and does not re-apply rules', async () => {
 			result.current.onValues({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			result.current.onReset();
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.fullName, 'Foo Bar');
 			assert.equal(result.current.values.id, 1);
 		});
@@ -249,7 +262,7 @@ suite('useForm with rules', () => {
 	suite('onChange', () => {
 		test('applies rules to all changes', async () => {
 			result.current.onChange({ name: 'Fee', job: 'Manager' });
-			await nextFrame();
+			await nextUpdate();
 			assert.equal(result.current.values.fullName, 'Fee Bar');
 			assert.equal(result.current.values.id, 1);
 		});
