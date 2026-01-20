@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/Neovici/cosmoz-form/compare/v1.0.0...v1.0.1) (2026-01-20)
+
+### Bug Fixes
+
+* test npm publishing ([a6d96ec](https://github.com/Neovici/cosmoz-form/commit/a6d96ec4cbaee64fc22faf0fb4b8ea56c019b85f))
+
 ## 1.0.0 (2026-01-20)
 
 ### Features
