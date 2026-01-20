@@ -1,7 +1,6 @@
 import { html } from 'lit-html';
 import { when } from 'lit-html/directives/when.js';
-import { warningIcon } from '../../cz-icon/warning.js';
-import { helpOutlineIcon } from '../../cz-icon/help-outline.js';
+import { warningIcon, helpOutlineIcon } from '@neovici/cosmoz-icons';
 import { Renderable } from '../types';
 
 export const renderPrefix = <T>(prefix: T) =>
