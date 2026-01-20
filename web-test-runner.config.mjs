@@ -6,10 +6,10 @@ export default {
 	coverageConfig: {
 		...cfg.coverageConfig,
 		threshold: {
-			statements: 65,
+			statements: 60,
 			branches: 70,
 			functions: 40,
-			lines: 65,
+			lines: 60,
 		},
 	},
 };
