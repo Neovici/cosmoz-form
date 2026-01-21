@@ -1,10 +1,10 @@
 import { _ } from '@neovici/cosmoz-i18next';
-import { luhn as isLuhn } from '../util/luhn';
-import { gln as isGln } from '../util/gln';
 import { ensureDate } from '@neovici/cosmoz-utils/date';
-import { Rule } from '../types';
 import { format } from 'date-fns/format';
 import { addDays } from 'date-fns/fp/addDays';
+import { Rule } from '../types';
+import { gln as isGln } from '../util/gln';
+import { luhn as isLuhn } from '../util/luhn';
 
 export const STRING_TEXT = 200,
 	STRING_LONG = 50,
@@ -125,7 +125,7 @@ export const hint = <K extends PropertyKey>(field: K) => ({
 	validate: <V, O extends Record<K, any>>(value: V, values: O) => {
 		const req = required(value);
 		if (!req) {
-			return;
+			return false;
 		}
 		const hintValue = values[field];
 		return hintValue == null ? req : _('Option not among possible values');
@@ -137,7 +137,7 @@ export const afterStartDate =
 	<V, O extends Record<K, any>>(value: V, values: O) => {
 		const end = ensureDate(value);
 		const start = ensureDate(values[startDateField]);
-		if (!(end && start)) return;
+		if (!(end && start)) return false;
 		const endTime = end.getTime();
 		const startTime = start.getTime();
 		const invalid = eq ? endTime < startTime : endTime <= startTime;
@@ -149,6 +149,7 @@ export const minDate =
 	<V>(value: V) => {
 		const dateValue = ensureDate(value),
 			minDateValue = ensureDate(date);
+		if (!dateValue || !minDateValue) return false;
 		return (
 			dateValue &&
 			minDateValue &&
@@ -161,9 +162,8 @@ export const maxDate =
 	<V>(value: V) => {
 		const dateValue = ensureDate(value),
 			maxDateValue = ensureDate(date);
+		if (!dateValue || !maxDateValue) return false;
 		return (
-			dateValue &&
-			maxDateValue &&
 			maxDateValue.getTime() <= dateValue.getTime() &&
 			_('Date must be lower than {0}', date)
 		);
@@ -184,7 +184,7 @@ const decimalRegexp = (precision: number) =>
 export const maxDecimal =
 	(precision: number, message = `Maximum ${precision} decimal digits.`) =>
 	<V>(value: V) => {
-		if (value === null || value === undefined) return;
+		if (value === null || value === undefined) return false;
 		if (typeof value !== 'string' && typeof value !== 'number') return message;
 		return !decimalRegexp(precision).test(String(value)) && message;
 	};
