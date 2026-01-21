@@ -128,7 +128,7 @@ export const hint = <K extends PropertyKey>(field: K) => ({
 	validate: <V, O extends Record<K, any>>(value: V, values: O) => {
 		const req = required(value);
 		if (!req) {
-			return;
+			return false;
 		}
 		const hintValue = values[field];
 		return hintValue == null ? req : _('Option not among possible values');
@@ -140,7 +140,7 @@ export const afterStartDate =
 	<V, O extends Record<K, any>>(value: V, values: O) => {
 		const end = ensureDate(value);
 		const start = ensureDate(values[startDateField]);
-		if (!(end && start)) return;
+		if (!(end && start)) return false;
 		const endTime = end.getTime();
 		const startTime = start.getTime();
 		const invalid = eq ? endTime < startTime : endTime <= startTime;
@@ -152,6 +152,7 @@ export const minDate =
 	<V>(value: V) => {
 		const dateValue = ensureDate(value),
 			minDateValue = ensureDate(date);
+		if (!dateValue || !minDateValue) return false;
 		return (
 			dateValue &&
 			minDateValue &&
@@ -164,9 +165,8 @@ export const maxDate =
 	<V>(value: V) => {
 		const dateValue = ensureDate(value),
 			maxDateValue = ensureDate(date);
+		if (!dateValue || !maxDateValue) return false;
 		return (
-			dateValue &&
-			maxDateValue &&
 			maxDateValue.getTime() <= dateValue.getTime() &&
 			_('Date must be lower than {0}', date)
 		);
@@ -187,7 +187,7 @@ const decimalRegexp = (precision: number) =>
 export const maxDecimal =
 	(precision: number, message = `Maximum ${precision} decimal digits.`) =>
 	<V>(value: V) => {
-		if (value === null || value === undefined) return;
+		if (value === null || value === undefined) return false;
 		if (typeof value !== 'string' && typeof value !== 'number') return message;
 		return !decimalRegexp(precision).test(String(value)) && message;
 	};
