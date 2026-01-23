@@ -11,3 +11,10 @@ export * from './use-items-filter';
 export * from './form-dialog';
 
 export type * from './types';
+
+// Core hooks
+export * from './use-form-core';
+export * from './use-validated-form-core';
+
+// Add form utilities
+export * from './add';
