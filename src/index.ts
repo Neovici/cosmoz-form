@@ -13,8 +13,8 @@ export * from './form-dialog';
 export type * from './types';
 
 // Core hooks
-export * from './use-form-core';
-export * from './use-validated-form-core';
+export { useFormCore, type FormValues } from './use-form-core';
+export { computeRules, useValidatedFormCore } from './use-validated-form-core';
 
 // Add form utilities
 export * from './add';
