@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/Neovici/cosmoz-form/compare/v1.0.1...v1.1.0) (2026-01-23)
+
+### Features
+
+* export all modules from main index ([#4](https://github.com/Neovici/cosmoz-form/issues/4)) ([6188357](https://github.com/Neovici/cosmoz-form/commit/61883573a77ec7f9ee03354e1bacbef46cc9aa16))
+
 ## [1.0.1](https://github.com/Neovici/cosmoz-form/compare/v1.0.0...v1.0.1) (2026-01-20)
 
 ### Bug Fixes
