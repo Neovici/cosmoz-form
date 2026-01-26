@@ -1,3 +1,9 @@
+## [1.1.1](https://github.com/Neovici/cosmoz-form/compare/v1.1.0...v1.1.1) (2026-01-26)
+
+### Bug Fixes
+
+* use CSS custom properties for button theming ([#7](https://github.com/Neovici/cosmoz-form/issues/7)) ([b1eacee](https://github.com/Neovici/cosmoz-form/commit/b1eaceeabb03180c00c9a99894bc612d8803e9c0)), closes [#596679](https://github.com/Neovici/cosmoz-form/issues/596679) [#a4abae](https://github.com/Neovici/cosmoz-form/issues/a4abae) [#fff](https://github.com/Neovici/cosmoz-form/issues/fff) [#f0f0f0](https://github.com/Neovici/cosmoz-form/issues/f0f0f0) [#6](https://github.com/Neovici/cosmoz-form/issues/6)
+
 ## [1.1.0](https://github.com/Neovici/cosmoz-form/compare/v1.0.1...v1.1.0) (2026-01-23)
 
 ### Features
