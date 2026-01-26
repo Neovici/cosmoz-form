@@ -55,7 +55,7 @@ export default css`
 	.button-ricon {
 		border: none;
 		border-radius: 50%;
-		fill: #596679;
+		fill: var(--primary-button-icon-fill, #596679);
 		padding: 8px;
 		display: inline-flex;
 		background: transparent;
@@ -66,8 +66,8 @@ export default css`
 		background: rgb(56, 62, 74, 0.15);
 	}
 	.actionButton {
-		border: solid 1px #a4abae;
-		background: #fff;
+		border: transparent;
+		background: var(--cz-action-button-bg, #fff);
 		border-radius: 500px;
 		font-size: 1.08em;
 		letter-spacing: -0.01em;
@@ -81,7 +81,7 @@ export default css`
 		transition: background 0.25s;
 	}
 	.actionButton:hover {
-		background: #f0f0f0;
+		background: var(--cz-action-button-hover-bg, #f0f0f0);
 	}
 	.actionButton span {
 		overflow: hidden;
