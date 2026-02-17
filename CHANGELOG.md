@@ -1,3 +1,9 @@
+## [1.1.2](https://github.com/Neovici/cosmoz-form/compare/v1.1.1...v1.1.2) (2026-02-17)
+
+### Bug Fixes
+
+* **deps:** support cosmoz-autocomplete v11–v13 ([#9](https://github.com/Neovici/cosmoz-form/issues/9)) ([b3ac1ce](https://github.com/Neovici/cosmoz-form/commit/b3ac1ce9c941febf64ca2abe1d7d0c2ba580a047))
+
 ## [1.1.1](https://github.com/Neovici/cosmoz-form/compare/v1.1.0...v1.1.1) (2026-01-26)
 
 ### Bug Fixes
