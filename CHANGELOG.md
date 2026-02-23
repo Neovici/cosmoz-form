@@ -1,3 +1,16 @@
+## [2.0.0](https://github.com/Neovici/cosmoz-form/compare/v1.1.2...v2.0.0) (2026-02-23)
+
+### ⚠ BREAKING CHANGES
+
+* @neovici/cosmoz-dialog-next has been renamed to @neovici/cosmoz-dialog.
+Consumers importing from cosmoz-dialog-next should update their imports.
+
+Ref: NEO-1130
+
+### Features
+
+* replace @neovici/cosmoz-dialog-next with @neovici/cosmoz-dialog ([df4ec9c](https://github.com/Neovici/cosmoz-form/commit/df4ec9cc8c0c9d32a096e0d60e9a140e985f3e18))
+
 ## [1.1.2](https://github.com/Neovici/cosmoz-form/compare/v1.1.1...v1.1.2) (2026-02-17)
 
 ### Bug Fixes
