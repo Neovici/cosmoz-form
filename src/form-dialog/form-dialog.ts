@@ -1,20 +1,20 @@
-import { useEffect } from '@pionjs/pion';
-import { html, nothing } from 'lit-html';
-import { when } from 'lit-html/directives/when.js';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
-import { _ } from '@neovici/cosmoz-i18next';
-import { portal } from '@neovici/cosmoz-utils/directives/portal';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
-import buttonStyles from '../styles/button';
-import { renderFields, renderStyles } from '../render';
-import { renderFailure$, renderButton$ } from '../add/render';
-import { useValidatedForm$, Props as AddProps } from '../use-validated-form$';
+import { _ } from '@neovici/cosmoz-i18next';
 import '@neovici/cosmoz-spinner';
-import styles from './style.css';
+import { portal } from '@neovici/cosmoz-utils/directives/portal';
 import { invoke } from '@neovici/cosmoz-utils/function';
+import { useEffect } from '@pionjs/pion';
+import { html, nothing } from 'lit-html';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { until } from 'lit-html/directives/until.js';
+import { when } from 'lit-html/directives/when.js';
+import { renderButton$, renderFailure$ } from '../add/render';
+import { renderFields, renderStyles } from '../render';
+import buttonStyles from '../styles/button';
 import { Renderable, Resolvable } from '../types';
+import { Props as AddProps, useValidatedForm$ } from '../use-validated-form$';
+import styles from './style.css';
 
 interface Props<T extends object> extends DialogProps, AddProps<T> {
 	heading: string;
@@ -62,6 +62,12 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 };
 
 customElements.define(
+	'cosmoz-form-dialog',
+	dialog<Props<object>>(FormDialog, { observedAttributes: ['allow-empty'] }),
+);
+
+// backwards-compat alias — consumers should migrate to <cosmoz-form-dialog>
+customElements.define(
 	'cosmoz-form-dialog-next',
 	dialog<Props<object>>(FormDialog, { observedAttributes: ['allow-empty'] }),
 );
@@ -75,7 +81,7 @@ export interface Dialog<T extends object> extends Props<T> {
 
 export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	if (!props) return nothing;
-	const dialog = html`<cosmoz-form-dialog-next
+	const dialog = html`<cosmoz-form-dialog
 		?backdrop=${props.backdrop ?? true}
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
@@ -91,7 +97,7 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		.hideCancelButton=${props.hideCancelButton}
 		.manualFocus=${props.manualFocus}
 		.saveText=${props.saveText}
-	></cosmoz-form-dialog-next>`;
+	></cosmoz-form-dialog>`;
 	return props.renderInPortal ? portal(dialog) : dialog;
 };
 
