@@ -1,3 +1,9 @@
+## [2.1.0](https://github.com/Neovici/cosmoz-form/compare/v2.0.0...v2.1.0) (2026-02-24)
+
+### Features
+
+* rename cosmoz-form-dialog-next element to cosmoz-form-dialog ([392e481](https://github.com/Neovici/cosmoz-form/commit/392e481a8cd43448a39e8f3d349ea18ae17a10be))
+
 ## [2.0.0](https://github.com/Neovici/cosmoz-form/compare/v1.1.2...v2.0.0) (2026-02-23)
 
 ### ⚠ BREAKING CHANGES
