@@ -1,3 +1,9 @@
+## [2.1.1](https://github.com/Neovici/cosmoz-form/compare/v2.1.0...v2.1.1) (2026-02-28)
+
+### Bug Fixes
+
+* make Rule type params after value optional ([#12](https://github.com/Neovici/cosmoz-form/issues/12)) ([d257bde](https://github.com/Neovici/cosmoz-form/commit/d257bde98099da7f22bb54f3aa1d0eaea5d9d2f4))
+
 ## [2.1.0](https://github.com/Neovici/cosmoz-form/compare/v2.0.0...v2.1.0) (2026-02-24)
 
 ### Features
