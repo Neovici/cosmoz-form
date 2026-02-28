@@ -33,8 +33,8 @@ export type OnChange<T, K, V> = (
 
 export type Rule<T extends object, K extends keyof T, V extends T[K]> = (
 	value: V,
-	values: T,
-	field: Field<T, K, V>,
+	values?: T,
+	field?: Field<T, K, V>,
 ) => false | string;
 
 export type Errors = {

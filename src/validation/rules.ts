@@ -1,10 +1,10 @@
 import { _ } from '@neovici/cosmoz-i18next';
-import { luhn as isLuhn } from '../util/luhn';
-import { gln as isGln } from '../util/gln';
 import { ensureDate } from '@neovici/cosmoz-utils/date';
-import { Rule } from '../types';
 import { format } from 'date-fns/format';
 import { addDays } from 'date-fns/fp/addDays';
+import { Rule } from '../types';
+import { gln as isGln } from '../util/gln';
+import { luhn as isLuhn } from '../util/luhn';
 
 export const STRING_TEXT = 200,
 	STRING_LONG = 50,
@@ -24,15 +24,18 @@ export const requiredWhen =
 	<T extends object, K extends keyof T, V extends T[K]>(
 		condition: (value: V, values: T) => boolean,
 	): Rule<T, K, V> =>
-	(value: V, values: T) =>
-		condition(value, values) ? required(value) : false;
+	(value: V, values?: T) =>
+		values != null && condition(value, values) ? required(value) : false;
 
 export const requireEither =
 	<T extends object, K extends keyof T, V extends T[K], P extends keyof T>(
 		otherField: P,
 	): Rule<T, K, V> =>
-	(value: V, values: T) =>
-		missing(value) && missing(values[otherField]) && _('Required');
+	(value: V, values?: T) =>
+		missing(value) &&
+		values != null &&
+		missing(values[otherField]) &&
+		_('Required');
 
 export function notAnOption<
 	T extends object,
