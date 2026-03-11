@@ -1,6 +1,8 @@
 import { useCallback, useState } from '@pionjs/pion';
 import { ItemRule } from '.';
+import type { AsyncItemRule } from './async-rule';
 import type { Fields } from './types';
+import { useSagaFormCore } from './use-saga-form-core';
 import { UseValidatedForm, useValidatedForm } from './use-validated-form';
 
 export type ProgressValue = string | number;
@@ -10,6 +12,7 @@ export interface Props<T extends object> {
 	fields: Fields<T>;
 	initial: T;
 	rules?: ItemRule<T>[];
+	asyncRules?: readonly AsyncItemRule<T>[];
 	onSave?: (
 		values: T,
 		initial: T,
@@ -26,17 +29,18 @@ interface Opts {
 }
 
 export interface UseValidatedForm$<T extends object>
-	extends UseValidatedForm<T>,
-		Opts {}
+	extends UseValidatedForm<T>, Opts {}
 
 function useValidatedForm$<T extends object>({
 	fields,
 	initial,
 	rules,
+	asyncRules,
 	onSave,
 	allowEmpty,
 }: Props<T>): UseValidatedForm$<T> {
 	const form = useValidatedForm({ fields, initial, rules });
+	useSagaFormCore(form, asyncRules);
 	const { values, invalid } = form;
 	const [save$, setSave$] = useState<PromiseLike<unknown>>();
 	const [progress, setProgress] = useState<Progress>();

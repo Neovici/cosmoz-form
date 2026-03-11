@@ -1,11 +1,14 @@
-import { StateUpdater, useCallback, useMemo, useState } from '@pionjs/pion';
 import { invoke } from '@neovici/cosmoz-utils/function';
-import { applyRules, ItemRule } from './apply-rules';
+import { StateUpdater, useCallback, useMemo, useState } from '@pionjs/pion';
+import type { AsyncItemRule } from '../async-rule';
 import { touch, touched } from '../touch';
+import { applyRules, ItemRule } from './apply-rules';
+import { useSagaRules } from './use-saga-rules';
 
 interface Props<T extends object> {
 	initial: T[];
 	rules?: ItemRule<T>[];
+	asyncRules?: readonly AsyncItemRule<T>[];
 }
 
 const changes = <T>(
@@ -139,7 +142,11 @@ export const useItemsCore = <T extends object>({
 	};
 };
 
-export const useItems = <T extends object>({ initial, rules }: Props<T>) => {
+export const useItems = <T extends object>({
+	initial,
+	rules,
+	asyncRules,
+}: Props<T>) => {
 	const _initial = useMemo(
 			() =>
 				initial.map((newItem, index) => applyRules({ rules, newItem, index })),
@@ -147,5 +154,7 @@ export const useItems = <T extends object>({ initial, rules }: Props<T>) => {
 		),
 		[items, setItems] = useState<T[]>(_initial);
 
-	return useItemsCore({ items, setItems, initial: _initial, rules });
+	const core = useItemsCore({ items, setItems, initial: _initial, rules });
+	useSagaRules(core.items, asyncRules, core.update);
+	return core;
 };
