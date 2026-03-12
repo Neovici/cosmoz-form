@@ -2,7 +2,10 @@ import { assert } from '@open-wc/testing';
 import { spy } from 'sinon';
 
 import { delay, type AsyncOpts, type AsyncRule } from '../async-rule';
-import { makeTakeLatestRunner } from '../make-take-latest-runner';
+import {
+	makeTakeLatestRunner,
+	type TakeLatestRunner,
+} from '../make-take-latest-runner';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -20,14 +23,22 @@ const returns =
 // ── Suite ─────────────────────────────────────────────────────────────────────
 
 suite('makeTakeLatestRunner', () => {
+	let runner: TakeLatestRunner<S>;
+
+	setup(() => {
+		runner = makeTakeLatestRunner<S>();
+	});
+
+	teardown(() => {
+		runner.cancel();
+	});
+
 	test('run() resolves with fn return value', async () => {
-		const runner = makeTakeLatestRunner<S>();
 		const result = await runner.run(returns({ name: 'Alice' }), {}, noop);
 		assert.deepEqual(result, { name: 'Alice' });
 	});
 
 	test('second run() aborts the first before starting', async () => {
-		const runner = makeTakeLatestRunner<S>();
 		const firstCompleted = spy();
 
 		const slow: AsyncRule<S> = async (_, { signal }) => {
@@ -51,8 +62,6 @@ suite('makeTakeLatestRunner', () => {
 	});
 
 	test('cancel() aborts current run, resolves null', async () => {
-		const runner = makeTakeLatestRunner<S>();
-
 		const slow: AsyncRule<S> = async (_, { signal }) => {
 			await delay(signal, 5000);
 			return {};
@@ -65,8 +74,6 @@ suite('makeTakeLatestRunner', () => {
 	});
 
 	test('non-abort errors are re-thrown (not swallowed)', async () => {
-		const runner = makeTakeLatestRunner<S>();
-
 		const boom: AsyncRule<S> = async () => {
 			throw new Error('network error');
 		};
@@ -81,8 +88,6 @@ suite('makeTakeLatestRunner', () => {
 	});
 
 	test('AbortErrors are swallowed and resolve null', async () => {
-		const runner = makeTakeLatestRunner<S>();
-
 		const aborting: AsyncRule<S> = async (_, { signal }) => {
 			await delay(signal, 5000);
 			return {};
@@ -95,7 +100,6 @@ suite('makeTakeLatestRunner', () => {
 	});
 
 	test('ctx.signal is the live AbortController signal', async () => {
-		const runner = makeTakeLatestRunner<S>();
 		let receivedSignal: AbortSignal | undefined;
 
 		const captureSignal: AsyncRule<S> = async (_, { signal }) => {
@@ -108,7 +112,6 @@ suite('makeTakeLatestRunner', () => {
 	});
 
 	test('ctx.update calls onIntermediate immediately', async () => {
-		const runner = makeTakeLatestRunner<S>();
 		const patches: Partial<S>[] = [];
 
 		const withUpdate: AsyncRule<S> = async (_, { update }) => {
@@ -122,7 +125,6 @@ suite('makeTakeLatestRunner', () => {
 	});
 
 	test('ctx.index is forwarded from opts', async () => {
-		const runner = makeTakeLatestRunner<S>();
 		let receivedIndex: number | undefined;
 
 		const captureIndex: AsyncRule<S> = async (_, ctx: AsyncOpts<S>) => {
@@ -135,7 +137,6 @@ suite('makeTakeLatestRunner', () => {
 	});
 
 	test('values snapshot is passed to fn', async () => {
-		const runner = makeTakeLatestRunner<S>();
 		let receivedValues: S | undefined;
 
 		const captureValues: AsyncRule<S> = async (values) => {
