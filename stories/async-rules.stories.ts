@@ -5,8 +5,7 @@ import { when } from 'lit-html/directives/when.js';
 
 import {
 	autocomplete,
-	call,
-	loading,
+	delay,
 	makeDebounceRunner,
 	number,
 	renderFields,
@@ -66,13 +65,7 @@ const fetchContactEmail = async (
 	signal: AbortSignal,
 	supplier: string,
 ): Promise<string> => {
-	await new Promise<void>((resolve, reject) => {
-		const t = setTimeout(resolve, 3000);
-		signal.addEventListener('abort', () => {
-			clearTimeout(t);
-			reject(new DOMException('Aborted', 'AbortError'));
-		});
-	});
+	await delay(signal, 3000);
 	return CONTACT_EMAILS[supplier] ?? '';
 };
 
@@ -95,27 +88,24 @@ const TakeLatestDemo = () => {
 
 	const emailRule: AsyncItemRule<OrderForm> = useMemo(
 		() => [
-			async function* (current) {
+			async (current, { update, signal }) => {
 				if (!current.supplier) return { contactEmail: '' };
 				statsRef.current.started++;
 				setTick((t) => t + 1);
-				yield loading<OrderForm>({ contactEmail: 'loading…' });
-				const email = yield call((signal: AbortSignal, supplier: string) => {
-					// Count cancellations the moment the signal fires, before the
-					// promise rejects — so the counter updates immediately.
-					signal.addEventListener(
-						'abort',
-						() => {
-							statsRef.current.cancelled++;
-							setTick((t) => t + 1);
-						},
-						{ once: true },
-					);
-					return fetchContactEmail(signal, supplier);
-				}, current.supplier);
+				update({ contactEmail: 'loading…' });
+				// Count cancellations the moment the signal fires
+				signal.addEventListener(
+					'abort',
+					() => {
+						statsRef.current.cancelled++;
+						setTick((t) => t + 1);
+					},
+					{ once: true },
+				);
+				const email = await fetchContactEmail(signal, current.supplier);
 				statsRef.current.resolved++;
 				setTick((t) => t + 1);
-				return { contactEmail: email as string };
+				return { contactEmail: email };
 			},
 			({ supplier }) => [supplier],
 			// No runner specified — defaults to makeTakeLatestRunner.
@@ -165,8 +155,8 @@ type OrderForm = { supplier: string; contactEmail: string };
 
 const INITIAL: OrderForm = { supplier: '', contactEmail: '' };
 
-// The AbortSignal is passed automatically by call() as the first argument.
-// Pass it to fetch() to cancel in-flight requests when the saga is superseded.
+// Pass ctx.signal to fetch() so in-flight requests are cancelled when
+// the runner supersedes this invocation (new supplier selected).
 const fetchContactEmail = async (
   signal: AbortSignal,
   supplier: string,
@@ -183,17 +173,17 @@ const fetchContactEmail = async (
 // Switching supplier mid-flight cancels the previous fetch;
 // only the final selection's result appears (takeLatest / switchMap).
 const emailRule: AsyncItemRule<OrderForm> = [
-  async function* (current) {
+  async (current, { update, signal }) => {
     if (!current.supplier) return { contactEmail: '' };
-    yield loading<OrderForm>({ contactEmail: 'loading…' });
-    const email = yield call(fetchContactEmail, current.supplier);
-    return { contactEmail: email as string };
+    update({ contactEmail: 'loading…' }); // intermediate patch
+    const email = await fetchContactEmail(signal, current.supplier);
+    return { contactEmail: email };
   },
   ({ supplier }) => [supplier],
   // No runner specified — defaults to makeTakeLatestRunner.
 ];
 
-// form.processing is true while any async saga is in flight.
+// form.processing is true while any async rule is in flight.
 // Use it to disable a save button or show a global spinner.
 const form = useValidatedForm$({ fields, initial, asyncRules: [emailRule] });
 // form.processing → true while fetching, false when settled`,
@@ -222,13 +212,7 @@ const fetchUnitPrice = async (
 	signal: AbortSignal,
 	quantity: number,
 ): Promise<number> => {
-	await new Promise<void>((resolve, reject) => {
-		const t = setTimeout(resolve, 1000);
-		signal.addEventListener('abort', () => {
-			clearTimeout(t);
-			reject(new DOMException('Aborted', 'AbortError'));
-		});
-	});
+	await delay(signal, 1000);
 	// Simulated tiered pricing
 	if (quantity >= 50) return 8.0;
 	if (quantity >= 20) return 9.5;
@@ -277,15 +261,15 @@ const DebounceDemo = () => {
 
 	const pricingRule: AsyncItemRule<QuoteForm> = useMemo(
 		() => [
-			async function* (current) {
+			async (current, { update, signal }) => {
 				if (!current.quantity) return { unitPrice: 0, _pricingLoading: false };
 				statsRef.current.started++;
 				setTick((t) => t + 1);
-				yield loading<QuoteForm>({ _pricingLoading: true });
-				const price = yield call(fetchUnitPrice, current.quantity);
+				update({ _pricingLoading: true });
+				const price = await fetchUnitPrice(signal, current.quantity);
 				statsRef.current.resolved++;
 				setTick((t) => t + 1);
-				return { unitPrice: price as number, _pricingLoading: false };
+				return { unitPrice: price, _pricingLoading: false };
 			},
 			({ quantity }) => [quantity],
 			() => makeDebounceRunner<QuoteForm>(500),
@@ -342,9 +326,8 @@ type QuoteForm = {
 
 const INITIAL: QuoteForm = { quantity: 1, unitPrice: 0, total: 0, _pricingLoading: false };
 
-// The AbortSignal is passed automatically by call() as the first argument.
-// Pass it to fetch() to cancel in-flight requests when the debounce runner
-// discards a superseded saga.
+// Pass ctx.signal to fetch() so in-flight requests are cancelled when the
+// debounce runner discards a superseded call.
 const fetchUnitPrice = async (
   signal: AbortSignal,
   quantity: number,
@@ -363,14 +346,13 @@ const totalRule: ItemRule<QuoteForm> = [
 ];
 
 // Async rule — unit price is fetched 500 ms after quantity stops changing.
-// Rapid spinner clicks are debounced; only the final value triggers a lookup.
-// _pricingLoading drives the spinner suffix on the unitPrice field.
+// ctx.update() pushes the loading flag immediately; the final return clears it.
 const pricingRule: AsyncItemRule<QuoteForm> = [
-  async function* (current) {
+  async (current, { update, signal }) => {
     if (!current.quantity) return { unitPrice: 0, _pricingLoading: false };
-    yield loading<QuoteForm>({ _pricingLoading: true });
-    const price = yield call(fetchUnitPrice, current.quantity);
-    return { unitPrice: price as number, _pricingLoading: false };
+    update({ _pricingLoading: true });
+    const price = await fetchUnitPrice(signal, current.quantity);
+    return { unitPrice: price, _pricingLoading: false };
   },
   ({ quantity }) => [quantity],
   () => makeDebounceRunner(500),
@@ -385,7 +367,7 @@ const unitPriceField = {
     when(values._pricingLoading, () => html\`<cosmoz-spinner></cosmoz-spinner>\`),
 };
 
-// form.processing is true while any async saga is in flight.
+// form.processing is true while any async rule is in flight.
 const form = useValidatedForm$({
   fields,
   initial,

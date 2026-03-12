@@ -12,40 +12,35 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
 };
 
 /**
- * Composes with UseForm<T> to add async saga rules.
+ * Composes with UseForm<T> to add async rules.
  * Returns UseForm<T> & { processing } where processing is true while any
- * async saga is in flight.
+ * async rule is in flight.
  *
  * Async patches call onChange(patch, false) — they do not mark the form touched.
- * Intermediate loading patches (from yield loading(...)) go through applyRules
- * like any other onChange — sync rules cascade on top of them, which is expected.
+ * Intermediate patches (from ctx.update(...)) go through onChange like any other
+ * patch — sync rules cascade on top of them, which is expected.
  *
  * Usage:
  *   const form = useValidatedForm({ fields, initial, rules });
- *   const { processing } = useSagaFormCore(form, asyncRules);
+ *   const { processing } = useAsyncFormCore(form, asyncRules);
  */
-export const useSagaFormCore = <T extends object>(
+export const useAsyncFormCore = <T extends object>(
 	form: UseForm<T>,
 	asyncRules: readonly AsyncItemRule<T>[] | undefined,
 	opts?: { onError?: (err: unknown, rule: AsyncItemRule<T>) => void },
 ): UseForm<T> & { processing: boolean } => {
 	const onError = opts?.onError ?? DEFAULT_ON_ERROR;
 
-	// Always-live ref — updated on every render, read by getState closures
-	const valuesRef = useRef(form.values);
-	valuesRef.current = form.values;
-
 	// Refs persist across renders without triggering re-renders
 	const runnersRef = useRef(new Map<AsyncItemRule<T>, SagaRunner<T>>());
 	const prevDepsRef = useRef(new Map<AsyncItemRule<T>, unknown[]>());
-	const prevItemRef = useRef(new Map<AsyncItemRule<T>, T>());
 
-	// pendingCount tracks in-flight sagas without causing re-renders itself.
+	// pendingCount tracks in-flight rules without causing re-renders itself.
 	// processing state is updated only on 0→1 and 1→0 transitions.
 	const pendingCount = useRef(0);
 	const [processing, setProcessing] = useState(false);
 
-	// Cleanup: cancel all in-flight sagas on unmount
+	// Cleanup: cancel all in-flight rules on unmount
 	useEffect(
 		() => () => {
 			for (const runner of runnersRef.current.values()) runner.cancel();
@@ -53,7 +48,7 @@ export const useSagaFormCore = <T extends object>(
 		[],
 	);
 
-	// Dep-check + saga dispatch: runs after every values change (not during render)
+	// Dep-check + rule dispatch: runs after every values change
 	useEffect(() => {
 		if (!asyncRules?.length) return;
 
@@ -72,9 +67,7 @@ export const useSagaFormCore = <T extends object>(
 				continue;
 			}
 
-			const old = prevItemRef.current.get(rule); // snapshot at previous invocation
 			prevDepsRef.current.set(rule, deps);
-			prevItemRef.current.set(rule, form.values);
 
 			const runner = runnersRef.current.get(rule)!;
 
@@ -83,9 +76,9 @@ export const useSagaFormCore = <T extends object>(
 
 			runner
 				.run(
-					sagaFn(form.values, old, undefined, undefined),
+					sagaFn,
+					form.values,
 					(patch) => form.onChange(patch, false), // intermediate: no touch
-					() => valuesRef.current, // live state for yield select()
 				)
 				.then((result) => {
 					if (result !== null) {

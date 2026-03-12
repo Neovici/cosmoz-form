@@ -13,31 +13,28 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
 
 type RunnerMap<T> = Map<AsyncItemRule<T>, Map<number, SagaRunner<T>>>;
 type DepsMap<T> = Map<AsyncItemRule<T>, Map<number, unknown[]>>;
-type PrevMap<T> = Map<AsyncItemRule<T>, Map<number, T>>;
 
 const ensureRuleTracking = <T>(
 	rule: AsyncItemRule<T>,
 	runnersRef: { current: RunnerMap<T> },
 	prevDepsRef: { current: DepsMap<T> },
-	prevItemRef: { current: PrevMap<T> },
 ) => {
 	if (!runnersRef.current.has(rule)) {
 		runnersRef.current.set(rule, new Map());
 		prevDepsRef.current.set(rule, new Map());
-		prevItemRef.current.set(rule, new Map());
 	}
 };
 
 /**
- * Composes with useItemsCore / useItems to add async saga rules.
- * One TakeLatestRunner per (rule, itemIndex) pair — item sagas are independent.
+ * Composes with useItemsCore / useItems to add async rules.
+ * One runner per (rule, itemIndex) pair — item rules are independent.
  *
  * Usage:
  *   const core = useItems({ initial, rules });
- *   useSagaRules(core.items, asyncRules, core.update);
+ *   useAsyncRules(core.items, asyncRules, core.update);
  *   return core;
  */
-export const useSagaRules = <T extends object>(
+export const useAsyncRules = <T extends object>(
 	items: T[],
 	asyncRules: readonly AsyncItemRule<T>[] | undefined,
 	update: UseItemsCore<T>['update'],
@@ -50,13 +47,8 @@ export const useSagaRules = <T extends object>(
 	const pendingCount = useRef(0);
 	const [processing, setProcessing] = useState(false);
 
-	// Always-live ref for getState closures
-	const itemsRef = useRef(items);
-	itemsRef.current = items;
-
 	const runnersRef = useRef<RunnerMap<T>>(new Map());
 	const prevDepsRef = useRef<DepsMap<T>>(new Map());
-	const prevItemRef = useRef<PrevMap<T>>(new Map());
 
 	// Cleanup on unmount
 	useEffect(
@@ -70,7 +62,7 @@ export const useSagaRules = <T extends object>(
 		[],
 	);
 
-	// Dep-check + saga dispatch: runs after every items change
+	// Dep-check + rule dispatch: runs after every items change
 	useEffect(() => {
 		if (!asyncRules?.length) {
 			return;
@@ -79,7 +71,7 @@ export const useSagaRules = <T extends object>(
 		for (const rule of asyncRules) {
 			const [sagaFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
 
-			ensureRuleTracking(rule, runnersRef, prevDepsRef, prevItemRef);
+			ensureRuleTracking(rule, runnersRef, prevDepsRef);
 
 			for (const [idx, item] of items.entries()) {
 				const runnersForRule = runnersRef.current.get(rule)!;
@@ -94,9 +86,7 @@ export const useSagaRules = <T extends object>(
 					continue;
 				}
 
-				const old = prevItemRef.current.get(rule)!.get(idx);
 				prevDepsRef.current.get(rule)!.set(idx, deps);
-				prevItemRef.current.get(rule)!.set(idx, item);
 
 				const runner = runnersForRule.get(idx)!;
 
@@ -105,9 +95,10 @@ export const useSagaRules = <T extends object>(
 
 				runner
 					.run(
-						sagaFn(item, old, idx, idx),
+						sagaFn,
+						item,
 						(patch) => update(idx, patch), // intermediate: no touch
-						() => itemsRef.current[idx], // live item for yield select()
+						{ index: idx },
 					)
 					.then((result) => {
 						if (result !== null) {

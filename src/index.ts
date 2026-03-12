@@ -19,29 +19,25 @@ export { computeRules, useValidatedFormCore } from './use-validated-form-core';
 // Add form utilities
 export * from './add';
 
-// Async saga rules
-export { call, delay, loading, select } from './async-rule';
+// Async rules
+export { delay } from './async-rule';
 export type {
+	AsyncContext,
 	AsyncItemRule,
-	CallEffect,
-	DelayEffect,
-	Effect,
-	LoadingEffect,
 	OnIntermediate,
 	SagaCompute,
 	SagaRunner,
-	SelectEffect,
 } from './async-rule';
 // Async runners — choose the concurrency strategy that fits your use case:
-//   makeTakeLatestRunner  cancels the previous saga when a new run() arrives (switchMap)
-//   makeDebounceRunner    waits for silence before running; resets timer on each run() (debounce + switchMap)
+//   makeTakeLatestRunner  cancels the previous run when a new one arrives (switchMap)
+//   makeDebounceRunner    waits for silence before running; resets timer on each call (debounce + switchMap)
 //
 // Future ideas:
-//   makeThrottleRunner    fires immediately, queues one trailing call (runs when in-flight saga finishes)
-//   makeExhaustRunner     ignores new run() calls while a saga is in-flight (exhaustMap)
+//   makeThrottleRunner    fires immediately, queues one trailing call (runs when in-flight finishes)
+//   makeExhaustRunner     ignores new calls while one is in-flight (exhaustMap)
 export { makeDebounceRunner } from './make-debounce-runner';
 export type { DebounceRunner } from './make-debounce-runner';
 export { makeTakeLatestRunner } from './make-take-latest-runner';
 export type { TakeLatestRunner } from './make-take-latest-runner';
-export { useSagaRules } from './use-items/use-saga-rules';
-export { useSagaFormCore } from './use-saga-form-core';
+export { useAsyncFormCore } from './use-async-form-core';
+export { useAsyncRules } from './use-items/use-async-rules';

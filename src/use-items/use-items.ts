@@ -3,7 +3,7 @@ import { StateUpdater, useCallback, useMemo, useState } from '@pionjs/pion';
 import type { AsyncItemRule } from '../async-rule';
 import { touch, touched } from '../touch';
 import { applyRules, ItemRule } from './apply-rules';
-import { useSagaRules } from './use-saga-rules';
+import { useAsyncRules } from './use-async-rules';
 
 interface Props<T extends object> {
 	initial: T[];
@@ -155,6 +155,6 @@ export const useItems = <T extends object>({
 		[items, setItems] = useState<T[]>(_initial);
 
 	const core = useItemsCore({ items, setItems, initial: _initial, rules });
-	useSagaRules(core.items, asyncRules, core.update);
+	useAsyncRules(core.items, asyncRules, core.update);
 	return core;
 };
