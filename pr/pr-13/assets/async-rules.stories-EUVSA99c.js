@@ -1,4 +1,4 @@
-import{e as j,i as G,a as H,o as $,l as V,r as Y,b as B,c as E,u as L,d as R,f as A,g as _,h as P,n as J}from"./inline-file-q8Wyxm23.js";import{E as v,b as d,A as K}from"./iframe-GNm5vrOI.js";import"./preload-helper-PPVm8Dsz.js";const W={},X=j(class extends G{constructor(){super(...arguments),this.ot=W}render(t,e){return e()}update(t,[e,n]){if(Array.isArray(e)){if(Array.isArray(this.ot)&&this.ot.length===e.length&&e.every((r,i)=>r===this.ot[i]))return v}else if(this.ot===e)return v;return this.ot=Array.isArray(e)?Array.from(e):e,this.render(e,n)}}),Z=H(({id:t,label:e,noLabelFloat:n,alwaysFloatLabel:r,error:i,warning:o,suffix:l,disabled:a,onChange:c,options:s,limit:u,min:y,textProperty:g,valueProperty:q,value:h,values:b,itemRenderer:w,keepOpened:x,keepQuery:S,placeholder:F,wrap:D,showSingle:O,preserveOrder:C,title:M,textual:z,description:N,externalSearch:Q,...U})=>d`<cosmoz-autocomplete
+import{e as j,i as G,a as H,o as $,l as V,r as Y,b as B,c as E,u as L,d as R,f as A,g as _,h as P,n as J}from"./inline-file-CWDYnTCN.js";import{E as v,b as d,A as K}from"./iframe-T9RfQnO5.js";import"./preload-helper-PPVm8Dsz.js";const W={},X=j(class extends G{constructor(){super(...arguments),this.ot=W}render(t,e){return e()}update(t,[e,n]){if(Array.isArray(e)){if(Array.isArray(this.ot)&&this.ot.length===e.length&&e.every((r,i)=>r===this.ot[i]))return v}else if(this.ot===e)return v;return this.ot=Array.isArray(e)?Array.from(e):e,this.render(e,n)}}),Z=H(({id:t,label:e,noLabelFloat:n,alwaysFloatLabel:r,error:i,warning:o,suffix:l,disabled:a,onChange:c,options:s,limit:u,min:y,textProperty:g,valueProperty:q,value:h,values:b,itemRenderer:w,keepOpened:x,keepQuery:S,placeholder:F,wrap:D,showSingle:O,preserveOrder:C,title:M,textual:z,description:N,externalSearch:Q,...U})=>d`<cosmoz-autocomplete
 			class="input input-autocomplete"
 			?data-warning=${!!o}
 			name=${t}
@@ -68,7 +68,7 @@ import{e as j,i as G,a as H,o as $,l as V,r as Y,b as B,c as E,u as L,d as R,f a
                 <span>Resolved: <strong>${l}</strong></span>
             </div>
         </div>
-    `};customElements.define("story-supplier-take-latest",E(ae));const p=()=>d`<story-supplier-take-latest></story-supplier-take-latest>`;p.storyName="TakeLatest — supplier contact email";p.parameters={docs:{source:{code:`// Form shape
+    `};customElements.define("story-supplier-take-latest",E(ae));const p=()=>d`<story-supplier-take-latest></story-supplier-take-latest>`;p.storyName="TakeLatest — supplier contact email";p.parameters={docs:{source:{language:"typescript",code:`// Form shape
 type OrderForm = { supplier: string; contactEmail: string };
 
 const INITIAL: OrderForm = { supplier: '', contactEmail: '' };
@@ -100,7 +100,7 @@ const emailRule: AsyncItemRule<OrderForm> = [
                 <span>In flight: <strong>${l}</strong></span>
             </div>
         </div>
-    `};customElements.define("story-quote-debounce",E(ue));const m=()=>d`<story-quote-debounce></story-quote-debounce>`;m.storyName="Debounce — quantity → unit price + total";m.parameters={docs:{source:{code:`// Form shape — _pricingLoading is a UI-only flag, hidden from the rendered form
+    `};customElements.define("story-quote-debounce",E(ue));const m=()=>d`<story-quote-debounce></story-quote-debounce>`;m.storyName="Debounce — quantity → unit price + total";m.parameters={docs:{source:{language:"typescript",code:`// Form shape — _pricingLoading is a UI-only flag, hidden from the rendered form
 type QuoteForm = {
   quantity: number;
   unitPrice: number;
