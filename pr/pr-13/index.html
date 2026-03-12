@@ -49,6 +49,8 @@
     <link href="./sb-addons/storybook-core-server-presets-0/common-manager-bundle.js" rel="modulepreload" />
     
     <link href="./sb-addons/links-1/manager-bundle.js" rel="modulepreload" />
+    
+    <link href="./sb-addons/docs-2/manager-bundle.js" rel="modulepreload" />
        
 
     <style>
@@ -77,7 +79,8 @@
   "actions": true,
   "backgrounds": true,
   "outline": true,
-  "measure": true
+  "measure": true,
+  "sidebarOnboardingChecklist": true
 };
         
       
@@ -90,7 +93,9 @@
         
       
         
-          window['DOCS_OPTIONS'] = {};
+          window['DOCS_OPTIONS'] = {
+  "defaultName": "Docs"
+};
         
       
         
@@ -129,6 +134,8 @@
         import './sb-addons/storybook-core-server-presets-0/common-manager-bundle.js';
       
         import './sb-addons/links-1/manager-bundle.js';
+      
+        import './sb-addons/docs-2/manager-bundle.js';
       
 
       import './sb-manager/runtime.js';
