@@ -320,6 +320,7 @@ const pricingRule: AsyncItemRule<QuoteForm> = [
 
 export default {
 	title: 'Async Rules',
+	tags: ['autodocs'],
 	parameters: {
 		docs: {
 			canvas: { sourceState: 'shown' },
