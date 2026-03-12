@@ -1,4 +1,4 @@
-import { component } from '@pionjs/pion';
+import { component, useMemo, useRef, useState } from '@pionjs/pion';
 import { html } from 'lit-html';
 
 import {
@@ -6,12 +6,50 @@ import {
 	call,
 	loading,
 	makeDebounceRunner,
+	number,
 	renderFields,
 	useValidatedForm$,
 	type AsyncItemRule,
+	type ItemRule,
 } from '../src/index.js';
 
-// ── Simulated data ────────────────────────────────────────────────────────────
+// ── Shared styles ─────────────────────────────────────────────────────────────
+
+const SHARED_STYLES = html`
+	<style>
+		.story-wrap {
+			font-family: sans-serif;
+			max-width: 420px;
+			padding: 1rem;
+		}
+		.story-hint {
+			color: #555;
+			font-size: 0.85rem;
+			margin-top: 0.5rem;
+		}
+		.story-stats {
+			background: #f0f4ff;
+			border-radius: 6px;
+			display: flex;
+			font-size: 0.8rem;
+			gap: 1.5rem;
+			margin-top: 1rem;
+			padding: 0.6rem 0.9rem;
+		}
+		.story-stats span {
+			color: #333;
+		}
+		.story-stats strong {
+			color: #1a56db;
+		}
+	</style>
+`;
+
+// ── Story 1: TakeLatest ───────────────────────────────────────────────────────
+
+type OrderForm = { supplier: string; contactEmail: string };
+
+const INITIAL_ORDER: OrderForm = { supplier: '', contactEmail: '' };
 
 const SUPPLIERS = ['Acme Corp', 'Globex', 'Initech'];
 
@@ -21,22 +59,22 @@ const CONTACT_EMAILS: Record<string, string> = {
 	Initech: 'info@initech.example',
 };
 
-/** Simulated API call — resolves after 800ms. */
+/** Simulated API call — resolves after 3 s (long enough to switch supplier mid-flight). */
 const fetchContactEmail = async (
-	_signal: AbortSignal,
+	signal: AbortSignal,
 	supplier: string,
 ): Promise<string> => {
-	await new Promise((r) => setTimeout(r, 800));
+	await new Promise<void>((resolve, reject) => {
+		const t = setTimeout(resolve, 3000);
+		signal.addEventListener('abort', () => {
+			clearTimeout(t);
+			reject(new DOMException('Aborted', 'AbortError'));
+		});
+	});
 	return CONTACT_EMAILS[supplier] ?? '';
 };
 
-// ── Shared form type ──────────────────────────────────────────────────────────
-
-type OrderForm = { supplier: string; contactEmail: string };
-
-const INITIAL: OrderForm = { supplier: '', contactEmail: '' };
-
-const FIELDS = [
+const ORDER_FIELDS = [
 	{
 		id: 'supplier' as const,
 		label: 'Supplier',
@@ -49,57 +87,50 @@ const FIELDS = [
 	{ id: 'contactEmail' as const, label: 'Contact email', disabled: true },
 ];
 
-// ── Story 1: TakeLatest ───────────────────────────────────────────────────────
-
-/**
- * Async rule that fetches the contact email for the selected supplier.
- * Uses the default takeLates runner — switching supplier mid-flight
- * cancels the previous fetch and only the final selection's result appears.
- */
-const emailFromSupplierTakeLatest: AsyncItemRule<OrderForm> = [
-	async function* (current) {
-		if (!current.supplier) return { contactEmail: '' };
-		yield loading<OrderForm>({ contactEmail: 'loading...' });
-		const email = yield call(fetchContactEmail, current.supplier);
-		return { contactEmail: email as string };
-	},
-	({ supplier }) => [supplier],
-	// No runner specified — defaults to makeTakeLatestRunner.
-];
-
 const TakeLatestDemo = () => {
+	const statsRef = useRef({ started: 0, resolved: 0 });
+	const [, setTick] = useState(0);
+
+	const emailRule: AsyncItemRule<OrderForm> = useMemo(
+		() => [
+			async function* (current) {
+				if (!current.supplier) return { contactEmail: '' };
+				statsRef.current.started++;
+				setTick((t) => t + 1);
+				yield loading<OrderForm>({ contactEmail: 'loading…' });
+				const email = yield call(fetchContactEmail, current.supplier);
+				statsRef.current.resolved++;
+				setTick((t) => t + 1);
+				return { contactEmail: email as string };
+			},
+			({ supplier }) => [supplier],
+			// No runner specified — defaults to makeTakeLatestRunner.
+		],
+		[],
+	);
+
 	const form = useValidatedForm$<OrderForm>({
-		fields: FIELDS,
-		initial: INITIAL,
-		asyncRules: [emailFromSupplierTakeLatest],
+		fields: ORDER_FIELDS,
+		initial: INITIAL_ORDER,
+		asyncRules: [emailRule],
 	});
 
+	const { started, resolved } = statsRef.current;
+	const inFlight = started - resolved;
+
 	return html`
-		<style>
-			.story-wrap {
-				font-family: sans-serif;
-				max-width: 400px;
-				padding: 1rem;
-			}
-			.story-wrap pre {
-				background: #f4f4f4;
-				border-radius: 4px;
-				font-size: 0.8rem;
-				margin-top: 1rem;
-				padding: 0.75rem;
-			}
-			.story-hint {
-				color: #666;
-				font-size: 0.85rem;
-				margin-top: 0.5rem;
-			}
-		</style>
+		${SHARED_STYLES}
 		<div class="story-wrap">
 			${renderFields(form)}
 			<p class="story-hint">
-				Switch supplier quickly — only the last selection's email loads.
+				Select a supplier, then quickly select a different one before 3 s — only
+				the final selection's email appears. The first fetch is cancelled.
 			</p>
-			<pre>${JSON.stringify(form.values, null, 2)}</pre>
+			<div class="story-stats">
+				<span>Fetches started: <strong>${started}</strong></span>
+				<span>Resolved: <strong>${resolved}</strong></span>
+				<span>In flight: <strong>${inFlight}</strong></span>
+			</div>
 		</div>
 	`;
 };
@@ -110,71 +141,181 @@ export const TakeLatest = () =>
 	html`<story-supplier-take-latest></story-supplier-take-latest>`;
 
 TakeLatest.storyName = 'TakeLatest — supplier contact email';
+TakeLatest.parameters = {
+	docs: {
+		source: {
+			code: `\
+// Form shape
+type OrderForm = { supplier: string; contactEmail: string };
+
+const INITIAL: OrderForm = { supplier: '', contactEmail: '' };
+
+// Async rule — fetches contact email for the selected supplier.
+// Switching supplier mid-flight cancels the previous fetch;
+// only the final selection's result appears (takeLates / switchMap).
+const emailRule: AsyncItemRule<OrderForm> = [
+  async function* (current) {
+    if (!current.supplier) return { contactEmail: '' };
+    yield loading<OrderForm>({ contactEmail: 'loading…' });
+    const email = yield call(fetchContactEmail, current.supplier);
+    return { contactEmail: email as string };
+  },
+  ({ supplier }) => [supplier],
+  // No runner specified — defaults to makeTakeLatestRunner.
+];`,
+		},
+	},
+};
 
 // ── Story 2: Debounce ─────────────────────────────────────────────────────────
 
-/**
- * Same rule but with a 500ms debounce runner — the fetch only fires after
- * the user stops changing the supplier for 500ms.
- * Useful for free-text fields where you want to avoid firing on every keystroke.
- */
-const emailFromSupplierDebounce: AsyncItemRule<OrderForm> = [
-	async function* (current) {
-		if (!current.supplier) return { contactEmail: '' };
-		yield loading<OrderForm>({ contactEmail: 'loading...' });
-		const email = yield call(fetchContactEmail, current.supplier);
-		return { contactEmail: email as string };
+type QuoteForm = { quantity: number; unitPrice: number; total: number };
+
+const INITIAL_QUOTE: QuoteForm = { quantity: 1, unitPrice: 0, total: 0 };
+
+/** Simulated pricing API — resolves after 1 s. */
+const fetchUnitPrice = async (
+	signal: AbortSignal,
+	quantity: number,
+): Promise<number> => {
+	await new Promise<void>((resolve, reject) => {
+		const t = setTimeout(resolve, 1000);
+		signal.addEventListener('abort', () => {
+			clearTimeout(t);
+			reject(new DOMException('Aborted', 'AbortError'));
+		});
+	});
+	// Simulated tiered pricing
+	if (quantity >= 50) return 8.0;
+	if (quantity >= 20) return 9.5;
+	if (quantity >= 10) return 11.0;
+	return 13.5;
+};
+
+const QUOTE_FIELDS = [
+	{
+		id: 'quantity' as const,
+		label: 'Quantity',
+		input: number,
+		min: 1,
+		max: 100,
+		step: '1',
 	},
-	({ supplier }) => [supplier],
-	() => makeDebounceRunner<OrderForm>(500),
+	{ id: 'unitPrice' as const, label: 'Unit price (€)', disabled: true },
+	{
+		id: 'total' as const,
+		label: 'Total (€)',
+		disabled: true,
+		rules: [
+			[
+				({ quantity, unitPrice }: QuoteForm) => ({
+					total: Math.round(quantity * unitPrice * 100) / 100,
+				}),
+				({ quantity, unitPrice }: QuoteForm) => [quantity, unitPrice],
+			] satisfies ItemRule<QuoteForm>,
+		],
+	},
 ];
 
 const DebounceDemo = () => {
-	const form = useValidatedForm$<OrderForm>({
-		fields: FIELDS,
-		initial: INITIAL,
-		asyncRules: [emailFromSupplierDebounce],
+	const statsRef = useRef({ started: 0, resolved: 0 });
+	const [, setTick] = useState(0);
+
+	const pricingRule: AsyncItemRule<QuoteForm> = useMemo(
+		() => [
+			async function* (current) {
+				if (!current.quantity) return { unitPrice: 0 };
+				statsRef.current.started++;
+				setTick((t) => t + 1);
+				yield loading<QuoteForm>({ unitPrice: 0 });
+				const price = yield call(fetchUnitPrice, current.quantity);
+				statsRef.current.resolved++;
+				setTick((t) => t + 1);
+				return { unitPrice: price as number };
+			},
+			({ quantity }) => [quantity],
+			() => makeDebounceRunner<QuoteForm>(500),
+		],
+		[],
+	);
+
+	const form = useValidatedForm$<QuoteForm>({
+		fields: QUOTE_FIELDS,
+		initial: INITIAL_QUOTE,
+		asyncRules: [pricingRule],
 	});
 
+	const { started, resolved } = statsRef.current;
+
 	return html`
-		<style>
-			.story-wrap {
-				font-family: sans-serif;
-				max-width: 400px;
-				padding: 1rem;
-			}
-			.story-wrap pre {
-				background: #f4f4f4;
-				border-radius: 4px;
-				font-size: 0.8rem;
-				margin-top: 1rem;
-				padding: 0.75rem;
-			}
-			.story-hint {
-				color: #666;
-				font-size: 0.85rem;
-				margin-top: 0.5rem;
-			}
-		</style>
+		${SHARED_STYLES}
 		<div class="story-wrap">
 			${renderFields(form)}
 			<p class="story-hint">
-				Switch supplier rapidly — the fetch only fires after 500ms of silence.
+				Increment the quantity — the price lookup only fires 500 ms after you
+				stop. Rapid changes are debounced. Total updates instantly via a sync
+				rule once the price arrives.
 			</p>
-			<pre>${JSON.stringify(form.values, null, 2)}</pre>
+			<div class="story-stats">
+				<span>Lookups started: <strong>${started}</strong></span>
+				<span>Resolved: <strong>${resolved}</strong></span>
+				<span
+					>Debounced away:
+					<strong
+						>${started - resolved > 1 ? started - resolved - 1 : 0}</strong
+					></span
+				>
+			</div>
 		</div>
 	`;
 };
 
-customElements.define('story-supplier-debounce', component(DebounceDemo));
+customElements.define('story-quote-debounce', component(DebounceDemo));
 
 export const Debounce = () =>
-	html`<story-supplier-debounce></story-supplier-debounce>`;
+	html`<story-quote-debounce></story-quote-debounce>`;
 
-Debounce.storyName = 'Debounce — supplier contact email';
+Debounce.storyName = 'Debounce — quantity → unit price + total';
+Debounce.parameters = {
+	docs: {
+		source: {
+			code: `\
+// Form shape
+type QuoteForm = { quantity: number; unitPrice: number; total: number };
+
+const INITIAL: QuoteForm = { quantity: 1, unitPrice: 0, total: 0 };
+
+// Sync rule — total updates instantly whenever quantity or unitPrice changes
+const totalRule: ItemRule<QuoteForm> = [
+  ({ quantity, unitPrice }) => ({
+    total: Math.round(quantity * unitPrice * 100) / 100,
+  }),
+  ({ quantity, unitPrice }) => [quantity, unitPrice],
+];
+
+// Async rule — unit price is fetched 500 ms after quantity stops changing.
+// Rapid spinner clicks are debounced; only the final value triggers a lookup.
+const pricingRule: AsyncItemRule<QuoteForm> = [
+  async function* (current) {
+    if (!current.quantity) return { unitPrice: 0 };
+    yield loading<QuoteForm>({ unitPrice: 0 });
+    const price = yield call(fetchUnitPrice, current.quantity);
+    return { unitPrice: price as number };
+  },
+  ({ quantity }) => [quantity],
+  () => makeDebounceRunner(500),
+];`,
+		},
+	},
+};
 
 // ── Meta ──────────────────────────────────────────────────────────────────────
 
 export default {
 	title: 'Async Rules',
+	parameters: {
+		docs: {
+			canvas: { sourceState: 'shown' },
+		},
+	},
 };
