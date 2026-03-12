@@ -88,7 +88,7 @@ const ORDER_FIELDS = [
 ];
 
 const TakeLatestDemo = () => {
-	const statsRef = useRef({ started: 0, resolved: 0 });
+	const statsRef = useRef({ started: 0, cancelled: 0, resolved: 0 });
 	const [, setTick] = useState(0);
 
 	const emailRule: AsyncItemRule<OrderForm> = useMemo(
@@ -98,7 +98,19 @@ const TakeLatestDemo = () => {
 				statsRef.current.started++;
 				setTick((t) => t + 1);
 				yield loading<OrderForm>({ contactEmail: 'loading…' });
-				const email = yield call(fetchContactEmail, current.supplier);
+				const email = yield call((signal: AbortSignal, supplier: string) => {
+					// Count cancellations the moment the signal fires, before the
+					// promise rejects — so the counter updates immediately.
+					signal.addEventListener(
+						'abort',
+						() => {
+							statsRef.current.cancelled++;
+							setTick((t) => t + 1);
+						},
+						{ once: true },
+					);
+					return fetchContactEmail(signal, supplier);
+				}, current.supplier);
 				statsRef.current.resolved++;
 				setTick((t) => t + 1);
 				return { contactEmail: email as string };
@@ -115,8 +127,7 @@ const TakeLatestDemo = () => {
 		asyncRules: [emailRule],
 	});
 
-	const { started, resolved } = statsRef.current;
-	const inFlight = started - resolved;
+	const { started, cancelled, resolved } = statsRef.current;
 
 	return html`
 		${SHARED_STYLES}
@@ -127,9 +138,9 @@ const TakeLatestDemo = () => {
 				the final selection's email appears. The first fetch is cancelled.
 			</p>
 			<div class="story-stats">
-				<span>Fetches started: <strong>${started}</strong></span>
+				<span>Started: <strong>${started}</strong></span>
+				<span>Cancelled: <strong>${cancelled}</strong></span>
 				<span>Resolved: <strong>${resolved}</strong></span>
-				<span>In flight: <strong>${inFlight}</strong></span>
 			</div>
 		</div>
 	`;
@@ -246,6 +257,7 @@ const DebounceDemo = () => {
 	});
 
 	const { started, resolved } = statsRef.current;
+	const inFlight = started - resolved;
 
 	return html`
 		${SHARED_STYLES}
@@ -257,14 +269,9 @@ const DebounceDemo = () => {
 				rule once the price arrives.
 			</p>
 			<div class="story-stats">
-				<span>Lookups started: <strong>${started}</strong></span>
+				<span>Started: <strong>${started}</strong></span>
 				<span>Resolved: <strong>${resolved}</strong></span>
-				<span
-					>Debounced away:
-					<strong
-						>${started - resolved > 1 ? started - resolved - 1 : 0}</strong
-					></span
-				>
+				<span>In flight: <strong>${inFlight}</strong></span>
 			</div>
 		</div>
 	`;
