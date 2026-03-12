@@ -1,4 +1,4 @@
-import { useEffect, useRef } from '@pionjs/pion';
+import { useEffect, useRef, useState } from '@pionjs/pion';
 import type { AsyncItemRule, SagaRunner } from '../async-rule';
 import { makeTakeLatestRunner } from '../make-take-latest-runner';
 import type { UseItemsCore } from './use-items';
@@ -44,8 +44,11 @@ export const useSagaRules = <T extends object>(
 	opts?: {
 		onError?: (err: unknown, rule: AsyncItemRule<T>, index: number) => void;
 	},
-): void => {
+): { processing: boolean } => {
 	const onError = opts?.onError ?? DEFAULT_ON_ERROR;
+
+	const pendingCount = useRef(0);
+	const [processing, setProcessing] = useState(false);
 
 	// Always-live ref for getState closures
 	const itemsRef = useRef(items);
@@ -97,6 +100,9 @@ export const useSagaRules = <T extends object>(
 
 				const runner = runnersForRule.get(idx)!;
 
+				pendingCount.current++;
+				if (pendingCount.current === 1) setProcessing(true);
+
 				runner
 					.run(
 						sagaFn(item, old, idx, idx),
@@ -108,8 +114,14 @@ export const useSagaRules = <T extends object>(
 							update(idx, result);
 						}
 					})
-					.catch((err) => onError(err, rule, idx));
+					.catch((err) => onError(err, rule, idx))
+					.finally(() => {
+						pendingCount.current--;
+						if (pendingCount.current === 0) setProcessing(false);
+					});
 			}
 		}
 	}, [items]);
+
+	return { processing };
 };

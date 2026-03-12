@@ -211,6 +211,99 @@ suite('useSagaFormCore', () => {
 		assert.notEqual(result.current.values.city, 'Bob-debounced');
 	});
 
+	test('processing is false initially', async () => {
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			return useSagaFormCore(form, [cityFromName]);
+		});
+		// Before the initial saga resolves it may briefly be true; after it settles it must be false
+		await waitUntil(() => result.current.processing === false);
+		assert.isFalse(result.current.processing);
+	});
+
+	test('processing is true while a saga is in flight', async () => {
+		const slowRule: AsyncItemRule<TestForm> = [
+			async function* (current) {
+				yield delay(100);
+				return { city: current.name + '-slow' };
+			},
+			({ name }) => [name],
+		];
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			return useSagaFormCore(form, [slowRule]);
+		});
+
+		// Saga has been dispatched but not yet resolved — processing must be true
+		await waitUntil(() => result.current.processing === true);
+		assert.isTrue(result.current.processing);
+
+		// After the saga resolves, processing must go back to false
+		await waitUntil(() => result.current.processing === false, undefined, {
+			timeout: 2000,
+		});
+		assert.isFalse(result.current.processing);
+	});
+
+	test('processing stays true while multiple sagas are in flight', async () => {
+		const slowRule1: AsyncItemRule<TestForm> = [
+			async function* (current) {
+				yield delay(80);
+				return { city: current.name + '-1' };
+			},
+			({ name }) => [name],
+		];
+		const slowRule2: AsyncItemRule<TestForm> = [
+			async function* (current) {
+				yield delay(160);
+				return { city: current.name + '-2' };
+			},
+			({ name }) => [name],
+		];
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			return useSagaFormCore(form, [slowRule1, slowRule2]);
+		});
+
+		// Both sagas running — processing true
+		await waitUntil(() => result.current.processing === true);
+		// After first settles (~80ms) processing must still be true (second still running)
+		await tick(100);
+		assert.isTrue(result.current.processing);
+		// After both settle — processing false
+		await waitUntil(() => result.current.processing === false, undefined, {
+			timeout: 2000,
+		});
+		assert.isFalse(result.current.processing);
+	});
+
+	test('processing returns to false when a saga is cancelled (runner returns null)', async () => {
+		const slowRule: AsyncItemRule<TestForm> = [
+			async function* (current) {
+				yield delay(200);
+				return { city: current.name + '-slow' };
+			},
+			({ name }) => [name],
+		];
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			return useSagaFormCore(form, [slowRule]);
+		});
+
+		// Initial saga in flight
+		await waitUntil(() => result.current.processing === true);
+		// Trigger a new dep change — cancels previous saga, starts a new one
+		result.current.onChange({ name: 'Bob' });
+		// Wait for the new saga to complete — processing must return to false
+		await waitUntil(() => result.current.processing === false, undefined, {
+			timeout: 2000,
+		});
+		assert.isFalse(result.current.processing);
+	});
+
 	test('cleanup — no state update after unmount', async () => {
 		const slowRule: AsyncItemRule<TestForm> = [
 			async function* (current) {

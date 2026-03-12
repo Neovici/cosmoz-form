@@ -23,6 +23,7 @@ export interface Props<T extends object> {
 
 interface Opts {
 	disabled: boolean;
+	processing: boolean;
 	progress?: Progress;
 	save$?: PromiseLike<unknown>;
 	onSave: () => void;
@@ -40,7 +41,7 @@ function useValidatedForm$<T extends object>({
 	allowEmpty,
 }: Props<T>): UseValidatedForm$<T> {
 	const form = useValidatedForm({ fields, initial, rules });
-	useSagaFormCore(form, asyncRules);
+	const { processing } = useSagaFormCore(form, asyncRules);
 	const { values, invalid } = form;
 	const [save$, setSave$] = useState<PromiseLike<unknown>>();
 	const [progress, setProgress] = useState<Progress>();
@@ -56,6 +57,7 @@ function useValidatedForm$<T extends object>({
 			[onSave, values, initial],
 		),
 		disabled,
+		processing,
 		progress,
 	};
 }

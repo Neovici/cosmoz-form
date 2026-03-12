@@ -1,6 +1,7 @@
 import '@neovici/cosmoz-spinner';
 import { component, useMemo, useRef, useState } from '@pionjs/pion';
-import { html, nothing } from 'lit-html';
+import { html } from 'lit-html';
+import { when } from 'lit-html/directives/when.js';
 
 import {
 	autocomplete,
@@ -142,6 +143,7 @@ const TakeLatestDemo = () => {
 				<span>Started: <strong>${started}</strong></span>
 				<span>Cancelled: <strong>${cancelled}</strong></span>
 				<span>Resolved: <strong>${resolved}</strong></span>
+				<span>Processing: <strong>${form.processing}</strong></span>
 			</div>
 		</div>
 	`;
@@ -163,9 +165,23 @@ type OrderForm = { supplier: string; contactEmail: string };
 
 const INITIAL: OrderForm = { supplier: '', contactEmail: '' };
 
+// The AbortSignal is passed automatically by call() as the first argument.
+// Pass it to fetch() to cancel in-flight requests when the saga is superseded.
+const fetchContactEmail = async (
+  signal: AbortSignal,
+  supplier: string,
+): Promise<string> => {
+  const res = await fetch(
+    \`/api/contacts?supplier=\${encodeURIComponent(supplier)}\`,
+    { signal },
+  );
+  const data = await res.json();
+  return data.email;
+};
+
 // Async rule — fetches contact email for the selected supplier.
 // Switching supplier mid-flight cancels the previous fetch;
-// only the final selection's result appears (takeLates / switchMap).
+// only the final selection's result appears (takeLatest / switchMap).
 const emailRule: AsyncItemRule<OrderForm> = [
   async function* (current) {
     if (!current.supplier) return { contactEmail: '' };
@@ -175,7 +191,12 @@ const emailRule: AsyncItemRule<OrderForm> = [
   },
   ({ supplier }) => [supplier],
   // No runner specified — defaults to makeTakeLatestRunner.
-];`,
+];
+
+// form.processing is true while any async saga is in flight.
+// Use it to disable a save button or show a global spinner.
+const form = useValidatedForm$({ fields, initial, asyncRules: [emailRule] });
+// form.processing → true while fetching, false when settled`,
 		},
 	},
 };
@@ -229,9 +250,10 @@ const QUOTE_FIELDS = [
 		label: 'Unit price (€)',
 		disabled: true,
 		suffix: (_: unknown, values: QuoteForm) =>
-			values._pricingLoading
-				? html`<cosmoz-spinner></cosmoz-spinner>`
-				: nothing,
+			when(
+				values._pricingLoading,
+				() => html`<cosmoz-spinner></cosmoz-spinner>`,
+			),
 	},
 	{
 		id: 'total' as const,
@@ -293,6 +315,7 @@ const DebounceDemo = () => {
 				<span>Started: <strong>${started}</strong></span>
 				<span>Resolved: <strong>${resolved}</strong></span>
 				<span>In flight: <strong>${inFlight}</strong></span>
+				<span>Processing: <strong>${form.processing}</strong></span>
 			</div>
 		</div>
 	`;
@@ -318,6 +341,18 @@ type QuoteForm = {
 };
 
 const INITIAL: QuoteForm = { quantity: 1, unitPrice: 0, total: 0, _pricingLoading: false };
+
+// The AbortSignal is passed automatically by call() as the first argument.
+// Pass it to fetch() to cancel in-flight requests when the debounce runner
+// discards a superseded saga.
+const fetchUnitPrice = async (
+  signal: AbortSignal,
+  quantity: number,
+): Promise<number> => {
+  const res = await fetch(\`/api/pricing?quantity=\${quantity}\`, { signal });
+  const data = await res.json();
+  return data.unitPrice;
+};
 
 // Sync rule — total updates instantly whenever quantity or unitPrice changes
 const totalRule: ItemRule<QuoteForm> = [
@@ -347,8 +382,12 @@ const unitPriceField = {
   label: 'Unit price (€)',
   disabled: true,
   suffix: (_, values) =>
-    values._pricingLoading ? html\`<cosmoz-spinner></cosmoz-spinner>\` : nothing,
-};`,
+    when(values._pricingLoading, () => html\`<cosmoz-spinner></cosmoz-spinner>\`),
+};
+
+// form.processing is true while any async saga is in flight.
+const form = useValidatedForm$({ fields, initial, asyncRules: [pricingRule] });
+// form.processing → true while fetching, false when settled`,
 		},
 	},
 };

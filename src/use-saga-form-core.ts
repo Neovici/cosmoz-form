@@ -1,4 +1,4 @@
-import { useEffect, useRef } from '@pionjs/pion';
+import { useEffect, useRef, useState } from '@pionjs/pion';
 import type { AsyncItemRule, SagaRunner } from './async-rule';
 import { makeTakeLatestRunner } from './make-take-latest-runner';
 import type { UseForm } from './use-form-core';
@@ -13,7 +13,8 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
 
 /**
  * Composes with UseForm<T> to add async saga rules.
- * Returns the same UseForm<T> — no new fields (YAGNI).
+ * Returns UseForm<T> & { processing } where processing is true while any
+ * async saga is in flight.
  *
  * Async patches call onChange(patch, false) — they do not mark the form touched.
  * Intermediate loading patches (from yield loading(...)) go through applyRules
@@ -21,13 +22,13 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  *
  * Usage:
  *   const form = useValidatedForm({ fields, initial, rules });
- *   useSagaFormCore(form, asyncRules);
+ *   const { processing } = useSagaFormCore(form, asyncRules);
  */
 export const useSagaFormCore = <T extends object>(
 	form: UseForm<T>,
 	asyncRules: readonly AsyncItemRule<T>[] | undefined,
 	opts?: { onError?: (err: unknown, rule: AsyncItemRule<T>) => void },
-): UseForm<T> => {
+): UseForm<T> & { processing: boolean } => {
 	const onError = opts?.onError ?? DEFAULT_ON_ERROR;
 
 	// Always-live ref — updated on every render, read by getState closures
@@ -38,6 +39,11 @@ export const useSagaFormCore = <T extends object>(
 	const runnersRef = useRef(new Map<AsyncItemRule<T>, SagaRunner<T>>());
 	const prevDepsRef = useRef(new Map<AsyncItemRule<T>, unknown[]>());
 	const prevItemRef = useRef(new Map<AsyncItemRule<T>, T>());
+
+	// pendingCount tracks in-flight sagas without causing re-renders itself.
+	// processing state is updated only on 0→1 and 1→0 transitions.
+	const pendingCount = useRef(0);
+	const [processing, setProcessing] = useState(false);
 
 	// Cleanup: cancel all in-flight sagas on unmount
 	useEffect(
@@ -72,6 +78,9 @@ export const useSagaFormCore = <T extends object>(
 
 			const runner = runnersRef.current.get(rule)!;
 
+			pendingCount.current++;
+			if (pendingCount.current === 1) setProcessing(true);
+
 			runner
 				.run(
 					sagaFn(form.values, old, undefined, undefined),
@@ -83,9 +92,13 @@ export const useSagaFormCore = <T extends object>(
 						form.onChange(result, false); // final: no touch
 					}
 				})
-				.catch((err) => onError(err, rule));
+				.catch((err) => onError(err, rule))
+				.finally(() => {
+					pendingCount.current--;
+					if (pendingCount.current === 0) setProcessing(false);
+				});
 		}
 	}, [form.values]);
 
-	return form;
+	return { ...form, processing };
 };
