@@ -156,6 +156,7 @@ TakeLatest.storyName = 'TakeLatest — supplier contact email';
 TakeLatest.parameters = {
 	docs: {
 		source: {
+			language: 'typescript',
 			code: `\
 // Form shape
 type OrderForm = { supplier: string; contactEmail: string };
@@ -306,6 +307,7 @@ Debounce.storyName = 'Debounce — quantity → unit price + total';
 Debounce.parameters = {
 	docs: {
 		source: {
+			language: 'typescript',
 			code: `\
 // Form shape — _pricingLoading is a UI-only flag, hidden from the rendered form
 type QuoteForm = {
