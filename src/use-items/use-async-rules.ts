@@ -19,10 +19,9 @@ const ensureRuleTracking = <T>(
 	runnersRef: { current: RunnerMap<T> },
 	prevDepsRef: { current: DepsMap<T> },
 ) => {
-	if (!runnersRef.current.has(rule)) {
-		runnersRef.current.set(rule, new Map());
-		prevDepsRef.current.set(rule, new Map());
-	}
+	if (runnersRef.current.has(rule)) return;
+	runnersRef.current.set(rule, new Map());
+	prevDepsRef.current.set(rule, new Map());
 };
 
 /**
