@@ -36,10 +36,10 @@ export const loading = <T>(patch: Partial<T>): LoadingEffect<T> => ({
 	patch,
 });
 
-export const call = <T>(
-	fn: (signal: AbortSignal, ...args: unknown[]) => Promise<T>,
-	...args: unknown[]
-): CallEffect => ({ _tag: 'call', fn, args });
+export const call = <T, Args extends unknown[]>(
+	fn: (signal: AbortSignal, ...args: Args) => Promise<T>,
+	...args: Args
+): CallEffect => ({ _tag: 'call', fn: fn as CallEffect['fn'], args });
 
 export const delay = (ms: number): DelayEffect => ({ _tag: 'delay', ms });
 

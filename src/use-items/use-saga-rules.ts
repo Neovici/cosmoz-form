@@ -81,7 +81,7 @@ export const useSagaRules = <T extends object>(
 			for (const [idx, item] of items.entries()) {
 				const runnersForRule = runnersRef.current.get(rule)!;
 				if (!runnersForRule.has(idx)) {
-					runnersForRule.set(idx, runnerFactory<T>());
+					runnersForRule.set(idx, runnerFactory());
 				}
 
 				const deps = depsFn(item, idx);

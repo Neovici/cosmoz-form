@@ -55,7 +55,7 @@ export const useSagaFormCore = <T extends object>(
 			const [sagaFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
 
 			if (!runnersRef.current.has(rule)) {
-				runnersRef.current.set(rule, runnerFactory<T>());
+				runnersRef.current.set(rule, runnerFactory());
 			}
 
 			const deps = depsFn(form.values);
