@@ -11,7 +11,7 @@
  * - `index` — item index when the rule is running inside `useAsyncRules`;
  *   `undefined` when running inside `useAsyncFormCore`.
  */
-export type AsyncContext<T> = {
+export type AsyncOpts<T> = {
 	update: (patch: Partial<T>) => void;
 	signal: AbortSignal;
 	index?: number;
@@ -36,7 +36,7 @@ export type AsyncContext<T> = {
  */
 export type SagaCompute<T> = (
 	values: T,
-	ctx: AsyncContext<T>,
+	ctx: AsyncOpts<T>,
 ) => Promise<Partial<T>>;
 
 /** Callback invoked with intermediate partial patches during a rule run. */

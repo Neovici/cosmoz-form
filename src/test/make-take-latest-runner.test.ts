@@ -1,7 +1,7 @@
 import { assert } from '@open-wc/testing';
 import { spy } from 'sinon';
 
-import { delay, type AsyncContext, type SagaCompute } from '../async-rule';
+import { delay, type AsyncOpts, type SagaCompute } from '../async-rule';
 import { makeTakeLatestRunner } from '../make-take-latest-runner';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -125,7 +125,7 @@ suite('makeTakeLatestRunner', () => {
 		const runner = makeTakeLatestRunner<S>();
 		let receivedIndex: number | undefined;
 
-		const captureIndex: SagaCompute<S> = async (_, ctx: AsyncContext<S>) => {
+		const captureIndex: SagaCompute<S> = async (_, ctx: AsyncOpts<S>) => {
 			receivedIndex = ctx.index;
 			return {};
 		};

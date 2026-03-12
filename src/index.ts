@@ -22,8 +22,8 @@ export * from './add';
 // Async rules
 export { delay } from './async-rule';
 export type {
-	AsyncContext,
 	AsyncItemRule,
+	AsyncOpts,
 	OnIntermediate,
 	SagaCompute,
 	SagaRunner,
