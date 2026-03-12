@@ -1,54 +1,64 @@
-// ── Options ───────────────────────────────────────────────────────────────────
-
 /**
  * Options passed to every async rule function.
- *
- * - `update(patch)` — emit an intermediate partial patch immediately
- *   (replaces the old `yield loading(patch)` pattern).
- * - `signal` — AbortSignal that fires when the runner cancels this invocation
- *   (takeLatest supersession, debounce discard, or unmount).
- *   Pass it to `fetch()`, `delay()`, or any other cancellable operation.
- * - `index` — item index when the rule is running inside `useAsyncRules`;
- *   `undefined` when running inside `useAsyncFormCore`.
+ * @template T - the form/item value type
  */
 export type AsyncOpts<T> = {
+	/** Emit an intermediate partial patch immediately (e.g. a loading state). */
 	update: (patch: Partial<T>) => void;
+	/**
+	 * AbortSignal that fires when the runner cancels this invocation
+	 * (takeLatest supersession, debounce discard, or unmount).
+	 * Pass to `fetch()`, `delay()`, or any other cancellable operation.
+	 */
 	signal: AbortSignal;
+	/**
+	 * Item index when running inside `useAsyncRules`.
+	 * `undefined` when running inside `useAsyncFormCore`.
+	 */
 	index?: number;
 };
-
-// ── Rule types ────────────────────────────────────────────────────────────────
 
 /**
  * Plain async function that computes a partial state update.
  *
- * `values` is a SNAPSHOT at invocation time.
- * Use `ctx.signal` to cancel in-flight work when the runner supersedes this call.
- * Use `ctx.update(patch)` to push intermediate (loading) patches before returning.
+ * `values` is a snapshot at invocation time.
  *
- * Example:
- *   async function myRule(values, { update, signal }) {
- *     if (!values.supplierId) return { contactEmail: '' };
- *     update({ contactEmail: 'loading…' });
- *     const email = await fetchEmail(signal, values.supplierId);
- *     return { contactEmail: email };
- *   }
+ * @template T - the form/item value type
+ * @param values - snapshot of current form/item values
+ * @param opts - cancellation signal, intermediate update callback, and item index
+ * @returns a partial patch to merge into state
+ * @example
+ * async function myRule(values, { update, signal }) {
+ *   if (!values.supplierId) return { contactEmail: '' };
+ *   update({ contactEmail: 'loading…' });
+ *   const email = await fetchEmail(signal, values.supplierId);
+ *   return { contactEmail: email };
+ * }
  */
 export type AsyncRule<T> = (
 	values: T,
-	ctx: AsyncOpts<T>,
+	opts: AsyncOpts<T>,
 ) => Promise<Partial<T>>;
 
-/** Callback invoked with intermediate partial patches during a rule run. */
+/**
+ * Callback invoked with intermediate partial patches during a rule run.
+ * @param patch - the intermediate partial state to apply immediately
+ */
 export type OnIntermediate<T> = (patch: Partial<T>) => void;
 
-/** Shared interface for all async runner strategies. */
+/**
+ * Shared interface for all async runner strategies.
+ * @template T - the form/item value type
+ */
 export type AsyncRunner<T> = {
 	/**
 	 * Run `fn` with `values` as input.
-	 * `onIntermediate` is wired to `ctx.update`.
-	 * `opts.index` is forwarded to `ctx.index`.
-	 * Returns the fn's resolved patch, or null if cancelled.
+	 *
+	 * @param fn - the async rule to execute
+	 * @param values - snapshot of current values passed to `fn`
+	 * @param onIntermediate - wired to `opts.update` inside the rule
+	 * @param opts - optional `index` forwarded to `opts.index` inside the rule
+	 * @returns the resolved patch from `fn`, or `null` if cancelled
 	 */
 	run: (
 		fn: AsyncRule<T>,
@@ -56,22 +66,29 @@ export type AsyncRunner<T> = {
 		onIntermediate: OnIntermediate<T>,
 		opts?: { index?: number },
 	) => Promise<Partial<T> | null>;
+	/** Cancel the current in-flight run, resolving it as `null`. */
 	cancel: () => void;
 };
 
+/**
+ * Tuple describing a single async rule for use with `useAsyncRules`.
+ *
+ * @template T - the form/item value type
+ */
 export type AsyncItemRule<T> = readonly [
 	ruleFn: AsyncRule<T>,
 	depsFn: (current: T, index?: number) => unknown[],
 	runner?: () => AsyncRunner<T>,
 ];
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
 /**
- * Cancellable delay.  Rejects with AbortError if `signal` fires before `ms`.
+ * Cancellable delay. Rejects with `AbortError` if `signal` fires before `ms` elapses.
  *
- * Usage:
- *   await delay(ctx.signal, 400);
+ * @param signal - AbortSignal to cancel the delay early
+ * @param ms - milliseconds to wait
+ * @returns a Promise that resolves after `ms`, or rejects with `AbortError` if cancelled
+ * @example
+ * await delay(opts.signal, 400);
  */
 export const delay = (signal: AbortSignal, ms: number): Promise<void> =>
 	new Promise<void>((resolve, reject) => {
