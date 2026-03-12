@@ -1,7 +1,7 @@
-// ── Context ───────────────────────────────────────────────────────────────────
+// ── Options ───────────────────────────────────────────────────────────────────
 
 /**
- * Context passed to every async rule function.
+ * Options passed to every async rule function.
  *
  * - `update(patch)` — emit an intermediate partial patch immediately
  *   (replaces the old `yield loading(patch)` pattern).
