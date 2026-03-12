@@ -1,32 +1,32 @@
-import{e as j,i as G,a as H,o as $,l as V,r as Y,b as B,c as v,u as R,d as A,f as T,g as P,h as k,n as J}from"./inline-file-BN9Xcqv3.js";import{E,b as m}from"./iframe-DfHJNfK4.js";import"./preload-helper-PPVm8Dsz.js";const K={},W=j(class extends G{constructor(){super(...arguments),this.ot=K}render(t,e){return e()}update(t,[e,n]){if(Array.isArray(e)){if(Array.isArray(this.ot)&&this.ot.length===e.length&&e.every((r,a)=>r===this.ot[a]))return E}else if(this.ot===e)return E;return this.ot=Array.isArray(e)?Array.from(e):e,this.render(e,n)}}),X=H(({id:t,label:e,noLabelFloat:n,alwaysFloatLabel:r,error:a,warning:i,suffix:l,disabled:o,onChange:c,options:s,limit:u,min:y,textProperty:f,valueProperty:x,value:h,values:b,itemRenderer:S,keepOpened:L,keepQuery:D,placeholder:F,wrap:O,showSingle:C,preserveOrder:_,title:M,textual:N,description:Q,externalSearch:U,...z})=>m`<cosmoz-autocomplete
+import{e as z,i as j,a as G,o as $,l as H,r as V,b as Y,c as v,u as R,d as A,f as T,g as k,h as q,n as B}from"./inline-file-BL0WbXwi.js";import{E,b as m}from"./iframe-B8Wq90eE.js";import"./preload-helper-PPVm8Dsz.js";const J={},K=z(class extends j{constructor(){super(...arguments),this.ot=J}render(t,e){return e()}update(t,[e,n]){if(Array.isArray(e)){if(Array.isArray(this.ot)&&this.ot.length===e.length&&e.every((r,a)=>r===this.ot[a]))return E}else if(this.ot===e)return E;return this.ot=Array.isArray(e)?Array.from(e):e,this.render(e,n)}}),W=G(({id:t,label:e,noLabelFloat:n,alwaysFloatLabel:r,error:a,warning:i,suffix:l,disabled:o,onChange:c,options:s,limit:u,min:y,textProperty:f,valueProperty:w,value:h,values:b,itemRenderer:x,keepOpened:S,keepQuery:L,placeholder:D,wrap:F,showSingle:O,preserveOrder:C,title:_,textual:M,description:N,externalSearch:Q,...U})=>m`<cosmoz-autocomplete
 			class="input input-autocomplete"
 			?data-warning=${!!i}
 			name=${t}
 			?disabled=${o}
-			?wrap=${O}
+			?wrap=${F}
 			?no-label-float=${n}
 			?always-float-label=${r}
 			?invalid=${!!a}
-			?keep-opened=${!!L}
-			?keep-query=${!!D}
-			?show-single=${!!C}
-			?preserve-order=${!!_}
-			.placeholder=${F}
-			.itemRenderer=${$(S)}
+			?keep-opened=${!!S}
+			?keep-query=${!!L}
+			?show-single=${!!O}
+			?preserve-order=${!!C}
+			.placeholder=${D}
+			.itemRenderer=${$(x)}
 			.errorMessage=${a}
 			.label=${e}
-			.value=${V(h)}
-			.source=${W([s,h,b],()=>typeof s=="function"?g=>s({...z,...g,value:h,values:b}):s)}
+			.value=${H(h)}
+			.source=${K([s,h,b],()=>typeof s=="function"?g=>s({...U,...g,value:h,values:b}):s)}
 			.textProperty=${f}
-			.valueProperty=${x}
+			.valueProperty=${w}
 			.limit=${u}
 			.min=${y}
-			.title=${$(M)}
-			.textual=${N}
+			.title=${$(_)}
+			.textual=${M}
 			.onChange=${g=>c(u===1?g?.[0]:g)}
-			?external-search=${U}
-			>${Y({suffix:l,warning:i,description:Q})}</cosmoz-autocomplete
-		>`),q=t=>({_tag:"loading",patch:t}),I=(t,...e)=>({_tag:"call",fn:t,args:e}),Z=t=>{let e=null,n=null,r=null;return{run:(a,i,l)=>new Promise((o,c)=>{r!==null&&(r.gen.return(void 0),r.resolve(null),clearTimeout(e)),r={gen:a,resolve:o,reject:c},e=setTimeout(async()=>{const{gen:s,resolve:u,reject:y}=r;r=null,e=null,n=new AbortController;try{u(await B(s,n.signal,i,l))}catch(f){f instanceof DOMException&&f.name==="AbortError"?u(null):y(f)}finally{n=null}},t)}),cancel:()=>{e!==null&&(clearTimeout(e),e=null),r!==null&&(r.gen.return(void 0),r.resolve(null),r=null),n?.abort(),n=null}}},w=m`
+			?external-search=${Q}
+			>${V({suffix:l,warning:i,description:N})}</cosmoz-autocomplete
+		>`),X=t=>({_tag:"loading",patch:t}),I=(t,...e)=>({_tag:"call",fn:t,args:e}),Z=t=>{let e=null,n=null,r=null;return{run:(a,i,l)=>new Promise((o,c)=>{r!==null&&(r.gen.return(void 0),r.resolve(null),clearTimeout(e)),r={gen:a,resolve:o,reject:c},e=setTimeout(async()=>{const{gen:s,resolve:u,reject:y}=r;r=null,e=null,n=new AbortController;try{u(await Y(s,n.signal,i,l))}catch(f){f instanceof DOMException&&f.name==="AbortError"?u(null):y(f)}finally{n=null}},t)}),cancel:()=>{e!==null&&(clearTimeout(e),e=null),r!==null&&(r.gen.return(void 0),r.resolve(null),r=null),n?.abort(),n=null}}},P=m`
     <style>
         .story-wrap {
             font-family: sans-serif;
@@ -54,10 +54,10 @@ import{e as j,i as G,a as H,o as $,l as V,r as Y,b as B,c as v,u as R,d as A,f a
             color: #1a56db;
         }
     </style>
-`,ee={supplier:"",contactEmail:""},te=["Acme Corp","Globex","Initech"],re={"Acme Corp":"contact@acme.example",Globex:"hello@globex.example",Initech:"info@initech.example"},ne=async(t,e)=>(await new Promise((n,r)=>{const a=setTimeout(n,3e3);t.addEventListener("abort",()=>{clearTimeout(a),r(new DOMException("Aborted","AbortError"))})}),re[e]??""),se=[{id:"supplier",label:"Supplier",input:X,options:te,limit:1,showSingle:!0,preserveOrder:!0},{id:"contactEmail",label:"Contact email",disabled:!0}],ae=()=>{const t=R({started:0,cancelled:0,resolved:0}),[,e]=A(0),n=T(()=>[async function*(o){if(!o.supplier)return{contactEmail:""};t.current.started++,e(s=>s+1),yield q({contactEmail:"loading…"});const c=yield I((s,u)=>(s.addEventListener("abort",()=>{t.current.cancelled++,e(y=>y+1)},{once:!0}),ne(s,u)),o.supplier);return t.current.resolved++,e(s=>s+1),{contactEmail:c}},({supplier:o})=>[o]],[]),r=P({fields:se,initial:ee,asyncRules:[n]}),{started:a,cancelled:i,resolved:l}=t.current;return m`
-        ${w}
+`,ee={supplier:"",contactEmail:""},te=["Acme Corp","Globex","Initech"],re={"Acme Corp":"contact@acme.example",Globex:"hello@globex.example",Initech:"info@initech.example"},ne=async(t,e)=>(await new Promise((n,r)=>{const a=setTimeout(n,3e3);t.addEventListener("abort",()=>{clearTimeout(a),r(new DOMException("Aborted","AbortError"))})}),re[e]??""),se=[{id:"supplier",label:"Supplier",input:W,options:te,limit:1,showSingle:!0,preserveOrder:!0},{id:"contactEmail",label:"Contact email",disabled:!0}],ae=()=>{const t=R({started:0,cancelled:0,resolved:0}),[,e]=A(0),n=T(()=>[async function*(o){if(!o.supplier)return{contactEmail:""};t.current.started++,e(s=>s+1),yield X({contactEmail:"loading…"});const c=yield I((s,u)=>(s.addEventListener("abort",()=>{t.current.cancelled++,e(y=>y+1)},{once:!0}),ne(s,u)),o.supplier);return t.current.resolved++,e(s=>s+1),{contactEmail:c}},({supplier:o})=>[o]],[]),r=k({fields:se,initial:ee,asyncRules:[n]}),{started:a,cancelled:i,resolved:l}=t.current;return m`
+        ${P}
         <div class="story-wrap">
-            ${k(r)}
+            ${q(r)}
             <p class="story-hint">
                 Select a supplier, then quickly select a different one before 3 s — only
                 the final selection's email appears. The first fetch is cancelled.
@@ -85,10 +85,10 @@ const emailRule: AsyncItemRule<OrderForm> = [
   },
   ({ supplier }) => [supplier],
   // No runner specified — defaults to makeTakeLatestRunner.
-];`}}};const oe={quantity:1,unitPrice:0,total:0},ie=async(t,e)=>(await new Promise((n,r)=>{const a=setTimeout(n,1e3);t.addEventListener("abort",()=>{clearTimeout(a),r(new DOMException("Aborted","AbortError"))})}),e>=50?8:e>=20?9.5:e>=10?11:13.5),le=[{id:"quantity",label:"Quantity",input:J,min:1,max:100,step:"1"},{id:"unitPrice",label:"Unit price (€)",disabled:!0},{id:"total",label:"Total (€)",disabled:!0,rules:[[({quantity:t,unitPrice:e})=>({total:Math.round(t*e*100)/100}),({quantity:t,unitPrice:e})=>[t,e]]]}],ce=()=>{const t=R({started:0,resolved:0}),[,e]=A(0),n=T(()=>[async function*(o){if(!o.quantity)return{unitPrice:0};t.current.started++,e(s=>s+1),yield q({unitPrice:0});const c=yield I(ie,o.quantity);return t.current.resolved++,e(s=>s+1),{unitPrice:c}},({quantity:o})=>[o],()=>Z(500)],[]),r=P({fields:le,initial:oe,asyncRules:[n]}),{started:a,resolved:i}=t.current,l=a-i;return m`
-        ${w}
+];`}}};const oe={quantity:1,unitPrice:0,total:0},ie=async(t,e)=>(await new Promise((n,r)=>{const a=setTimeout(n,1e3);t.addEventListener("abort",()=>{clearTimeout(a),r(new DOMException("Aborted","AbortError"))})}),e>=50?8:e>=20?9.5:e>=10?11:13.5),le=[{id:"quantity",label:"Quantity",input:B,min:1,max:100,step:"1"},{id:"unitPrice",label:"Unit price (€)",disabled:!0},{id:"total",label:"Total (€)",disabled:!0,rules:[[({quantity:t,unitPrice:e})=>({total:Math.round(t*e*100)/100}),({quantity:t,unitPrice:e})=>[t,e]]]}],ce=()=>{const t=R({started:0,resolved:0}),[,e]=A(0),n=T(()=>[async function*(o){if(!o.quantity)return{unitPrice:0};t.current.started++,e(s=>s+1);const c=yield I(ie,o.quantity);return t.current.resolved++,e(s=>s+1),{unitPrice:c}},({quantity:o})=>[o],()=>Z(500)],[]),r=k({fields:le,initial:oe,asyncRules:[n]}),{started:a,resolved:i}=t.current,l=a-i;return m`
+        ${P}
         <div class="story-wrap">
-            ${k(r)}
+            ${q(r)}
             <p class="story-hint">
                 Increment the quantity — the price lookup only fires 500 ms after you
                 stop. Rapid changes are debounced. Total updates instantly via a sync
@@ -118,7 +118,6 @@ const totalRule: ItemRule<QuoteForm> = [
 const pricingRule: AsyncItemRule<QuoteForm> = [
   async function* (current) {
     if (!current.quantity) return { unitPrice: 0 };
-    yield loading<QuoteForm>({ unitPrice: 0 });
     const price = yield call(fetchUnitPrice, current.quantity);
     return { unitPrice: price as number };
   },
