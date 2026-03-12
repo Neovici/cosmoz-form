@@ -238,7 +238,6 @@ const DebounceDemo = () => {
 				if (!current.quantity) return { unitPrice: 0 };
 				statsRef.current.started++;
 				setTick((t) => t + 1);
-				yield loading<QuoteForm>({ unitPrice: 0 });
 				const price = yield call(fetchUnitPrice, current.quantity);
 				statsRef.current.resolved++;
 				setTick((t) => t + 1);
@@ -305,7 +304,6 @@ const totalRule: ItemRule<QuoteForm> = [
 const pricingRule: AsyncItemRule<QuoteForm> = [
   async function* (current) {
     if (!current.quantity) return { unitPrice: 0 };
-    yield loading<QuoteForm>({ unitPrice: 0 });
     const price = yield call(fetchUnitPrice, current.quantity);
     return { unitPrice: price as number };
   },
