@@ -123,7 +123,7 @@ suite('useAsyncRules (items)', () => {
 		assert.notEqual(result.current.items[0].derived, 'A-slow-0');
 	});
 
-	test('intermediate ctx.update patch applied to correct item only', async () => {
+	test('intermediate opts.update patch applied to correct item only', async () => {
 		const loadingRule: AsyncItemRule<TestItem> = [
 			async (current, { update, signal, index }) => {
 				update({ derived: 'loading-' + index });

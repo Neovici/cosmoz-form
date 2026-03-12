@@ -87,7 +87,7 @@ suite('useAsyncFormCore', () => {
 		assert.notEqual(result.current.values.city, 'Alice-slow');
 	});
 
-	test('ctx.update() fires intermediate patch before rule completes', async () => {
+	test('opts.update() fires intermediate patch before rule completes', async () => {
 		const loadingRule: AsyncItemRule<TestForm> = [
 			async (current, { update, signal }) => {
 				update({ city: 'loading...' });

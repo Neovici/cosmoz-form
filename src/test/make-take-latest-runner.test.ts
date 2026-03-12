@@ -99,7 +99,7 @@ suite('makeTakeLatestRunner', () => {
 		assert.isNull(result);
 	});
 
-	test('ctx.signal is the live AbortController signal', async () => {
+	test('opts.signal is the live AbortController signal', async () => {
 		let receivedSignal: AbortSignal | undefined;
 
 		const captureSignal: AsyncRule<S> = async (_, { signal }) => {
@@ -111,7 +111,7 @@ suite('makeTakeLatestRunner', () => {
 		assert.instanceOf(receivedSignal, AbortSignal);
 	});
 
-	test('ctx.update calls onIntermediate immediately', async () => {
+	test('opts.update calls onIntermediate immediately', async () => {
 		const patches: Partial<S>[] = [];
 
 		const withUpdate: AsyncRule<S> = async (_, { update }) => {
@@ -124,11 +124,11 @@ suite('makeTakeLatestRunner', () => {
 		assert.deepEqual(result, { status: 'done' });
 	});
 
-	test('ctx.index is forwarded from opts', async () => {
+	test('opts.index is forwarded from run opts', async () => {
 		let receivedIndex: number | undefined;
 
-		const captureIndex: AsyncRule<S> = async (_, ctx: AsyncOpts<S>) => {
-			receivedIndex = ctx.index;
+		const captureIndex: AsyncRule<S> = async (_, opts: AsyncOpts<S>) => {
+			receivedIndex = opts.index;
 			return {};
 		};
 

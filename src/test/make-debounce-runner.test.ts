@@ -132,7 +132,7 @@ suite('makeDebounceRunner', () => {
 		}
 	});
 
-	test('ctx.update calls onIntermediate during fn execution', async () => {
+	test('opts.update calls onIntermediate during fn execution', async () => {
 		const patches: Partial<S>[] = [];
 
 		const withUpdate: AsyncRule<S> = async (_, { update }) => {

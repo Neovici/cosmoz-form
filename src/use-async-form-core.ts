@@ -17,7 +17,7 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  * async rule is in flight.
  *
  * Async patches call onChange(patch, false) — they do not mark the form touched.
- * Intermediate patches (from ctx.update(...)) go through onChange like any other
+ * Intermediate patches (from opts.update(...)) go through onChange like any other
  * patch — sync rules cascade on top of them, which is expected.
  *
  * Usage:

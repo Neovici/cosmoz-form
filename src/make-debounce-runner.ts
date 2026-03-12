@@ -33,9 +33,13 @@ export const makeDebounceRunner = <T>(ms: number): DebounceRunner<T> => {
 					pending = null;
 					timer = null;
 					ac = new AbortController();
-					const ctx = { update: onIntermediate, signal: ac.signal, index };
+					const asyncOpts = {
+						update: onIntermediate,
+						signal: ac.signal,
+						index,
+					};
 					try {
-						res(await f(v, ctx));
+						res(await f(v, asyncOpts));
 					} catch (e) {
 						if (e instanceof DOMException && e.name === 'AbortError') res(null);
 						else rej(e);

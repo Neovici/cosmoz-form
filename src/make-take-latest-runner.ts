@@ -9,13 +9,13 @@ export const makeTakeLatestRunner = <T>(): TakeLatestRunner<T> => {
 		run: async (fn, values, onIntermediate, opts) => {
 			ac?.abort(); // cancel previous (takeLatest / switchMap)
 			ac = new AbortController();
-			const ctx = {
+			const asyncOpts = {
 				update: onIntermediate,
 				signal: ac.signal,
 				index: opts?.index,
 			};
 			try {
-				return await fn(values, ctx);
+				return await fn(values, asyncOpts);
 			} catch (e) {
 				// AbortError from delay() or fetch() when cancelled — not a real error
 				if (e instanceof DOMException && e.name === 'AbortError') return null;
