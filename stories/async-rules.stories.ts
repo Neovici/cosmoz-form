@@ -386,7 +386,12 @@ const unitPriceField = {
 };
 
 // form.processing is true while any async saga is in flight.
-const form = useValidatedForm$({ fields, initial, asyncRules: [pricingRule] });
+const form = useValidatedForm$({
+  fields,
+  initial,
+  rules: [totalRule],
+  asyncRules: [pricingRule],
+});
 // form.processing → true while fetching, false when settled`,
 		},
 	},
