@@ -30,5 +30,9 @@ export type {
 	SagaCompute,
 	SelectEffect,
 } from './async-rule';
+export { makeDebounceRunner } from './make-debounce-runner';
+export type { DebounceRunner } from './make-debounce-runner';
+export { makeTakeLatestRunner } from './make-take-latest-runner';
+export type { TakeLatestRunner } from './make-take-latest-runner';
 export { useSagaRules } from './use-items/use-saga-rules';
 export { useSagaFormCore } from './use-saga-form-core';
