@@ -3,6 +3,7 @@ import { assert, waitUntil } from '@open-wc/testing';
 import { spy } from 'sinon';
 
 import { delay, loading, select, type AsyncItemRule } from '../async-rule';
+import { makeDebounceRunner } from '../make-debounce-runner';
 import { touched } from '../touch';
 import { useForm } from '../use-form';
 import { useSagaFormCore } from '../use-saga-form-core';
@@ -175,6 +176,39 @@ suite('useSagaFormCore', () => {
 		assert.instanceOf(onError.args[0][0], Error);
 		assert.equal((onError.args[0][0] as Error).message, 'saga boom');
 		assert.equal(onError.args[0][1], boom);
+	});
+
+	test('uses runner factory from the rule — debounce semantics observed', async () => {
+		const debounceRule: AsyncItemRule<TestForm> = [
+			// eslint-disable-next-line require-yield
+			async function* (current) {
+				return { city: current.name + '-debounced' };
+			},
+			({ name }) => [name],
+			() => makeDebounceRunner(100),
+		];
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			useSagaFormCore(form, [debounceRule]);
+			return form;
+		});
+
+		// Two rapid dep changes within the 100ms debounce window
+		result.current.onChange({ name: 'Bob' });
+		await tick(30); // within debounce window
+		result.current.onChange({ name: 'Carol' });
+
+		// Wait long enough for the debounce to fire and saga to complete
+		await waitUntil(
+			() => result.current.values.city !== '',
+			'city should be set',
+			{ timeout: 2000 },
+		);
+
+		// Only Carol's saga should have applied — Bob's was debounced away
+		assert.equal(result.current.values.city, 'Carol-debounced');
+		assert.notEqual(result.current.values.city, 'Bob-debounced');
 	});
 
 	test('cleanup — no state update after unmount', async () => {

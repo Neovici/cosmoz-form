@@ -1,5 +1,5 @@
 import { useEffect, useRef } from '@pionjs/pion';
-import type { AsyncItemRule } from './async-rule';
+import type { AsyncItemRule, SagaRunner } from './async-rule';
 import { makeTakeLatestRunner } from './make-take-latest-runner';
 import type { UseForm } from './use-form-core';
 
@@ -35,9 +35,7 @@ export const useSagaFormCore = <T extends object>(
 	valuesRef.current = form.values;
 
 	// Refs persist across renders without triggering re-renders
-	const runnersRef = useRef(
-		new Map<AsyncItemRule<T>, ReturnType<typeof makeTakeLatestRunner<T>>>(),
-	);
+	const runnersRef = useRef(new Map<AsyncItemRule<T>, SagaRunner<T>>());
 	const prevDepsRef = useRef(new Map<AsyncItemRule<T>, unknown[]>());
 	const prevItemRef = useRef(new Map<AsyncItemRule<T>, T>());
 
@@ -54,10 +52,10 @@ export const useSagaFormCore = <T extends object>(
 		if (!asyncRules?.length) return;
 
 		for (const rule of asyncRules) {
-			const [sagaFn, depsFn] = rule;
+			const [sagaFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
 
 			if (!runnersRef.current.has(rule)) {
-				runnersRef.current.set(rule, makeTakeLatestRunner<T>());
+				runnersRef.current.set(rule, runnerFactory<T>());
 			}
 
 			const deps = depsFn(form.values);

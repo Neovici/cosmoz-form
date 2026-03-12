@@ -1,5 +1,5 @@
 import { useEffect, useRef } from '@pionjs/pion';
-import type { AsyncItemRule } from '../async-rule';
+import type { AsyncItemRule, SagaRunner } from '../async-rule';
 import { makeTakeLatestRunner } from '../make-take-latest-runner';
 import type { UseItemsCore } from './use-items';
 
@@ -11,8 +11,7 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
 	console.error('[cosmoz-form] async rule error:', err);
 };
 
-type Runner<T> = ReturnType<typeof makeTakeLatestRunner<T>>;
-type RunnerMap<T> = Map<AsyncItemRule<T>, Map<number, Runner<T>>>;
+type RunnerMap<T> = Map<AsyncItemRule<T>, Map<number, SagaRunner<T>>>;
 type DepsMap<T> = Map<AsyncItemRule<T>, Map<number, unknown[]>>;
 type PrevMap<T> = Map<AsyncItemRule<T>, Map<number, T>>;
 
@@ -75,14 +74,14 @@ export const useSagaRules = <T extends object>(
 		}
 
 		for (const rule of asyncRules) {
-			const [sagaFn, depsFn] = rule;
+			const [sagaFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
 
 			ensureRuleTracking(rule, runnersRef, prevDepsRef, prevItemRef);
 
 			for (const [idx, item] of items.entries()) {
 				const runnersForRule = runnersRef.current.get(rule)!;
 				if (!runnersForRule.has(idx)) {
-					runnersForRule.set(idx, makeTakeLatestRunner<T>());
+					runnersForRule.set(idx, runnerFactory<T>());
 				}
 
 				const deps = depsFn(item, idx);

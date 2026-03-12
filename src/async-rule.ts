@@ -47,6 +47,21 @@ export const select = <T, R = T>(
 	selector?: (state: T) => R,
 ): SelectEffect<T> => ({ _tag: 'select', selector });
 
+// ── Runner types ──────────────────────────────────────────────────────────────
+
+/** Callback invoked with intermediate partial patches during a saga. */
+export type OnIntermediate<T> = (patch: Partial<T>) => void;
+
+/** Shared interface for all saga runner strategies. */
+export type SagaRunner<T> = {
+	run: (
+		gen: AsyncGenerator<Effect<T>, Partial<T>>,
+		onIntermediate: OnIntermediate<T>,
+		getState: () => T,
+	) => Promise<Partial<T> | null>;
+	cancel: () => void;
+};
+
 // ── Rule types ────────────────────────────────────────────────────────────────
 
 /**
@@ -72,4 +87,5 @@ export type SagaCompute<T> = (
 export type AsyncItemRule<T> = readonly [
 	sagaFn: SagaCompute<T>,
 	depsFn: (current: T, index?: number) => unknown[],
+	runner?: () => SagaRunner<T>,
 ];

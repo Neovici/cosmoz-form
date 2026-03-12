@@ -1,6 +1,6 @@
-import type { Effect } from './async-rule';
+import type { Effect, OnIntermediate } from './async-rule';
 
-export type OnIntermediate<T> = (patch: Partial<T>) => void;
+export type { OnIntermediate };
 
 /** Cancellable delay that rejects with AbortError when signal fires. */
 const abortableDelay = (ms: number, signal: AbortSignal) =>

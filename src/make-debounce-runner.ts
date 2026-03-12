@@ -1,14 +1,7 @@
-import type { Effect } from './async-rule';
-import { runSaga, type OnIntermediate } from './run-saga';
+import type { Effect, SagaRunner } from './async-rule';
+import { runSaga } from './run-saga';
 
-export type DebounceRunner<T> = {
-	run: (
-		gen: AsyncGenerator<Effect<T>, Partial<T>>,
-		onIntermediate: OnIntermediate<T>,
-		getState: () => T,
-	) => Promise<Partial<T> | null>;
-	cancel: () => void;
-};
+export type DebounceRunner<T> = SagaRunner<T>;
 
 export const makeDebounceRunner = <T>(ms: number): DebounceRunner<T> => {
 	let timer: ReturnType<typeof setTimeout> | null = null;

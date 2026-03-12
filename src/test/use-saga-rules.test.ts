@@ -3,6 +3,7 @@ import { assert, waitUntil } from '@open-wc/testing';
 import { spy } from 'sinon';
 
 import { delay, loading, select, type AsyncItemRule } from '../async-rule';
+import { makeDebounceRunner } from '../make-debounce-runner';
 import { useItems } from '../use-items';
 import { useSagaRules } from '../use-items/use-saga-rules';
 
@@ -66,7 +67,7 @@ suite('useSagaRules (items)', () => {
 
 		// Manually set derived to 'manual', then trigger a re-render without changing name/idx
 		result.current.update(0, { derived: 'manual' });
-		await tick(50);
+		await tick(50); // give saga time to NOT re-run
 		// saga should NOT have overwritten 'manual' (name didn't change)
 		assert.equal(result.current.items[0].derived, 'manual');
 	});
@@ -219,6 +220,39 @@ suite('useSagaRules (items)', () => {
 
 		result.current.update(1, { name: 'B' }); // append
 		await waitUntil(() => result.current.items[1]?.derived === 'B-1');
+	});
+
+	test('uses runner factory from the rule — debounce semantics observed', async () => {
+		const debounceRule: AsyncItemRule<TestItem> = [
+			// eslint-disable-next-line require-yield
+			async function* (current, _old, idx) {
+				return { derived: current.name + '-debounced-' + idx };
+			},
+			({ name }, idx) => [name, idx],
+			() => makeDebounceRunner(100),
+		];
+
+		const { result } = await renderHook(() => {
+			const core = useItems<TestItem>({ initial: [{ name: 'A' }] });
+			useSagaRules(core.items, [debounceRule], core.update);
+			return core;
+		});
+
+		// Two rapid dep changes within the 100ms debounce window
+		result.current.update(0, { name: 'B' });
+		await tick(30); // within debounce window
+		result.current.update(0, { name: 'C' });
+
+		// Wait for the debounce to fire and saga to complete
+		await waitUntil(
+			() => result.current.items[0]?.derived !== undefined,
+			'derived should be set',
+			{ timeout: 2000 },
+		);
+
+		// Only C's saga should have applied — B's was debounced away
+		assert.equal(result.current.items[0].derived, 'C-debounced-0');
+		assert.notEqual(result.current.items[0].derived, 'B-debounced-0');
 	});
 
 	test('no stale runner for removed item — new item at index 0 gets a fresh saga', async () => {

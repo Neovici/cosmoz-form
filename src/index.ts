@@ -27,7 +27,9 @@ export type {
 	DelayEffect,
 	Effect,
 	LoadingEffect,
+	OnIntermediate,
 	SagaCompute,
+	SagaRunner,
 	SelectEffect,
 } from './async-rule';
 // Async runners — choose the concurrency strategy that fits your use case:

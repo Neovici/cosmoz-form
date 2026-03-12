@@ -1,20 +1,17 @@
-import type { Effect } from './async-rule';
+import type { Effect, SagaRunner } from './async-rule';
 import { runSaga, type OnIntermediate } from './run-saga';
 
-export type TakeLatestRunner<T> = {
-	run: (
-		gen: AsyncGenerator<Effect<T>, Partial<T>>,
-		onIntermediate: OnIntermediate<T>,
-		getState: () => T,
-	) => Promise<Partial<T> | null>;
-	cancel: () => void;
-};
+export type TakeLatestRunner<T> = SagaRunner<T>;
 
 export const makeTakeLatestRunner = <T>(): TakeLatestRunner<T> => {
 	let ac: AbortController | null = null;
 
 	return {
-		run: async (gen, onIntermediate, getState) => {
+		run: async (
+			gen: AsyncGenerator<Effect<T>, Partial<T>>,
+			onIntermediate: OnIntermediate<T>,
+			getState: () => T,
+		) => {
 			ac?.abort(); // cancel previous saga (takeLatest)
 			ac = new AbortController();
 			try {
