@@ -1,5 +1,6 @@
+import '@neovici/cosmoz-spinner';
 import { component, useMemo, useRef, useState } from '@pionjs/pion';
-import { html } from 'lit-html';
+import { html, nothing } from 'lit-html';
 
 import {
 	autocomplete,
@@ -180,9 +181,19 @@ const emailRule: AsyncItemRule<OrderForm> = [
 
 // ── Story 2: Debounce ─────────────────────────────────────────────────────────
 
-type QuoteForm = { quantity: number; unitPrice: number; total: number };
+type QuoteForm = {
+	quantity: number;
+	unitPrice: number;
+	total: number;
+	_pricingLoading: boolean;
+};
 
-const INITIAL_QUOTE: QuoteForm = { quantity: 1, unitPrice: 0, total: 0 };
+const INITIAL_QUOTE: QuoteForm = {
+	quantity: 1,
+	unitPrice: 0,
+	total: 0,
+	_pricingLoading: false,
+};
 
 /** Simulated pricing API — resolves after 1 s. */
 const fetchUnitPrice = async (
@@ -212,7 +223,15 @@ const QUOTE_FIELDS = [
 		max: 100,
 		step: '1',
 	},
-	{ id: 'unitPrice' as const, label: 'Unit price (€)', disabled: true },
+	{
+		id: 'unitPrice' as const,
+		label: 'Unit price (€)',
+		disabled: true,
+		suffix: (_: unknown, values: QuoteForm) =>
+			values._pricingLoading
+				? html`<cosmoz-spinner></cosmoz-spinner>`
+				: nothing,
+	},
 	{
 		id: 'total' as const,
 		label: 'Total (€)',
@@ -226,6 +245,7 @@ const QUOTE_FIELDS = [
 			] satisfies ItemRule<QuoteForm>,
 		],
 	},
+	{ id: '_pricingLoading' as const, hidden: true },
 ];
 
 const DebounceDemo = () => {
@@ -235,13 +255,14 @@ const DebounceDemo = () => {
 	const pricingRule: AsyncItemRule<QuoteForm> = useMemo(
 		() => [
 			async function* (current) {
-				if (!current.quantity) return { unitPrice: 0 };
+				if (!current.quantity) return { unitPrice: 0, _pricingLoading: false };
 				statsRef.current.started++;
 				setTick((t) => t + 1);
+				yield loading<QuoteForm>({ _pricingLoading: true });
 				const price = yield call(fetchUnitPrice, current.quantity);
 				statsRef.current.resolved++;
 				setTick((t) => t + 1);
-				return { unitPrice: price as number };
+				return { unitPrice: price as number, _pricingLoading: false };
 			},
 			({ quantity }) => [quantity],
 			() => makeDebounceRunner<QuoteForm>(500),
@@ -286,10 +307,15 @@ Debounce.parameters = {
 	docs: {
 		source: {
 			code: `\
-// Form shape
-type QuoteForm = { quantity: number; unitPrice: number; total: number };
+// Form shape — _pricingLoading is a UI-only flag, hidden from the rendered form
+type QuoteForm = {
+  quantity: number;
+  unitPrice: number;
+  total: number;
+  _pricingLoading: boolean;
+};
 
-const INITIAL: QuoteForm = { quantity: 1, unitPrice: 0, total: 0 };
+const INITIAL: QuoteForm = { quantity: 1, unitPrice: 0, total: 0, _pricingLoading: false };
 
 // Sync rule — total updates instantly whenever quantity or unitPrice changes
 const totalRule: ItemRule<QuoteForm> = [
@@ -301,15 +327,26 @@ const totalRule: ItemRule<QuoteForm> = [
 
 // Async rule — unit price is fetched 500 ms after quantity stops changing.
 // Rapid spinner clicks are debounced; only the final value triggers a lookup.
+// _pricingLoading drives the spinner suffix on the unitPrice field.
 const pricingRule: AsyncItemRule<QuoteForm> = [
   async function* (current) {
-    if (!current.quantity) return { unitPrice: 0 };
+    if (!current.quantity) return { unitPrice: 0, _pricingLoading: false };
+    yield loading<QuoteForm>({ _pricingLoading: true });
     const price = yield call(fetchUnitPrice, current.quantity);
-    return { unitPrice: price as number };
+    return { unitPrice: price as number, _pricingLoading: false };
   },
   ({ quantity }) => [quantity],
   () => makeDebounceRunner(500),
-];`,
+];
+
+// Field definition for unitPrice — shows a spinner while loading
+const unitPriceField = {
+  id: 'unitPrice',
+  label: 'Unit price (€)',
+  disabled: true,
+  suffix: (_, values) =>
+    values._pricingLoading ? html\`<cosmoz-spinner></cosmoz-spinner>\` : nothing,
+};`,
 		},
 	},
 };
