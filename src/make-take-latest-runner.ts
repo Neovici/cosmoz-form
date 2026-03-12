@@ -1,6 +1,6 @@
-import type { SagaRunner } from './async-rule';
+import type { AsyncRunner } from './async-rule';
 
-export type TakeLatestRunner<T> = SagaRunner<T>;
+export type TakeLatestRunner<T> = AsyncRunner<T>;
 
 export const makeTakeLatestRunner = <T>(): TakeLatestRunner<T> => {
 	let ac: AbortController | null = null;

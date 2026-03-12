@@ -1,12 +1,12 @@
-import type { SagaCompute, SagaRunner } from './async-rule';
+import type { AsyncRule, AsyncRunner } from './async-rule';
 
-export type DebounceRunner<T> = SagaRunner<T>;
+export type DebounceRunner<T> = AsyncRunner<T>;
 
 export const makeDebounceRunner = <T>(ms: number): DebounceRunner<T> => {
 	let timer: ReturnType<typeof setTimeout> | null = null;
 	let ac: AbortController | null = null;
 	let pending: {
-		fn: SagaCompute<T>;
+		fn: AsyncRule<T>;
 		values: T;
 		index?: number;
 		resolve: (v: Partial<T> | null) => void;

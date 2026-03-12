@@ -24,9 +24,9 @@ export { delay } from './async-rule';
 export type {
 	AsyncItemRule,
 	AsyncOpts,
+	AsyncRule,
+	AsyncRunner,
 	OnIntermediate,
-	SagaCompute,
-	SagaRunner,
 } from './async-rule';
 // Async runners — choose the concurrency strategy that fits your use case:
 //   makeTakeLatestRunner  cancels the previous run when a new one arrives (switchMap)

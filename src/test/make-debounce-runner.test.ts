@@ -1,7 +1,7 @@
 import { assert } from '@open-wc/testing';
 import { spy, useFakeTimers } from 'sinon';
 
-import { delay, type SagaCompute } from '../async-rule';
+import { delay, type AsyncRule } from '../async-rule';
 import { makeDebounceRunner } from '../make-debounce-runner';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -13,7 +13,7 @@ const noop = () => {
 };
 
 const returns =
-	(value: Partial<S>): SagaCompute<S> =>
+	(value: Partial<S>): AsyncRule<S> =>
 	async () =>
 		value;
 
@@ -58,7 +58,7 @@ suite('makeDebounceRunner', () => {
 			const bodySpy = spy();
 
 			const tracked =
-				(tag: string): SagaCompute<S> =>
+				(tag: string): AsyncRule<S> =>
 				async () => {
 					bodySpy(tag);
 					return { tag };
@@ -86,7 +86,7 @@ suite('makeDebounceRunner', () => {
 			const runner = makeDebounceRunner<S>(50);
 			const bodySpy = spy();
 
-			const counted: SagaCompute<S> = async (_, { signal }) => {
+			const counted: AsyncRule<S> = async (_, { signal }) => {
 				bodySpy();
 				await delay(signal, 10);
 				return { counted: true };
@@ -122,7 +122,7 @@ suite('makeDebounceRunner', () => {
 		try {
 			const runner = makeDebounceRunner<S>(50);
 
-			const slow: SagaCompute<S> = async (_, { signal }) => {
+			const slow: AsyncRule<S> = async (_, { signal }) => {
 				await delay(signal, 5000);
 				return { slow: true };
 			};
@@ -143,7 +143,7 @@ suite('makeDebounceRunner', () => {
 		try {
 			const runner = makeDebounceRunner<S>(50);
 
-			const boom: SagaCompute<S> = async () => {
+			const boom: AsyncRule<S> = async () => {
 				throw new Error('network error');
 			};
 
@@ -168,7 +168,7 @@ suite('makeDebounceRunner', () => {
 			const runner = makeDebounceRunner<S>(50);
 			const patches: Partial<S>[] = [];
 
-			const withUpdate: SagaCompute<S> = async (_, { update }) => {
+			const withUpdate: AsyncRule<S> = async (_, { update }) => {
 				update({ status: 'loading' });
 				return { status: 'done' };
 			};
@@ -189,7 +189,7 @@ suite('makeDebounceRunner', () => {
 			const runner = makeDebounceRunner<S>(50);
 			let receivedValues: S | undefined;
 
-			const captureValues: SagaCompute<S> = async (values) => {
+			const captureValues: AsyncRule<S> = async (values) => {
 				receivedValues = values;
 				return {};
 			};

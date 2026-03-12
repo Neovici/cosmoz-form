@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from '@pionjs/pion';
-import type { AsyncItemRule, SagaRunner } from './async-rule';
+import type { AsyncItemRule, AsyncRunner } from './async-rule';
 import { makeTakeLatestRunner } from './make-take-latest-runner';
 import type { UseForm } from './use-form-core';
 
@@ -32,7 +32,7 @@ export const useAsyncFormCore = <T extends object>(
 	const onError = opts?.onError ?? DEFAULT_ON_ERROR;
 
 	// Refs persist across renders without triggering re-renders
-	const runnersRef = useRef(new Map<AsyncItemRule<T>, SagaRunner<T>>());
+	const runnersRef = useRef(new Map<AsyncItemRule<T>, AsyncRunner<T>>());
 	const prevDepsRef = useRef(new Map<AsyncItemRule<T>, unknown[]>());
 
 	// pendingCount tracks in-flight rules without causing re-renders itself.
@@ -53,7 +53,7 @@ export const useAsyncFormCore = <T extends object>(
 		if (!asyncRules?.length) return;
 
 		for (const rule of asyncRules) {
-			const [sagaFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
+			const [ruleFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
 
 			if (!runnersRef.current.has(rule)) {
 				runnersRef.current.set(rule, runnerFactory());
@@ -76,7 +76,7 @@ export const useAsyncFormCore = <T extends object>(
 
 			runner
 				.run(
-					sagaFn,
+					ruleFn,
 					form.values,
 					(patch) => form.onChange(patch, false), // intermediate: no touch
 				)

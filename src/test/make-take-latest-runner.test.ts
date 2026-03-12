@@ -1,7 +1,7 @@
 import { assert } from '@open-wc/testing';
 import { spy } from 'sinon';
 
-import { delay, type AsyncOpts, type SagaCompute } from '../async-rule';
+import { delay, type AsyncOpts, type AsyncRule } from '../async-rule';
 import { makeTakeLatestRunner } from '../make-take-latest-runner';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -13,7 +13,7 @@ const noop = () => {
 };
 
 const returns =
-	(value: Partial<S>): SagaCompute<S> =>
+	(value: Partial<S>): AsyncRule<S> =>
 	async () =>
 		value;
 
@@ -30,12 +30,12 @@ suite('makeTakeLatestRunner', () => {
 		const runner = makeTakeLatestRunner<S>();
 		const firstCompleted = spy();
 
-		const slow: SagaCompute<S> = async (_, { signal }) => {
+		const slow: AsyncRule<S> = async (_, { signal }) => {
 			await delay(signal, 200);
 			firstCompleted();
 			return { from: 'first' };
 		};
-		const fast: SagaCompute<S> = async (_, { signal }) => {
+		const fast: AsyncRule<S> = async (_, { signal }) => {
 			await delay(signal, 10);
 			return { from: 'second' };
 		};
@@ -53,7 +53,7 @@ suite('makeTakeLatestRunner', () => {
 	test('cancel() aborts current run, resolves null', async () => {
 		const runner = makeTakeLatestRunner<S>();
 
-		const slow: SagaCompute<S> = async (_, { signal }) => {
+		const slow: AsyncRule<S> = async (_, { signal }) => {
 			await delay(signal, 5000);
 			return {};
 		};
@@ -67,7 +67,7 @@ suite('makeTakeLatestRunner', () => {
 	test('non-abort errors are re-thrown (not swallowed)', async () => {
 		const runner = makeTakeLatestRunner<S>();
 
-		const boom: SagaCompute<S> = async () => {
+		const boom: AsyncRule<S> = async () => {
 			throw new Error('network error');
 		};
 
@@ -83,7 +83,7 @@ suite('makeTakeLatestRunner', () => {
 	test('AbortErrors are swallowed and resolve null', async () => {
 		const runner = makeTakeLatestRunner<S>();
 
-		const aborting: SagaCompute<S> = async (_, { signal }) => {
+		const aborting: AsyncRule<S> = async (_, { signal }) => {
 			await delay(signal, 5000);
 			return {};
 		};
@@ -98,7 +98,7 @@ suite('makeTakeLatestRunner', () => {
 		const runner = makeTakeLatestRunner<S>();
 		let receivedSignal: AbortSignal | undefined;
 
-		const captureSignal: SagaCompute<S> = async (_, { signal }) => {
+		const captureSignal: AsyncRule<S> = async (_, { signal }) => {
 			receivedSignal = signal;
 			return {};
 		};
@@ -111,7 +111,7 @@ suite('makeTakeLatestRunner', () => {
 		const runner = makeTakeLatestRunner<S>();
 		const patches: Partial<S>[] = [];
 
-		const withUpdate: SagaCompute<S> = async (_, { update }) => {
+		const withUpdate: AsyncRule<S> = async (_, { update }) => {
 			update({ status: 'loading' });
 			return { status: 'done' };
 		};
@@ -125,7 +125,7 @@ suite('makeTakeLatestRunner', () => {
 		const runner = makeTakeLatestRunner<S>();
 		let receivedIndex: number | undefined;
 
-		const captureIndex: SagaCompute<S> = async (_, ctx: AsyncOpts<S>) => {
+		const captureIndex: AsyncRule<S> = async (_, ctx: AsyncOpts<S>) => {
 			receivedIndex = ctx.index;
 			return {};
 		};
@@ -138,7 +138,7 @@ suite('makeTakeLatestRunner', () => {
 		const runner = makeTakeLatestRunner<S>();
 		let receivedValues: S | undefined;
 
-		const captureValues: SagaCompute<S> = async (values) => {
+		const captureValues: AsyncRule<S> = async (values) => {
 			receivedValues = values;
 			return {};
 		};

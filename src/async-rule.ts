@@ -34,7 +34,7 @@ export type AsyncOpts<T> = {
  *     return { contactEmail: email };
  *   }
  */
-export type SagaCompute<T> = (
+export type AsyncRule<T> = (
 	values: T,
 	ctx: AsyncOpts<T>,
 ) => Promise<Partial<T>>;
@@ -43,7 +43,7 @@ export type SagaCompute<T> = (
 export type OnIntermediate<T> = (patch: Partial<T>) => void;
 
 /** Shared interface for all async runner strategies. */
-export type SagaRunner<T> = {
+export type AsyncRunner<T> = {
 	/**
 	 * Run `fn` with `values` as input.
 	 * `onIntermediate` is wired to `ctx.update`.
@@ -51,7 +51,7 @@ export type SagaRunner<T> = {
 	 * Returns the fn's resolved patch, or null if cancelled.
 	 */
 	run: (
-		fn: SagaCompute<T>,
+		fn: AsyncRule<T>,
 		values: T,
 		onIntermediate: OnIntermediate<T>,
 		opts?: { index?: number },
@@ -60,9 +60,9 @@ export type SagaRunner<T> = {
 };
 
 export type AsyncItemRule<T> = readonly [
-	sagaFn: SagaCompute<T>,
+	ruleFn: AsyncRule<T>,
 	depsFn: (current: T, index?: number) => unknown[],
-	runner?: () => SagaRunner<T>,
+	runner?: () => AsyncRunner<T>,
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
