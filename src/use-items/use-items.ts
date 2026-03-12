@@ -1,14 +1,11 @@
 import { invoke } from '@neovici/cosmoz-utils/function';
 import { StateUpdater, useCallback, useMemo, useState } from '@pionjs/pion';
-import type { AsyncItemRule } from '../async-rule';
 import { touch, touched } from '../touch';
 import { applyRules, ItemRule } from './apply-rules';
-import { useAsyncRules } from './use-async-rules';
 
 interface Props<T extends object> {
 	initial: T[];
 	rules?: ItemRule<T>[];
-	asyncRules?: readonly AsyncItemRule<T>[];
 }
 
 const changes = <T>(
@@ -142,11 +139,7 @@ export const useItemsCore = <T extends object>({
 	};
 };
 
-export const useItems = <T extends object>({
-	initial,
-	rules,
-	asyncRules,
-}: Props<T>) => {
+export const useItems = <T extends object>({ initial, rules }: Props<T>) => {
 	const _initial = useMemo(
 			() =>
 				initial.map((newItem, index) => applyRules({ rules, newItem, index })),
@@ -154,7 +147,5 @@ export const useItems = <T extends object>({
 		),
 		[items, setItems] = useState<T[]>(_initial);
 
-	const core = useItemsCore({ items, setItems, initial: _initial, rules });
-	useAsyncRules(core.items, asyncRules, core.update);
-	return core;
+	return useItemsCore({ items, setItems, initial: _initial, rules });
 };
