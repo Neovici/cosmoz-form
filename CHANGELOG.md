@@ -1,3 +1,9 @@
+## [2.2.0](https://github.com/Neovici/cosmoz-form/compare/v2.1.1...v2.2.0) (2026-03-13)
+
+### Features
+
+* async rules (FE-62) ([#13](https://github.com/Neovici/cosmoz-form/issues/13)) ([64dba11](https://github.com/Neovici/cosmoz-form/commit/64dba119ffa5488fd5b75ea5f4d52a7f39a98921))
+
 ## [2.1.1](https://github.com/Neovici/cosmoz-form/compare/v2.1.0...v2.1.1) (2026-02-28)
 
 ### Bug Fixes
