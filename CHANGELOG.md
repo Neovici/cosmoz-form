@@ -1,3 +1,9 @@
+## [2.4.0](https://github.com/Neovici/cosmoz-form/compare/v2.3.0...v2.4.0) (2026-03-13)
+
+### Features
+
+* **autocomplete:** expose itemHeight prop from cosmoz-autocomplete ([#15](https://github.com/Neovici/cosmoz-form/issues/15)) ([a99f565](https://github.com/Neovici/cosmoz-form/commit/a99f565b3f93772c5e9dc5cc1bc46397caa43a15))
+
 ## [2.3.0](https://github.com/Neovici/cosmoz-form/compare/v2.2.0...v2.3.0) (2026-03-13)
 
 ### Features
