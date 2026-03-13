@@ -1,6 +1,8 @@
 import { useCallback, useState } from '@pionjs/pion';
 import { ItemRule } from '.';
+import type { AsyncItemRule } from './async-rule';
 import type { Fields } from './types';
+import { useAsyncFormCore } from './use-async-form-core';
 import { UseValidatedForm, useValidatedForm } from './use-validated-form';
 
 export type ProgressValue = string | number;
@@ -10,6 +12,7 @@ export interface Props<T extends object> {
 	fields: Fields<T>;
 	initial: T;
 	rules?: ItemRule<T>[];
+	asyncRules?: readonly AsyncItemRule<T>[];
 	onSave?: (
 		values: T,
 		initial: T,
@@ -20,23 +23,25 @@ export interface Props<T extends object> {
 
 interface Opts {
 	disabled: boolean;
+	processing: boolean;
 	progress?: Progress;
 	save$?: PromiseLike<unknown>;
 	onSave: () => void;
 }
 
 export interface UseValidatedForm$<T extends object>
-	extends UseValidatedForm<T>,
-		Opts {}
+	extends UseValidatedForm<T>, Opts {}
 
 function useValidatedForm$<T extends object>({
 	fields,
 	initial,
 	rules,
+	asyncRules,
 	onSave,
 	allowEmpty,
 }: Props<T>): UseValidatedForm$<T> {
 	const form = useValidatedForm({ fields, initial, rules });
+	const { processing } = useAsyncFormCore(form, asyncRules);
 	const { values, invalid } = form;
 	const [save$, setSave$] = useState<PromiseLike<unknown>>();
 	const [progress, setProgress] = useState<Progress>();
@@ -52,6 +57,7 @@ function useValidatedForm$<T extends object>({
 			[onSave, values, initial],
 		),
 		disabled,
+		processing,
 		progress,
 	};
 }

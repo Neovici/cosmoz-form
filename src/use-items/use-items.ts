@@ -1,7 +1,7 @@
-import { StateUpdater, useCallback, useMemo, useState } from '@pionjs/pion';
 import { invoke } from '@neovici/cosmoz-utils/function';
-import { applyRules, ItemRule } from './apply-rules';
+import { StateUpdater, useCallback, useMemo, useState } from '@pionjs/pion';
 import { touch, touched } from '../touch';
+import { applyRules, ItemRule } from './apply-rules';
 
 interface Props<T extends object> {
 	initial: T[];
