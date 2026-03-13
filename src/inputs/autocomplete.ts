@@ -34,6 +34,7 @@ export interface AutocompleteProps<
 	chipRenderer?: unknown;
 	textual?: unknown;
 	externalSearch?: boolean;
+	itemHeight?: number | 'auto';
 }
 
 interface Info {
@@ -71,6 +72,7 @@ export const autocomplete = input(
 		textual,
 		description,
 		externalSearch,
+		itemHeight,
 		...thru
 	}: InputBaseOpts<T, K, V>) => {
 		return html`<cosmoz-autocomplete
@@ -101,6 +103,7 @@ export const autocomplete = input(
 			.valueProperty=${valueProperty}
 			.limit=${limit}
 			.min=${min}
+			.itemHeight=${itemHeight}
 			.title=${ifDefined(title)}
 			.textual=${textual}
 			.onChange=${(options?: V[]) =>
