@@ -8,9 +8,16 @@ import { ReadOnlyNumberProps } from '../inputs/read-only-number';
 import { UseForm } from '../use-form-core';
 import { ItemRule } from '../use-items';
 
-export type Invoked<T, F, V, R> = (value: V, values: T, field: F) => R;
+export type Invoked<T, F, V, R, C extends object = object> = (
+	value: V,
+	values: T,
+	field: F,
+	context?: C,
+) => R;
 
-export type Invokable<T, F, V, R> = R | Invoked<T, F, V, R>;
+export type Invokable<T, F, V, R, C extends object = object> =
+	| R
+	| Invoked<T, F, V, R, C>;
 
 export type Resolvable<T, A extends unknown[] = []> =
 	| T
@@ -31,19 +38,28 @@ export type OnChange<T, K, V> = (
 	values: T,
 ) => void;
 
-export type Rule<T extends object, K extends keyof T, V extends T[K]> = (
+export type Rule<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+	C extends object = object,
+> = (
 	value: V,
 	values?: T,
 	field?: Field<T, K, V>,
+	context?: C,
 ) => false | string;
 
 export type Errors = {
 	[key: string]: string | true | undefined;
 };
 
-export type Validate<T extends object, K extends keyof T, V extends T[K]> =
-	| Rule<T, K, V>
-	| Rule<T, K, V>[];
+export type Validate<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+	C extends object = object,
+> = Rule<T, K, V, C> | Rule<T, K, V, C>[];
 
 export type Renderable =
 	| null
@@ -55,7 +71,8 @@ export interface InputProps<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
-> extends UseForm<T> {
+	C extends object = object,
+> extends UseForm<T, C> {
 	value: V;
 	field: Field<T, K, V>;
 	error: false | string;
@@ -64,8 +81,13 @@ export interface InputProps<
 }
 
 // TODO: figure out a way to enforce the type of the input value, so you can't use a number input for a string field
-export interface Input<T extends object, K extends keyof T, V extends T[K]> {
-	(opts: InputProps<T, K, V>): Renderable;
+export interface Input<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+	C extends object = object,
+> {
+	(opts: InputProps<T, K, V, C>): Renderable;
 }
 
 export type Codec<

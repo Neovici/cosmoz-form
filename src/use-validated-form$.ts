@@ -8,11 +8,12 @@ import { UseValidatedForm, useValidatedForm } from './use-validated-form';
 export type ProgressValue = string | number;
 export type Progress = [ProgressValue, ProgressValue];
 
-export interface Props<T extends object> {
+export interface Props<T extends object, C extends object = object> {
 	fields: Fields<T>;
 	initial: T;
-	rules?: ItemRule<T>[];
+	rules?: ItemRule<T, C>[];
 	asyncRules?: readonly AsyncItemRule<T>[];
+	context?: C;
 	onSave?: (
 		values: T,
 		initial: T,
@@ -29,18 +30,19 @@ interface Opts {
 	onSave: () => void;
 }
 
-export interface UseValidatedForm$<T extends object>
-	extends UseValidatedForm<T>, Opts {}
+export interface UseValidatedForm$<T extends object, C extends object = object>
+	extends UseValidatedForm<T, C>, Opts {}
 
-function useValidatedForm$<T extends object>({
+function useValidatedForm$<T extends object, C extends object = object>({
 	fields,
 	initial,
 	rules,
 	asyncRules,
+	context,
 	onSave,
 	allowEmpty,
-}: Props<T>): UseValidatedForm$<T> {
-	const form = useValidatedForm({ fields, initial, rules });
+}: Props<T, C>): UseValidatedForm$<T, C> {
+	const form = useValidatedForm({ fields, initial, rules, context });
 	const { processing } = useAsyncFormCore(form, asyncRules);
 	const { values, invalid } = form;
 	const [save$, setSave$] = useState<PromiseLike<unknown>>();

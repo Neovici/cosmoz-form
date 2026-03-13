@@ -28,8 +28,11 @@ export interface CommonFieldProps<
 	noSpinner?: boolean;
 }
 
-export interface Common<T extends object, K extends keyof T, V extends T[K]>
-	extends Omit<InputBaseOpts<T, K, V>, 'onChange'> {
+export interface Common<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+> extends Omit<InputBaseOpts<T, K, V>, 'onChange'> {
 	type?: string;
 	onInput?: (e: InputEvent) => void;
 }
@@ -37,7 +40,7 @@ export interface Common<T extends object, K extends keyof T, V extends T[K]>
 export const common = <T extends object, K extends keyof T, V extends T[K]>(
 	props: Common<T, K, V>,
 ) => {
-	const { value, values, onFocus, onInput, ...field } = props;
+	const { value, values, onFocus, onInput, context, ...field } = props;
 	const {
 		id,
 		type = 'text',
@@ -78,8 +81,8 @@ export const common = <T extends object, K extends keyof T, V extends T[K]>(
 		.value=${value}
 		title=${ifDefined((error ?? title) || undefined)}
 		maxlength=${ifDefined(maxlength)}
-		min=${ifDefined(invoke(min, value, values, field))}
-		max=${ifDefined(invoke(max, value, values, field))}
+		min=${ifDefined(invoke(min, value, values, field, context))}
+		max=${ifDefined(invoke(max, value, values, field, context))}
 		@focus=${onFocus}
 		@input=${onInput}
 		>${renderContents({ prefix, suffix, warning, description })}</cosmoz-input
@@ -156,7 +159,7 @@ export const textarea = input(
 		maxRows,
 		rows,
 		maxlength,
-	}: InputBaseOpts<T,K,V>) =>
+	}: InputBaseOpts<T, K, V>) =>
 		html`<cosmoz-textarea
 			class="input input-textarea"
 			name=${id}

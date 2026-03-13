@@ -1,45 +1,51 @@
-import { StateUpdater, useMemo } from '@pionjs/pion';
 import { invoke } from '@neovici/cosmoz-utils/function';
-import { validate } from './validation';
-import { UseForm } from './use-form';
+import { StateUpdater, useMemo } from '@pionjs/pion';
 import type { Fields } from './types';
-import type { ItemRule } from './use-items/apply-rules';
+import { UseForm } from './use-form';
 import { FormValues, useFormCore } from './use-form-core';
+import type { ItemRule } from './use-items/apply-rules';
+import { validate } from './validation';
 
-export const computeRules = <T extends object>(
+export const computeRules = <T extends object, C extends object = object>(
 	fields: Fields<T>,
-	rules: readonly ItemRule<T>[] = [],
-): ItemRule<T>[] => {
+	rules: readonly ItemRule<T, C>[] = [],
+): ItemRule<T, C>[] => {
 	const fieldRules = fields
 		.filter((f) => f?.rules != null)
 		.flatMap((f) => f?.rules);
 
-	return [...rules, ...(fieldRules as ItemRule<T>[])];
+	return [...rules, ...(fieldRules as ItemRule<T, C>[])];
 };
 
 type Validate<T extends object> = ReturnType<typeof validate<T>>;
 
-export interface UseValidatedForm<T extends object>
-	extends UseForm<T>,
-		Validate<T> {}
+export interface UseValidatedForm<T extends object, C extends object = object>
+	extends UseForm<T, C>, Validate<T> {}
 
-interface Props<T extends object> {
+interface Props<T extends object, C extends object = object> {
 	fields?: Fields<T> | (() => Fields<T>);
-	rules?: readonly ItemRule<T>[];
+	rules?: readonly ItemRule<T, C>[];
+	context?: C;
 }
 
-export const useValidatedFormCore = <T extends object>(
+export const useValidatedFormCore = <
+	T extends object,
+	C extends object = object,
+>(
 	state: FormValues<T>,
 	setState: StateUpdater<FormValues<T>>,
-	{ fields: _fields, rules }: Readonly<Props<T>>,
-): UseValidatedForm<T> => {
+	{ fields: _fields, rules, context }: Readonly<Props<T, C>>,
+): UseValidatedForm<T, C> => {
 	const fields = useMemo(() => invoke(_fields) ?? [], [_fields]);
 	const allRules = useMemo(() => computeRules(fields, rules), [fields, rules]);
-	const form = useFormCore(state, setState, allRules);
+	const form = useFormCore(state, setState, allRules, context);
 	const { values } = form;
 
 	return {
-		...useMemo(() => validate(fields, values), [fields, values]),
+		...useMemo(
+			() => validate(fields, values, context),
+			[fields, values, context],
+		),
 		...form,
 	};
 };

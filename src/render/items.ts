@@ -1,12 +1,12 @@
 import { virtualize } from '@lit-labs/virtualizer/virtualize.js';
+import { cancelIcon } from '@neovici/cosmoz-icons';
 import { tagged as css } from '@neovici/cosmoz-utils';
+import { invoke, noop } from '@neovici/cosmoz-utils/function';
 import { TemplateResult, html } from 'lit-html';
 import { when } from 'lit-html/directives/when.js';
 import { Fields } from '../types';
 import { renderFields, renderHeaders, renderStyles } from './fields';
-import { cancelIcon } from '@neovici/cosmoz-icons';
 import { styles } from './styles';
-import { invoke, noop } from '@neovici/cosmoz-utils/function';
 
 const key = Symbol('key');
 type Item = Partial<{ [key]: unknown }>;
@@ -47,6 +47,7 @@ export const renderItem = <T extends Item>(
 				onReset: noop,
 				onValues: noop,
 				touched: false,
+				context: {},
 			}),
 			when(remove, (remove) =>
 				renderRemove(values && remove && (() => remove(index))),
