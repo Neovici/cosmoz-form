@@ -12,7 +12,7 @@ export interface Props<T extends object, C extends object = object> {
 	fields: Fields<T>;
 	initial: T;
 	rules?: ItemRule<T, C>[];
-	asyncRules?: readonly AsyncItemRule<T>[];
+	asyncRules?: readonly AsyncItemRule<T, C>[];
 	context?: C;
 	onSave?: (
 		values: T,
