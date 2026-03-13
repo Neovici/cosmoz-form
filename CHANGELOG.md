@@ -1,3 +1,9 @@
+## [2.4.1](https://github.com/Neovici/cosmoz-form/compare/v2.4.0...v2.4.1) (2026-03-13)
+
+### Bug Fixes
+
+* **validation/rules:** return false instead of undefined ([#3](https://github.com/Neovici/cosmoz-form/issues/3)) ([025b8c6](https://github.com/Neovici/cosmoz-form/commit/025b8c622ae38212bcc4428e1b484dca50292fff))
+
 ## [2.4.0](https://github.com/Neovici/cosmoz-form/compare/v2.3.0...v2.4.0) (2026-03-13)
 
 ### Features
