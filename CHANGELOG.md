@@ -1,3 +1,9 @@
+## [2.3.0](https://github.com/Neovici/cosmoz-form/compare/v2.2.0...v2.3.0) (2026-03-13)
+
+### Features
+
+* add chipRenderer passthrough to autocomplete input (FE-363) ([#14](https://github.com/Neovici/cosmoz-form/issues/14)) ([f74eff6](https://github.com/Neovici/cosmoz-form/commit/f74eff689e7e1c396773d0017ae4f027f2dc8b78))
+
 ## [2.2.0](https://github.com/Neovici/cosmoz-form/compare/v2.1.1...v2.2.0) (2026-03-13)
 
 ### Features
