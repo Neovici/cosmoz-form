@@ -1,12 +1,12 @@
 import { html } from 'lit-html';
-import { live } from 'lit-html/directives/live.js';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { guard } from 'lit-html/directives/guard.js';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { live } from 'lit-html/directives/live.js';
 
 import '@neovici/cosmoz-autocomplete';
 
-import { input } from './base';
 import { InputBaseOpts, Resolvable } from '../types';
+import { input } from './base';
 import { renderContents } from './render';
 
 type OptionsOpts<T, V> = {
@@ -31,6 +31,7 @@ export interface AutocompleteProps<
 	showSingle?: boolean;
 	preserveOrder?: boolean;
 	itemRenderer?: unknown;
+	chipRenderer?: unknown;
 	textual?: unknown;
 	externalSearch?: boolean;
 }
@@ -59,6 +60,7 @@ export const autocomplete = input(
 		value,
 		values,
 		itemRenderer,
+		chipRenderer,
 		keepOpened,
 		keepQuery,
 		placeholder,
@@ -86,6 +88,7 @@ export const autocomplete = input(
 			?preserve-order=${!!preserveOrder}
 			.placeholder=${placeholder}
 			.itemRenderer=${ifDefined(itemRenderer)}
+			.chipRenderer=${ifDefined(chipRenderer)}
 			.errorMessage=${error}
 			.label=${label}
 			.value=${live(value)}
