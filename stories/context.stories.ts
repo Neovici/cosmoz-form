@@ -260,10 +260,6 @@ const VAT_RULES: ItemRule<LineItem, VatCtx>[] = [
 	],
 ];
 
-const LINE_PRICE_FIELDS: Fields<LineItem> = [
-	{ id: 'price', label: 'Price (€)', input: number, min: 0 },
-];
-
 const VatDemo = () => {
 	const vatForm = useValidatedForm({
 		fields: VAT_FIELDS,
@@ -300,19 +296,15 @@ const VatDemo = () => {
 					(_item, i) => i,
 					(item) => html`
 						<div
-							style="display:flex;align-items:center;gap:1rem;margin-bottom:0.4rem"
+							style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #eee"
 						>
-							${renderFields(
-								useValidatedForm<LineItem, VatCtx>({
-									fields: LINE_PRICE_FIELDS,
-									initial: item,
-									context: ctx,
-								}),
-							)}
-							<span style="font-size:0.85rem;white-space:nowrap">
-								Total with VAT:
-								<strong>${item.totalWithVat.toFixed(2)} €</strong>
-							</span>
+							<span style="font-size:0.9rem"
+								>Price: <strong>${item.price.toFixed(2)} €</strong></span
+							>
+							<span style="font-size:0.9rem"
+								>Total with VAT:
+								<strong>${item.totalWithVat.toFixed(2)} €</strong></span
+							>
 						</div>
 					`,
 				)}
