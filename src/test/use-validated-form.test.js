@@ -1,7 +1,7 @@
 /* eslint-disable mocha/max-top-level-suites */
 
-import { assert } from '@open-wc/testing';
 import { renderHook } from '@neovici/testing';
+import { assert, waitUntil } from '@open-wc/testing';
 
 import { useValidatedForm } from '../use-validated-form';
 import { required, tooLong, tooShort } from '../validation';
@@ -147,5 +147,183 @@ suite('useValidatedForm with field rules', () => {
 		test('is not touched before there are any changes', () => {
 			assert.isFalse(result.current.touched);
 		});
+	});
+});
+
+suite('useValidatedForm with context', () => {
+	test('field validate receives context as 4th arg', async () => {
+		const received = [];
+		const fields = [
+			{
+				id: 'amount',
+				validate: (value, _values, _field, context) => {
+					received.push(context);
+					return false;
+				},
+			},
+		];
+		const ctx = { currency: 'EUR' };
+
+		await renderHook(() =>
+			useValidatedForm({
+				fields,
+				initial: { amount: 100 },
+				context: ctx,
+			}),
+		);
+
+		assert.isTrue(received.length > 0, 'validate should have been called');
+		assert.deepEqual(received[0], { currency: 'EUR' });
+	});
+
+	test('validate error uses context constraint', async () => {
+		const fields = [
+			{
+				id: 'deliveryDate',
+				validate: (value, _values, _field, context) =>
+					value < (context?.minDate ?? '') ? 'Too early' : false,
+			},
+		];
+		const ctx = { minDate: '2024-06-01' };
+
+		const { result } = await renderHook(() =>
+			useValidatedForm({
+				fields,
+				initial: { deliveryDate: '2024-01-01' },
+				context: ctx,
+			}),
+		);
+
+		assert.isTrue(result.current.invalid);
+		assert.equal(result.current.fields[0].error, 'Too early');
+	});
+
+	test('validation passes when value satisfies context constraint', async () => {
+		const fields = [
+			{
+				id: 'deliveryDate',
+				validate: (value, _values, _field, context) =>
+					value < (context?.minDate ?? '') ? 'Too early' : false,
+			},
+		];
+		const ctx = { minDate: '2024-06-01' };
+
+		const { result } = await renderHook(() =>
+			useValidatedForm({
+				fields,
+				initial: { deliveryDate: '2024-12-01' },
+				context: ctx,
+			}),
+		);
+
+		assert.isFalse(result.current.invalid);
+	});
+
+	test('rule computeFn receives context', async () => {
+		const received = [];
+		const rules = [
+			[
+				(_current, _old, _index, _oldIndex, context) => {
+					received.push(context);
+					return {};
+				},
+			],
+		];
+		const ctx = { prefix: 'Dr' };
+
+		await renderHook(() =>
+			useValidatedForm({
+				fields: [{ id: 'name' }],
+				initial: { name: 'Alice' },
+				rules,
+				context: ctx,
+			}),
+		);
+
+		assert.isTrue(received.length > 0);
+		assert.deepEqual(received[0], { prefix: 'Dr' });
+	});
+
+	test('context is exposed on the returned form object', async () => {
+		const ctx = { tenant: 'acme' };
+
+		const { result } = await renderHook(() =>
+			useValidatedForm({
+				fields: [{ id: 'name' }],
+				initial: { name: 'Alice' },
+				context: ctx,
+			}),
+		);
+
+		assert.deepEqual(result.current.context, { tenant: 'acme' });
+	});
+
+	test('context defaults to empty object when not provided', async () => {
+		const { result } = await renderHook(() =>
+			useValidatedForm({
+				fields: [{ id: 'name' }],
+				initial: { name: 'Alice' },
+			}),
+		);
+
+		assert.deepEqual(result.current.context, {});
+	});
+
+	test('context change causes validate to see new context', async () => {
+		const fields = [
+			{
+				id: 'deliveryDate',
+				validate: (value, _values, _field, context) =>
+					value < (context?.minDate ?? '') ? 'Too early' : false,
+			},
+		];
+
+		const { result, rerender } = await renderHook(
+			({ ctx }) =>
+				useValidatedForm({
+					fields,
+					initial: { deliveryDate: '2024-01-01' },
+					context: ctx,
+				}),
+			{ initialProps: { ctx: { minDate: '2024-06-01' } } },
+		);
+
+		assert.isTrue(result.current.invalid);
+
+		await rerender({ ctx: { minDate: '2023-01-01' } });
+
+		assert.isFalse(result.current.invalid);
+	});
+
+	test('context change triggers rule re-run on form', async () => {
+		const rules = [
+			[
+				(current, _old, _index, _oldIndex, context) => ({
+					total: current.price * (1 + (context?.vat ?? 0) / 100),
+				}),
+				(_current, _index, context) => [context?.vat],
+			],
+		];
+
+		const { result, rerender } = await renderHook(
+			({ ctx }) =>
+				useValidatedForm({
+					fields: [{ id: 'price' }, { id: 'total' }],
+					initial: { price: 100, total: 0 },
+					rules,
+					context: ctx,
+				}),
+			{ initialProps: { ctx: { vat: 0 } } },
+		);
+
+		assert.equal(result.current.values.total, 100);
+
+		await rerender({ ctx: { vat: 20 } });
+		await waitUntil(
+			() => result.current.values.total === 120,
+			'total should update when vat context changes',
+		);
+
+		assert.equal(result.current.values.total, 120);
 	});
 });

@@ -1,10 +1,10 @@
 /* eslint-disable mocha/max-top-level-suites */
 
-import { assert } from '@open-wc/testing';
 import { renderHook } from '@neovici/testing';
+import { assert, waitUntil } from '@open-wc/testing';
 
-import { useItems } from '../use-items';
 import { TOUCHED } from '../touch';
+import { useItems } from '../use-items';
 
 suite('useItems', () => {
 	let result;
@@ -439,5 +439,135 @@ suite('useItems', () => {
 
 			assert.isFalse(result.current.touched);
 		});
+	});
+});
+
+suite('useItems with context', () => {
+	test('computeFn receives context on initialization', async () => {
+		const received = [];
+		const rules = [
+			[
+				(_current, _old, _index, _oldIndex, context) => {
+					received.push(context);
+					return {};
+				},
+			],
+		];
+		const ctx = { org: 'neovici' };
+
+		await renderHook(() =>
+			useItems({
+				initial: [{ name: 'foo' }],
+				rules,
+				context: ctx,
+			}),
+		);
+
+		assert.isTrue(received.length > 0);
+		assert.deepEqual(received[0], { org: 'neovici' });
+	});
+
+	test('computeFn receives context on update', async () => {
+		const received = [];
+		const rules = [
+			[
+				(_current, _old, _index, _oldIndex, context) => {
+					received.push(context);
+					return {};
+				},
+			],
+		];
+		const ctx = { org: 'neovici' };
+
+		const { result, nextUpdate } = await renderHook(() =>
+			useItems({
+				initial: [{ name: 'foo' }],
+				rules,
+				context: ctx,
+			}),
+		);
+
+		const initLen = received.length;
+		result.current.update(0, { name: 'bar' });
+		await nextUpdate();
+
+		assert.isTrue(received.length > initLen);
+		assert.deepEqual(received[received.length - 1], { org: 'neovici' });
+	});
+
+	test('context change triggers rule re-run without explicit update()', async () => {
+		let runCount = 0;
+		const rules = [
+			[
+				() => {
+					runCount++;
+					return {};
+				},
+				(_current, _index, context) => [context?.threshold],
+			],
+		];
+
+		const { rerender } = await renderHook(
+			({ ctx }) =>
+				useItems({
+					initial: [{ value: 5 }],
+					rules,
+					context: ctx,
+				}),
+			{ initialProps: { ctx: { threshold: 10 } } },
+		);
+
+		const runsAfterInit = runCount;
+		assert.isTrue(runsAfterInit >= 1, 'rule should run on init');
+
+		await rerender({ ctx: { threshold: 20 } });
+		await waitUntil(
+			() => runCount > runsAfterInit,
+			'rule should re-run when context threshold changes',
+		);
+
+		assert.isTrue(runCount > runsAfterInit);
+	});
+
+	test('append passes context to rules', async () => {
+		const received = [];
+		const rules = [
+			[
+				(_current, _old, _index, _oldIndex, context) => {
+					received.push(context);
+					return {};
+				},
+			],
+		];
+		const ctx = { org: 'test' };
+
+		const { result, nextUpdate } = await renderHook(() =>
+			useItems({
+				initial: [],
+				rules,
+				context: ctx,
+			}),
+		);
+
+		result.current.append([{ name: 'new' }]);
+		await nextUpdate();
+
+		assert.isTrue(received.length > 0);
+		assert.deepEqual(received[received.length - 1], { org: 'test' });
+	});
+
+	test('backward compat — rules without context arg work unchanged', async () => {
+		const rules = [
+			[({ name }) => ({ nameLength: name.length }), ({ name }) => [name]],
+		];
+
+		const { result } = await renderHook(() =>
+			useItems({
+				initial: [{ name: 'hello' }],
+				rules,
+			}),
+		);
+
+		assert.equal(result.current.items[0].nameLength, 5);
 	});
 });
