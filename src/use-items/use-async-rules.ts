@@ -36,18 +36,19 @@ const ensureRuleTracking = <T, C extends object = object>(
  *
  * Usage:
  *   const core = useItems({ initial, rules });
- *   useAsyncRules(core.items, asyncRules, core.update, context);
+ *   useAsyncRules(core.items, asyncRules, core.update, { context });
  *   return core;
  */
 export const useAsyncRules = <T extends object, C extends object = object>(
 	items: T[],
 	asyncRules: readonly AsyncItemRule<T, C>[] | undefined,
 	update: UseItemsCore<T>['update'],
-	context?: C,
 	opts?: {
+		context?: C;
 		onError?: (err: unknown, rule: AsyncItemRule<T, C>, index: number) => void;
 	},
 ): { processing: boolean } => {
+	const context = opts?.context;
 	const onError = opts?.onError ?? DEFAULT_ON_ERROR;
 
 	const pendingCount = useRef(0);

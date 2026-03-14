@@ -8,7 +8,9 @@ import { applyRules, ItemRule } from './use-items/apply-rules';
 export const processInitial = <T extends object, C extends object = object>(
 	initial: T,
 	rules?: readonly ItemRule<T, C>[],
-): T => untouch(applyRules({ oldItem: undefined, newItem: initial, rules }));
+	context?: C,
+): T =>
+	untouch(applyRules({ oldItem: undefined, newItem: initial, rules, context }));
 
 export const useForm = <T extends object>(
 	initial: T,

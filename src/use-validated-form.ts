@@ -23,7 +23,7 @@ export const useValidatedForm = <T extends object, C extends object = object>(
 	const [state, setState] = useState<FormValues<T>>(() => {
 		const fields = invoke(options.fields) ?? [],
 			allRules = computeRules(fields, options.rules),
-			ini = processInitial(options.initial, allRules);
+			ini = processInitial(options.initial, allRules, options.context);
 
 		return [ini, ini];
 	});

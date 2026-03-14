@@ -1,5 +1,12 @@
 import { invoke } from '@neovici/cosmoz-utils/function';
-import { StateUpdater, useCallback, useMemo, useState } from '@pionjs/pion';
+import {
+	StateUpdater,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from '@pionjs/pion';
 import { touch, touched } from '../touch';
 import { applyRules, ItemRule } from './apply-rules';
 
@@ -45,6 +52,30 @@ export const useItemsCore = <T extends object, C extends object = object>({
 	items: T[];
 	setItems: StateUpdater<T[]>;
 }): UseItemsCore<T> => {
+	// Re-apply rules when context changes, passing oldContext so depsFn comparisons
+	// correctly detect the change (new context vs old context for the same item).
+	const prevContextRef = useRef<C | undefined>(undefined);
+	useEffect(() => {
+		const oldContext = prevContextRef.current;
+		prevContextRef.current = context;
+		if (oldContext === undefined) return; // skip mount
+		setItems((currentItems) =>
+			currentItems.map((oldItem, index) =>
+				touch(
+					applyRules({
+						oldItem,
+						newItem: oldItem,
+						rules,
+						index,
+						context,
+						oldContext,
+					}),
+					touched(oldItem),
+				),
+			),
+		);
+	}, [context]);
+
 	return {
 		items,
 		setItems,

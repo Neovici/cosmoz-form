@@ -25,6 +25,7 @@ export const applyRules = <T extends object, C extends object = object>({
 	index,
 	oldIndex = index,
 	context,
+	oldContext = context,
 }: {
 	oldItem?: T | undefined;
 	newItem: T;
@@ -32,6 +33,7 @@ export const applyRules = <T extends object, C extends object = object>({
 	index?: number;
 	oldIndex?: number;
 	context?: C;
+	oldContext?: C;
 }): T => {
 	if (!rules) return newItem;
 	return rules.reduce(
@@ -40,7 +42,7 @@ export const applyRules = <T extends object, C extends object = object>({
 			depsFn &&
 			!changed(
 				depsFn(currentItem, index, context),
-				depsFn(oldItem, oldIndex, context),
+				depsFn(oldItem, oldIndex, oldContext),
 			)
 				? currentItem
 				: {

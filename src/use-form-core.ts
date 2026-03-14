@@ -1,5 +1,11 @@
 import { invoke } from '@neovici/cosmoz-utils/function';
-import { StateUpdater, useCallback, useMemo } from '@pionjs/pion';
+import {
+	StateUpdater,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+} from '@pionjs/pion';
 import { touch, touched, untouch } from './touch';
 import { applyRules, ItemRule } from './use-items/apply-rules';
 
@@ -25,6 +31,28 @@ export const useFormCore = <T extends object, C extends object = object>(
 	context?: C,
 ): UseForm<T, C> => {
 	const [, values] = state;
+
+	// Re-apply rules when context changes, passing oldContext so depsFn comparisons
+	// correctly detect the change (new context vs old context for the same values).
+	const prevContextRef = useRef<C | undefined>(undefined);
+	useEffect(() => {
+		const oldContext = prevContextRef.current;
+		prevContextRef.current = context;
+		if (oldContext === undefined) return; // skip mount
+		setState(([initial, values]) => [
+			initial,
+			touch(
+				applyRules({
+					oldItem: values,
+					newItem: values,
+					rules,
+					context,
+					oldContext,
+				}),
+				touched(values),
+			),
+		]);
+	}, [context]);
 
 	return {
 		values,
