@@ -151,20 +151,17 @@ suite('useValidatedForm with field rules', () => {
 });
 
 suite('useValidatedForm with context', () => {
-	test('field validate receives context as 4th arg', async () => {
-		const received = [];
+	test('validate uses context to determine error', async () => {
 		const fields = [
 			{
 				id: 'amount',
-				validate: (value, _values, _field, context) => {
-					received.push(context);
-					return false;
-				},
+				validate: (value, _values, _field, context) =>
+					value < (context?.minAmount ?? 0) ? 'Too low' : false,
 			},
 		];
-		const ctx = { currency: 'EUR' };
+		const ctx = { minAmount: 200 };
 
-		await renderHook(() =>
+		const { result } = await renderHook(() =>
 			useValidatedForm({
 				fields,
 				initial: { amount: 100 },
@@ -172,8 +169,8 @@ suite('useValidatedForm with context', () => {
 			}),
 		);
 
-		assert.isTrue(received.length > 0, 'validate should have been called');
-		assert.deepEqual(received[0], { currency: 'EUR' });
+		assert.isTrue(result.current.invalid);
+		assert.equal(result.current.fields[0].error, 'Too low');
 	});
 
 	test('validate error uses context constraint', async () => {
@@ -219,29 +216,27 @@ suite('useValidatedForm with context', () => {
 		assert.isFalse(result.current.invalid);
 	});
 
-	test('rule computeFn receives context', async () => {
-		const received = [];
+	test('rule computes derived field using context', async () => {
 		const rules = [
 			[
-				(_current, _old, _index, _oldIndex, context) => {
-					received.push(context);
-					return {};
-				},
+				({ name }, _old, _index, _oldIndex, context) => ({
+					displayName: `${context?.prefix ?? ''} ${name}`.trim(),
+				}),
+				({ name }, _index, context) => [name, context?.prefix],
 			],
 		];
 		const ctx = { prefix: 'Dr' };
 
-		await renderHook(() =>
+		const { result } = await renderHook(() =>
 			useValidatedForm({
-				fields: [{ id: 'name' }],
-				initial: { name: 'Alice' },
+				fields: [{ id: 'name' }, { id: 'displayName' }],
+				initial: { name: 'Alice', displayName: '' },
 				rules,
 				context: ctx,
 			}),
 		);
 
-		assert.isTrue(received.length > 0);
-		assert.deepEqual(received[0], { prefix: 'Dr' });
+		assert.equal(result.current.values.displayName, 'Dr Alice');
 	});
 
 	test('context is exposed on the returned form object', async () => {

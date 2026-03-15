@@ -443,108 +443,81 @@ suite('useItems', () => {
 });
 
 suite('useItems with context', () => {
-	test('computeFn receives context on initialization', async () => {
-		const received = [];
-		const rules = [
-			[
-				(_current, _old, _index, _oldIndex, context) => {
-					received.push(context);
-					return {};
-				},
-			],
-		];
+	// Rule: label = org/name. depsFn: [name, org] so re-runs when either changes.
+	const labelRule = [
+		({ name }, _old, _index, _oldIndex, context) => ({
+			label: `${context?.org ?? ''}/${name}`,
+		}),
+		({ name }, _index, context) => [name, context?.org],
+	];
+
+	test('rule computes derived field using context on initialization', async () => {
 		const ctx = { org: 'neovici' };
 
-		await renderHook(() =>
+		const { result } = await renderHook(() =>
 			useItems({
 				initial: [{ name: 'foo' }],
-				rules,
+				rules: [labelRule],
 				context: ctx,
 			}),
 		);
 
-		assert.isTrue(received.length > 0);
-		assert.deepEqual(received[0], { org: 'neovici' });
+		assert.equal(result.current.items[0].label, 'neovici/foo');
 	});
 
-	test('computeFn receives context on update', async () => {
-		const received = [];
-		const rules = [
-			[
-				(_current, _old, _index, _oldIndex, context) => {
-					received.push(context);
-					return {};
-				},
-			],
-		];
+	test('rule re-computes derived field using context on update', async () => {
 		const ctx = { org: 'neovici' };
 
 		const { result, nextUpdate } = await renderHook(() =>
 			useItems({
 				initial: [{ name: 'foo' }],
-				rules,
+				rules: [labelRule],
 				context: ctx,
 			}),
 		);
 
-		const initLen = received.length;
 		result.current.update(0, { name: 'bar' });
 		await nextUpdate();
 
-		assert.isTrue(received.length > initLen);
-		assert.deepEqual(received[received.length - 1], { org: 'neovici' });
+		assert.equal(result.current.items[0].label, 'neovici/bar');
 	});
 
-	test('context change triggers rule re-run without explicit update()', async () => {
-		let runCount = 0;
-		const rules = [
-			[
-				() => {
-					runCount++;
-					return {};
-				},
-				(_current, _index, context) => [context?.threshold],
-			],
+	test('context change re-runs rule and updates derived field', async () => {
+		const scoreRule = [
+			({ value }, _old, _index, _oldIndex, context) => ({
+				score: value * (context?.threshold ?? 1),
+			}),
+			({ value }, _index, context) => [value, context?.threshold],
 		];
 
-		const { rerender } = await renderHook(
+		const { result, rerender } = await renderHook(
 			({ ctx }) =>
 				useItems({
 					initial: [{ value: 5 }],
-					rules,
+					rules: [scoreRule],
 					context: ctx,
 				}),
 			{ initialProps: { ctx: { threshold: 10 } } },
 		);
 
-		const runsAfterInit = runCount;
-		assert.isTrue(runsAfterInit >= 1, 'rule should run on init');
+		assert.equal(result.current.items[0].score, 50);
 
 		await rerender({ ctx: { threshold: 20 } });
 		await waitUntil(
-			() => runCount > runsAfterInit,
-			'rule should re-run when context threshold changes',
+			() => result.current.items[0].score === 100,
+			'score should update when context threshold changes',
 		);
 
-		assert.isTrue(runCount > runsAfterInit);
+		assert.equal(result.current.items[0].score, 100);
 	});
 
-	test('append passes context to rules', async () => {
-		const received = [];
-		const rules = [
-			[
-				(_current, _old, _index, _oldIndex, context) => {
-					received.push(context);
-					return {};
-				},
-			],
-		];
+	test('append applies context-aware rule to new items', async () => {
 		const ctx = { org: 'test' };
 
 		const { result, nextUpdate } = await renderHook(() =>
 			useItems({
 				initial: [],
-				rules,
+				rules: [labelRule],
 				context: ctx,
 			}),
 		);
@@ -552,8 +525,7 @@ suite('useItems with context', () => {
 		result.current.append([{ name: 'new' }]);
 		await nextUpdate();
 
-		assert.isTrue(received.length > 0);
-		assert.deepEqual(received[received.length - 1], { org: 'test' });
+		assert.equal(result.current.items[0].label, 'test/new');
 	});
 
 	test('backward compat — rules without context arg work unchanged', async () => {
