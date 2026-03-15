@@ -12,7 +12,7 @@ import {
 
 interface Props<T extends object, C extends object = object> {
 	initial: Readonly<T>;
-	fields?: Fields<T> | (() => Fields<T>);
+	fields?: Fields<T, C> | (() => Fields<T, C>);
 	rules?: readonly ItemRule<T, C>[];
 	context?: C;
 }

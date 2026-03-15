@@ -13,7 +13,7 @@ export const runValidation = <
 	validate: Validate<T, K, V, C>,
 	value: V,
 	values: T,
-	field: Field<T, K, V>,
+	field: Field<T, K, V, C>,
 	context?: C,
 ): string | undefined => {
 	for (const check of array(validate)) {
@@ -29,7 +29,7 @@ export const validateField = <
 	K extends keyof T,
 	C extends object = object,
 >(
-	field: Field<T, K, T[K]>,
+	field: Field<T, K, T[K], C>,
 	values: T,
 	context?: C,
 ) =>
@@ -43,7 +43,7 @@ export const validateField = <
 	);
 
 export const validateFields = <T extends object, C extends object = object>(
-	fields: Fields<T>,
+	fields: Fields<T, C>,
 	values: T,
 	context?: C,
 ): Errors | undefined => {
@@ -55,7 +55,7 @@ export const validateFields = <T extends object, C extends object = object>(
 };
 
 export const validateFieldsM = <T extends object, C extends object = object>(
-	fields: Fields<T>,
+	fields: Fields<T, C>,
 	values: T,
 	context?: C,
 ) => {
@@ -70,7 +70,7 @@ export const validateFieldsM = <T extends object, C extends object = object>(
 };
 
 export const validate = <T extends object, C extends object = object>(
-	fields: Fields<T>,
+	fields: Fields<T, C>,
 	values?: T,
 	context?: C,
 ) =>
@@ -82,7 +82,7 @@ export const validate = <T extends object, C extends object = object>(
 			};
 
 export const validateForms = <T extends object, C extends object = object>(
-	fields: Fields<T>,
+	fields: Fields<T, C>,
 	items: T[],
 	context?: C,
 ) => {

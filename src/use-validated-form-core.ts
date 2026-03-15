@@ -7,7 +7,7 @@ import type { ItemRule } from './use-items/apply-rules';
 import { validate } from './validation';
 
 export const computeRules = <T extends object, C extends object = object>(
-	fields: Fields<T>,
+	fields: Fields<T, C>,
 	rules: readonly ItemRule<T, C>[] = [],
 ): ItemRule<T, C>[] => {
 	const fieldRules = fields
@@ -17,13 +17,15 @@ export const computeRules = <T extends object, C extends object = object>(
 	return [...rules, ...(fieldRules as ItemRule<T, C>[])];
 };
 
-type Validate<T extends object> = ReturnType<typeof validate<T>>;
+type Validate<T extends object, C extends object = object> = ReturnType<
+	typeof validate<T, C>
+>;
 
 export interface UseValidatedForm<T extends object, C extends object = object>
-	extends UseForm<T, C>, Validate<T> {}
+	extends UseForm<T, C>, Validate<T, C> {}
 
 interface Props<T extends object, C extends object = object> {
-	fields?: Fields<T> | (() => Fields<T>);
+	fields?: Fields<T, C> | (() => Fields<T, C>);
 	rules?: readonly ItemRule<T, C>[];
 	context?: C;
 }

@@ -21,15 +21,16 @@ export const renderRemove = (remove: () => void) =>
 		${cancelIcon()}
 	</button>`;
 
-interface RenderOpts<T extends Item> {
-	fields: Fields<T>;
+interface RenderOpts<T extends Item, C extends object = object> {
+	fields: Fields<T, C>;
+	context?: C;
 	remove?: (index: number) => void;
 	update: (index: number, update: Partial<T>) => void;
 }
-export const renderItem = <T extends Item>(
+export const renderItem = <T extends Item, C extends object = object>(
 	values: T,
 	index: number,
-	{ update, remove, fields, ...thru }: RenderOpts<T>,
+	{ update, remove, fields, context, ...thru }: RenderOpts<T, C>,
 ): TemplateResult =>
 	html`<div class="item" data-index=${index}>
 		${[
@@ -37,6 +38,7 @@ export const renderItem = <T extends Item>(
 				...thru,
 				values,
 				fields,
+				context: context ?? ({} as C),
 				onChange: (changes) =>
 					update(index, {
 						...invoke(changes, values),
@@ -47,7 +49,6 @@ export const renderItem = <T extends Item>(
 				onReset: noop,
 				onValues: noop,
 				touched: false,
-				context: {},
 			}),
 			when(remove, (remove) =>
 				renderRemove(values && remove && (() => remove(index))),
@@ -58,9 +59,10 @@ export const renderItem = <T extends Item>(
 const defaultKeyFunction = <V>(item: V): V =>
 	(item as { [key]: V })?.[key] ?? item;
 
-export interface RenderItems<T extends object> {
+export interface RenderItems<T extends object, C extends object = object> {
 	items: T[];
-	fields: Fields<T>;
+	fields: Fields<T, C>;
+	context?: C;
 	paste?: (e: ClipboardEvent) => void;
 	renderItem?: typeof renderItem;
 	defaults?: T;
@@ -71,7 +73,7 @@ export interface RenderItems<T extends object> {
 	style?: string;
 }
 
-export const renderItems = <T extends object>({
+export const renderItems = <T extends object, C extends object = object>({
 	items,
 	fields,
 	renderItem: render = renderItem,
@@ -82,7 +84,7 @@ export const renderItems = <T extends object>({
 	update,
 	style,
 	...thru
-}: RenderItems<T>) =>
+}: RenderItems<T, C>) =>
 	html`<div class="items" @paste=${paste} style=${style}>
 		${virtualize({
 			items: [
@@ -119,10 +121,10 @@ export const renderItems = <T extends object>({
 		})}
 	</div>`;
 
-export const renderItemsStyles = <T extends object>({
+export const renderItemsStyles = <T extends object, C extends object = object>({
 	fields,
 }: {
-	fields: Fields<T>;
+	fields: Fields<T, C>;
 }) => css`
 	${styles}
 	${renderStyles({ fields })}

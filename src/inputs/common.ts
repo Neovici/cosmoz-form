@@ -15,6 +15,7 @@ export interface CommonFieldProps<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
+	C extends object = object,
 > {
 	title?: string;
 	noLabelFloat?: boolean;
@@ -22,8 +23,8 @@ export interface CommonFieldProps<
 	allowedPattern?: string | RegExp;
 	step?: string;
 	maxlength?: number;
-	min?: Invokable<T, Field<T, K, V>, V, number | string>;
-	max?: Invokable<T, Field<T, K, V>, V, number | string>;
+	min?: Invokable<T, Field<T, K, V, C>, V, number | string, C>;
+	max?: Invokable<T, Field<T, K, V, C>, V, number | string, C>;
 	autosize?: boolean;
 	noSpinner?: boolean;
 }

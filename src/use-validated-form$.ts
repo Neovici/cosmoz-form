@@ -9,7 +9,7 @@ export type ProgressValue = string | number;
 export type Progress = [ProgressValue, ProgressValue];
 
 export interface Props<T extends object, C extends object = object> {
-	fields: Fields<T>;
+	fields: Fields<T, C>;
 	initial: T;
 	rules?: ItemRule<T, C>[];
 	asyncRules?: readonly AsyncItemRule<T, C>[];

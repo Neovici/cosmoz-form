@@ -66,16 +66,16 @@ type CostRow = { cost: number };
 
 // context is typed as `object` in Field (no C param on Field itself);
 // cast inside the function body.
-const COST_FIELDS: Fields<CostRow> = [
+const COST_FIELDS: Fields<CostRow, BudgetCtx> = [
 	{
 		id: 'cost',
 		label: 'Cost (€)',
 		input: number,
 		min: 0,
 		suffix: (_value, values, _field, context) => {
-			const budget = (context as BudgetCtx | undefined)?.budget ?? Infinity;
+			const budget = context?.budget ?? Infinity;
 			return when(
-				(values as CostRow).cost > budget,
+				values.cost > budget,
 				() =>
 					html`<span class="story-badge story-badge-warn">Over budget!</span>`,
 			);
@@ -152,13 +152,13 @@ type BudgetCtx = { budget: number };
 type CostRow = { cost: number };
 
 // suffix reads budget from context — shows a badge when cost exceeds it
-const costFields: Fields<CostRow> = [
+const costFields: Fields<CostRow, BudgetCtx> = [
   {
     id: 'cost',
     label: 'Cost (€)',
     input: number,
     suffix: (_value, values, _field, context) => {
-      const budget = (context as BudgetCtx)?.budget ?? Infinity;
+      const budget = context?.budget ?? Infinity;
       return values.cost > budget
         ? html\`<span class="badge">Over budget!</span>\`
         : undefined;
@@ -206,22 +206,22 @@ const DELIVERY_PARENT_FIELDS: Fields<DeliveryParent> = [
 	},
 ];
 
-const ROW_DATE_FIELDS: Fields<RowItem> = [
+const ROW_DATE_FIELDS: Fields<RowItem, DeliveryCtx> = [
 	{
 		id: 'rowDate',
 		label: 'Row date',
 		input: text,
 		placeholder: 'YYYY-MM-DD',
 		validate: (value, _values, _field, context) => {
-			const minDate = (context as DeliveryCtx | undefined)?.deliveryDate;
+			const minDate = context?.deliveryDate;
 			if (!value || !minDate) return false;
 			return value < minDate
 				? `Must be on or after delivery date (${minDate})`
 				: false;
 		},
 		suffix: (value, _values, _field, context) => {
-			const minDate = (context as DeliveryCtx | undefined)?.deliveryDate;
-			return value && minDate && (value as string) >= minDate
+			const minDate = context?.deliveryDate;
+			return value && minDate && value >= minDate
 				? html`<span class="story-badge">✓</span>`
 				: undefined;
 		},
@@ -288,13 +288,13 @@ type DeliveryCtx = { deliveryDate: string };
 type RowItem = { rowDate: string };
 
 // validate reads the minimum date from context
-const rowDateFields: Fields<RowItem> = [
+const rowDateFields: Fields<RowItem, DeliveryCtx> = [
   {
     id: 'rowDate',
     label: 'Row date',
     input: text,
     validate: (value, _values, _field, context) => {
-      const minDate = (context as DeliveryCtx)?.deliveryDate;
+      const minDate = context?.deliveryDate;
       if (!value || !minDate) return false;
       return value < minDate
         ? \`Must be on or after delivery date (\${minDate})\`

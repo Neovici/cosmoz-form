@@ -9,7 +9,7 @@ export type ValidatedItem = Partial<{ [ERROR]: Errors | undefined }>;
 interface Props<T extends ValidatedItem, C extends object = object> {
 	initial: T[];
 	rules?: ItemRule<T, C>[];
-	fields: Fields<T>;
+	fields: Fields<T, C>;
 	context?: C;
 }
 

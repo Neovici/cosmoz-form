@@ -28,7 +28,7 @@ export type InputBaseProps<
 	K extends keyof T,
 	V extends T[K] = T[K],
 	C extends object = object,
-> = Omit<Field<T, K, V>, keyof ComputedRenderOpts<T, K, V>> &
+> = Omit<Field<T, K, V, C>, keyof ComputedRenderOpts<T, K, V>> &
 	ComputedRenderOpts<T, K, V> &
 	RenderThru<T, K, V, C>;
 
@@ -44,8 +44,13 @@ const defaultOnChange = <T extends object, K extends keyof T, V extends T[K]>(
 	update({ [id]: value } as Partial<T>);
 };
 
-const isRequired = <T extends object, K extends keyof T, V extends T[K]>(
-	validate?: Validate<T, K, V>,
+const isRequired = <
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+	C extends object = object,
+>(
+	validate?: Validate<T, K, V, C>,
 ) => {
 	if (Array.isArray(validate)) {
 		return validate.some((v) => v === required);
@@ -76,7 +81,7 @@ export const input =
 				// intercept the update and pass touched
 				(a) => update(a, touched),
 				(field.path as K) ?? field.id,
-				invokeValue(field.value?.[1], value, values, field),
+				invokeValue(field.value?.[1], value, values, field as never),
 				values,
 			);
 
@@ -107,7 +112,7 @@ export const input =
 			warning: invoke(field.warning, value, values, field, context),
 			prefix: invoke(field.prefix, value, values, field, context),
 			suffix: invoke(field.suffix, value, values, field, context),
-			value: invokeValue(field.value?.[0], value, values, field) as V,
+			value: invokeValue(field.value?.[0], value, values, field as never) as V,
 			onFocus: field.onFocus?.(onChange, value, values, field),
 			onChange,
 		});
