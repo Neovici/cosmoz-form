@@ -1,4 +1,4 @@
-import{d as b,j as y,b as A,u as E,k as T,t as p,m as V,p as v,q as $,c as D,s as c,n as R,g as u,v as C,w as S,h as M}from"./inline-file-BLz8T0QW.js";import{b as l}from"./iframe-Ctjo_fZY.js";import"./preload-helper-PPVm8Dsz.js";const L=(e,a)=>Array.isArray(e)?e:[[e,a]],W=({items:e,setItems:a,initial:s,rules:o,context:t})=>{const h=E(void 0);return T(()=>{const r=h.current;h.current=t,r!==void 0&&a(i=>i.map((n,d)=>p(y({oldItem:n,newItem:n,rules:o,index:d,context:t,oldContext:r}),V(n))))},[t]),{items:e,setItems:a,touched:V(e),update:v((r,i)=>a((n=[])=>p(L(r??n.length,i).reduce((d,[m,I])=>[...d.slice(0,m),p(y({oldItem:d[m],newItem:{...d[m],...I},rules:o,index:m,context:t})),...d.slice(m+1)],n))),[o,t]),updateAll:v(r=>a((i=[])=>i.map((n,d)=>{const m=$(r,n);return p(y({oldItem:n,newItem:{...n,...m},rules:o,index:d,context:t}))})),[o,t]),remove:v(r=>a((i=[])=>p([...i.slice(0,r),...i.slice(r+1).map((n,d)=>y({rules:o,newItem:n,oldItem:n,index:d+r,oldIndex:d+r+1,context:t}))])),[o,t]),append:v(r=>a((i=[])=>p(i.concat(r.map((n,d)=>y({rules:o,newItem:n,index:d+i.length,context:t}))))),[o,t]),reset:v(()=>a(s),[s]),clear:v(()=>a(p([])),[]),load:v((r,i)=>a(r.map((n,d)=>y({newItem:n,index:d,rules:i??o,context:t}))),[o,t])}},B=({initial:e,rules:a,context:s})=>{const o=b(()=>e.map((r,i)=>y({rules:a,newItem:r,index:i,context:s})),[e]),[t,h]=A(o);return W({items:t,setItems:h,initial:o,rules:a,context:s})},F=l`
+import{d as b,j as y,b as A,u as E,k as T,t as p,m as V,p as v,q as $,c as D,s as c,n as R,g as u,v as C,w as S,h as M}from"./inline-file-CZKSQraz.js";import{b as l}from"./iframe-BvfsljuF.js";import"./preload-helper-PPVm8Dsz.js";const L=(e,o)=>Array.isArray(e)?e:[[e,o]],W=({items:e,setItems:o,initial:s,rules:a,context:t})=>{const h=E(void 0);return T(()=>{const r=h.current;h.current=t,r!==void 0&&o(i=>i.map((n,d)=>p(y({oldItem:n,newItem:n,rules:a,index:d,context:t,oldContext:r}),V(n))))},[t]),{items:e,setItems:o,touched:V(e),update:v((r,i)=>o((n=[])=>p(L(r??n.length,i).reduce((d,[m,I])=>[...d.slice(0,m),p(y({oldItem:d[m],newItem:{...d[m],...I},rules:a,index:m,context:t})),...d.slice(m+1)],n))),[a,t]),updateAll:v(r=>o((i=[])=>i.map((n,d)=>{const m=$(r,n);return p(y({oldItem:n,newItem:{...n,...m},rules:a,index:d,context:t}))})),[a,t]),remove:v(r=>o((i=[])=>p([...i.slice(0,r),...i.slice(r+1).map((n,d)=>y({rules:a,newItem:n,oldItem:n,index:d+r,oldIndex:d+r+1,context:t}))])),[a,t]),append:v(r=>o((i=[])=>p(i.concat(r.map((n,d)=>y({rules:a,newItem:n,index:d+i.length,context:t}))))),[a,t]),reset:v(()=>o(s),[s]),clear:v(()=>o(p([])),[]),load:v((r,i)=>o(r.map((n,d)=>y({newItem:n,index:d,rules:i??a,context:t}))),[a,t])}},B=({initial:e,rules:o,context:s})=>{const a=b(()=>e.map((r,i)=>y({rules:o,newItem:r,index:i,context:s})),[e]),[t,h]=A(a);return W({items:t,setItems:h,initial:a,rules:o,context:s})},F=l`
     <style>
         .story-wrap {
             font-family: sans-serif;
@@ -36,7 +36,7 @@ import{d as b,j as y,b as A,u as E,k as T,t as p,m as V,p as v,q as $,c as D,s a
             background: #c27803;
         }
     </style>
-`,w=[{id:"cost",label:"Cost (€)",input:R,min:0,suffix:(e,a,s,o)=>{const t=o?.budget??1/0;return M(a.cost>t,()=>l`<span class="story-badge story-badge-warn">Over budget!</span>`)}}],Y=[{id:"budget",label:"Budget (€)",input:R,min:0}],P=()=>{const e=c({fields:Y,initial:{budget:100}}),a=b(()=>({budget:e.values.budget}),[e.values.budget]),s=c({fields:w,initial:{cost:50},context:a}),o=c({fields:w,initial:{cost:120},context:a}),t=c({fields:w,initial:{cost:80},context:a});return l`
+`,w=[{id:"cost",label:"Cost (€)",input:R,min:0,suffix:(e,o,s,a)=>{const t=a?.budget??1/0;return M(e>t,()=>l`<span class="story-badge story-badge-warn">Over budget!</span>`)}}],Y=[{id:"budget",label:"Budget (€)",input:R,min:0}],P=()=>{const e=c({fields:Y,initial:{budget:100}}),o=b(()=>({budget:e.values.budget}),[e.values.budget]),s=c({fields:w,initial:{cost:50},context:o}),a=c({fields:w,initial:{cost:120},context:o}),t=c({fields:w,initial:{cost:80},context:o});return l`
         ${F}
         <div class="story-wrap">
             <div class="story-section">
@@ -46,7 +46,7 @@ import{d as b,j as y,b as A,u as E,k as T,t as p,m as V,p as v,q as $,c as D,s a
 
             <div class="story-section">
                 <h3>Rows — cost suffix reflects parent budget via context</h3>
-                ${u(s)} ${u(o)} ${u(t)}
+                ${u(s)} ${u(a)} ${u(t)}
             </div>
 
             <p class="story-hint">
@@ -63,9 +63,9 @@ const costFields: Fields<CostRow, BudgetCtx> = [
     id: 'cost',
     label: 'Cost (€)',
     input: number,
-    suffix: (_value, values, _field, context) => {
+    suffix: (value, _values, _field, context) => {
       const budget = context?.budget ?? Infinity;
-      return values.cost > budget
+      return value > budget
         ? html\`<span class="badge">Over budget!</span>\`
         : undefined;
     },
@@ -89,7 +89,7 @@ const rowForm = useValidatedForm<CostRow, BudgetCtx>({
   fields: costFields,
   initial: { cost: 120 },
   context: ctx,
-});`}}};const k=[{id:"deliveryDate",label:"Delivery date",input:C,placeholder:"YYYY-MM-DD"}],_=[{id:"rowDate",label:"Row date",input:C,placeholder:"YYYY-MM-DD",validate:(e,a,s,o)=>{const t=o?.deliveryDate;return!e||!t?!1:e<t?`Must be on or after delivery date (${t})`:!1},suffix:(e,a,s,o)=>{const t=o?.deliveryDate;return e&&t&&e>=t?l`<span class="story-badge">✓</span>`:void 0}}],z=()=>{const e=c({fields:k,initial:{deliveryDate:"2024-06-01"}}),a=b(()=>({deliveryDate:e.values.deliveryDate}),[e.values.deliveryDate]),s=c({fields:_,initial:{rowDate:"2024-07-01"},context:a}),o=c({fields:_,initial:{rowDate:"2024-05-01"},context:a});return l`
+});`}}};const k=[{id:"deliveryDate",label:"Delivery date",input:C,placeholder:"YYYY-MM-DD"}],_=[{id:"rowDate",label:"Row date",input:C,placeholder:"YYYY-MM-DD",validate:(e,o,s,a)=>{const t=a?.deliveryDate;return!e||!t?!1:e<t?`Must be on or after delivery date (${t})`:!1},suffix:(e,o,s,a)=>{const t=a?.deliveryDate;return e&&t&&e>=t?l`<span class="story-badge">✓</span>`:void 0}}],z=()=>{const e=c({fields:k,initial:{deliveryDate:"2024-06-01"}}),o=b(()=>({deliveryDate:e.values.deliveryDate}),[e.values.deliveryDate]),s=c({fields:_,initial:{rowDate:"2024-07-01"},context:o}),a=c({fields:_,initial:{rowDate:"2024-05-01"},context:o});return l`
         ${F}
         <div class="story-wrap">
             <div class="story-section">
@@ -99,7 +99,7 @@ const rowForm = useValidatedForm<CostRow, BudgetCtx>({
 
             <div class="story-section">
                 <h3>Rows — row date validated against parent delivery date</h3>
-                ${u(s)} ${u(o)}
+                ${u(s)} ${u(a)}
             </div>
 
             <p class="story-hint">
@@ -143,7 +143,7 @@ const rowForm = useValidatedForm<RowItem, DeliveryCtx>({
   fields: rowDateFields,
   initial: { rowDate: '2024-05-01' },
   context: ctx,
-});`}}};const N=[{id:"vatRate",label:"VAT rate (%)",input:R,min:0,max:100}],O=[[({price:e},a,s,o,t)=>({totalWithVat:Math.round(e*(1+(t?.vatRate??0)/100)*100)/100}),({price:e},a,s)=>[e,s?.vatRate]]],j=()=>{const e=c({fields:N,initial:{vatRate:20}}),a=b(()=>({vatRate:e.values.vatRate}),[e.values.vatRate]),{items:s}=B({initial:[{price:100,totalWithVat:0},{price:250,totalWithVat:0},{price:75,totalWithVat:0}],rules:O,context:a});return l`
+});`}}};const N=[{id:"vatRate",label:"VAT rate (%)",input:R,min:0,max:100}],O=[[({price:e},o,s,a,t)=>({totalWithVat:Math.round(e*(1+(t?.vatRate??0)/100)*100)/100}),({price:e},o,s)=>[e,s?.vatRate]]],j=()=>{const e=c({fields:N,initial:{vatRate:20}}),o=b(()=>({vatRate:e.values.vatRate}),[e.values.vatRate]),{items:s}=B({initial:[{price:100,totalWithVat:0},{price:250,totalWithVat:0},{price:75,totalWithVat:0}],rules:O,context:o});return l`
         ${F}
         <div class="story-wrap">
             <div class="story-section">
@@ -153,16 +153,16 @@ const rowForm = useValidatedForm<RowItem, DeliveryCtx>({
 
             <div class="story-section">
                 <h3>Line items — totals recomputed when VAT rate changes</h3>
-                ${S(s,(o,t)=>t,o=>l`
+                ${S(s,(a,t)=>t,a=>l`
                         <div
                             style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #eee"
                         >
                             <span style="font-size:0.9rem"
-                                >Price: <strong>${o.price.toFixed(2)} €</strong></span
+                                >Price: <strong>${a.price.toFixed(2)} €</strong></span
                             >
                             <span style="font-size:0.9rem"
                                 >Total with VAT:
-                                <strong>${o.totalWithVat.toFixed(2)} €</strong></span
+                                <strong>${a.totalWithVat.toFixed(2)} €</strong></span
                             >
                         </div>
                     `)}
