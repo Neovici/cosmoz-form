@@ -143,6 +143,50 @@ export const BudgetContext = () =>
 	html`<story-context-budget></story-context-budget>`;
 
 BudgetContext.storyName = 'Budget context — parent value in row suffix';
+BudgetContext.parameters = {
+	docs: {
+		source: {
+			language: 'typescript',
+			code: `\
+type BudgetCtx = { budget: number };
+type CostRow = { cost: number };
+
+// suffix reads budget from context — shows a badge when cost exceeds it
+const costFields: Fields<CostRow> = [
+  {
+    id: 'cost',
+    label: 'Cost (€)',
+    input: number,
+    suffix: (_value, values, _field, context) => {
+      const budget = (context as BudgetCtx)?.budget ?? Infinity;
+      return values.cost > budget
+        ? html\`<span class="badge">Over budget!</span>\`
+        : undefined;
+    },
+  },
+];
+
+// Parent form owns the budget value
+const budgetForm = useValidatedForm({
+  fields: [{ id: 'budget', label: 'Budget (€)', input: number }],
+  initial: { budget: 100 },
+});
+
+// Memoize to keep the context reference stable between renders
+const ctx = useMemo(
+  () => ({ budget: budgetForm.values.budget }),
+  [budgetForm.values.budget],
+);
+
+// Row forms receive context — suffix re-evaluates whenever ctx changes
+const rowForm = useValidatedForm<CostRow, BudgetCtx>({
+  fields: costFields,
+  initial: { cost: 120 },
+  context: ctx,
+});`,
+		},
+	},
+};
 
 // ── Story 2: Delivery date validation ─────────────────────────────────────────
 //
@@ -235,6 +279,50 @@ export const DeliveryValidation = () =>
 
 DeliveryValidation.storyName =
 	'Delivery date context — validate rows against parent date';
+DeliveryValidation.parameters = {
+	docs: {
+		source: {
+			language: 'typescript',
+			code: `\
+type DeliveryCtx = { deliveryDate: string };
+type RowItem = { rowDate: string };
+
+// validate reads the minimum date from context
+const rowDateFields: Fields<RowItem> = [
+  {
+    id: 'rowDate',
+    label: 'Row date',
+    input: text,
+    validate: (value, _values, _field, context) => {
+      const minDate = (context as DeliveryCtx)?.deliveryDate;
+      if (!value || !minDate) return false;
+      return value < minDate
+        ? \`Must be on or after delivery date (\${minDate})\`
+        : false;
+    },
+  },
+];
+
+// Parent form owns the delivery date
+const parentForm = useValidatedForm({
+  fields: [{ id: 'deliveryDate', label: 'Delivery date', input: text }],
+  initial: { deliveryDate: '2024-06-01' },
+});
+
+const ctx = useMemo(
+  () => ({ deliveryDate: parentForm.values.deliveryDate }),
+  [parentForm.values.deliveryDate],
+);
+
+// When deliveryDate changes, rowForm re-validates immediately via context
+const rowForm = useValidatedForm<RowItem, DeliveryCtx>({
+  fields: rowDateFields,
+  initial: { rowDate: '2024-05-01' },
+  context: ctx,
+});`,
+		},
+	},
+};
 
 // ── Story 3: VAT context in computed rules ────────────────────────────────────
 //
@@ -324,6 +412,45 @@ customElements.define('story-context-vat', component(VatDemo));
 export const VatRules = () => html`<story-context-vat></story-context-vat>`;
 
 VatRules.storyName = 'VAT context — rules recompute when parent rate changes';
+VatRules.parameters = {
+	docs: {
+		source: {
+			language: 'typescript',
+			code: `\
+type VatCtx = { vatRate: number };
+type LineItem = { price: number; totalWithVat: number };
+
+// Rule computes totalWithVat from price × (1 + vatRate%).
+// depsFn includes context.vatRate so the rule re-runs when VAT changes.
+const vatRule: ItemRule<LineItem, VatCtx> = [
+  ({ price }, _old, _index, _oldIndex, context) => ({
+    totalWithVat:
+      Math.round(price * (1 + (context?.vatRate ?? 0) / 100) * 100) / 100,
+  }),
+  ({ price }, _index, context) => [price, context?.vatRate],
+];
+
+// Parent form owns the VAT rate
+const vatForm = useValidatedForm({
+  fields: [{ id: 'vatRate', label: 'VAT rate (%)', input: number }],
+  initial: { vatRate: 20 },
+});
+
+const ctx = useMemo(
+  () => ({ vatRate: vatForm.values.vatRate }),
+  [vatForm.values.vatRate],
+);
+
+// All items recompute totalWithVat whenever ctx.vatRate changes —
+// no explicit update() call needed, context change triggers the rule.
+const { items } = useItems<LineItem, VatCtx>({
+  initial: lineItems,
+  rules: [vatRule],
+  context: ctx,
+});`,
+		},
+	},
+};
 
 // ── Meta ──────────────────────────────────────────────────────────────────────
 
