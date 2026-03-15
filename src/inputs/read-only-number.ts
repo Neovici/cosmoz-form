@@ -1,9 +1,9 @@
 import { invoke } from '@neovici/cosmoz-utils/function';
 import { html } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { InputProps } from '../types';
 import { ensureNumber } from '../util/number';
 import { renderContents } from './render';
-import { InputProps } from '../types';
 
 export interface ReadOnlyNumberProps {
 	format?: (value?: number) => string;
@@ -25,6 +25,7 @@ export const readOnlyNumber = <
 	values,
 	field,
 	error,
+	context,
 }: InputProps<T, K, V>) => {
 	const {
 		id,
@@ -50,8 +51,8 @@ export const readOnlyNumber = <
 			?invalid=${!!error}
 			.errorMessage=${error}
 			>${renderContents({
-				suffix: invoke(suffix, value, values, field),
-				warning: invoke(warning, value, values, field),
+				suffix: invoke(suffix, value, values, field, context),
+				warning: invoke(warning, value, values, field, context),
 			})}</cosmoz-input
 		>`,
 	];

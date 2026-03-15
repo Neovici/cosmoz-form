@@ -11,13 +11,19 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
 	console.error('[cosmoz-form] async rule error:', err);
 };
 
-type RunnerMap<T> = Map<AsyncItemRule<T>, Map<number, AsyncRunner<T>>>;
-type DepsMap<T> = Map<AsyncItemRule<T>, Map<number, unknown[]>>;
+type RunnerMap<T, C extends object = object> = Map<
+	AsyncItemRule<T, C>,
+	Map<number, AsyncRunner<T, C>>
+>;
+type DepsMap<T, C extends object = object> = Map<
+	AsyncItemRule<T, C>,
+	Map<number, unknown[]>
+>;
 
-const ensureRuleTracking = <T>(
-	rule: AsyncItemRule<T>,
-	runnersRef: { current: RunnerMap<T> },
-	prevDepsRef: { current: DepsMap<T> },
+const ensureRuleTracking = <T, C extends object = object>(
+	rule: AsyncItemRule<T, C>,
+	runnersRef: { current: RunnerMap<T, C> },
+	prevDepsRef: { current: DepsMap<T, C> },
 ) => {
 	if (runnersRef.current.has(rule)) return;
 	runnersRef.current.set(rule, new Map());
@@ -30,24 +36,26 @@ const ensureRuleTracking = <T>(
  *
  * Usage:
  *   const core = useItems({ initial, rules });
- *   useAsyncRules(core.items, asyncRules, core.update);
+ *   useAsyncRules(core.items, asyncRules, core.update, { context });
  *   return core;
  */
-export const useAsyncRules = <T extends object>(
+export const useAsyncRules = <T extends object, C extends object = object>(
 	items: T[],
-	asyncRules: readonly AsyncItemRule<T>[] | undefined,
+	asyncRules: readonly AsyncItemRule<T, C>[] | undefined,
 	update: UseItemsCore<T>['update'],
 	opts?: {
-		onError?: (err: unknown, rule: AsyncItemRule<T>, index: number) => void;
+		context?: C;
+		onError?: (err: unknown, rule: AsyncItemRule<T, C>, index: number) => void;
 	},
 ): { processing: boolean } => {
+	const context = opts?.context;
 	const onError = opts?.onError ?? DEFAULT_ON_ERROR;
 
 	const pendingCount = useRef(0);
 	const [processing, setProcessing] = useState(false);
 
-	const runnersRef = useRef<RunnerMap<T>>(new Map());
-	const prevDepsRef = useRef<DepsMap<T>>(new Map());
+	const runnersRef = useRef<RunnerMap<T, C>>(new Map());
+	const prevDepsRef = useRef<DepsMap<T, C>>(new Map());
 
 	// Cleanup on unmount
 	useEffect(
@@ -61,7 +69,7 @@ export const useAsyncRules = <T extends object>(
 		[],
 	);
 
-	// Dep-check + rule dispatch: runs after every items change
+	// Dep-check + rule dispatch: runs after every items or context change
 	useEffect(() => {
 		if (!asyncRules?.length) {
 			return;
@@ -78,7 +86,7 @@ export const useAsyncRules = <T extends object>(
 					runnersForRule.set(idx, runnerFactory());
 				}
 
-				const deps = depsFn(item, idx);
+				const deps = depsFn(item, idx, context);
 				const prev = prevDepsRef.current.get(rule)!.get(idx);
 
 				if (prev != null && !changed(deps, prev)) {
@@ -97,7 +105,7 @@ export const useAsyncRules = <T extends object>(
 						ruleFn,
 						item,
 						(patch) => update(idx, patch), // intermediate: no touch
-						{ index: idx },
+						{ index: idx, context },
 					)
 					.then((result) => {
 						if (result !== null) {
@@ -111,7 +119,7 @@ export const useAsyncRules = <T extends object>(
 					});
 			}
 		}
-	}, [items]);
+	}, [items, context]);
 
 	return { processing };
 };

@@ -5,10 +5,12 @@ import { useFormCore } from './use-form-core';
 import type { FormValues, UseForm } from './use-form-core';
 import { applyRules, ItemRule } from './use-items/apply-rules';
 
-export const processInitial = <T extends object>(
+export const processInitial = <T extends object, C extends object = object>(
 	initial: T,
-	rules?: readonly ItemRule<T>[],
-): T => untouch(applyRules({ oldItem: undefined, newItem: initial, rules }));
+	rules?: readonly ItemRule<T, C>[],
+	context?: C,
+): T =>
+	untouch(applyRules({ oldItem: undefined, newItem: initial, rules, context }));
 
 export const useForm = <T extends object>(
 	initial: T,

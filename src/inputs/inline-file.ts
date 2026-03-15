@@ -1,12 +1,12 @@
 import { _ } from '@neovici/cosmoz-i18next';
+import { tagged as css } from '@neovici/cosmoz-utils';
 import { invoke, noop } from '@neovici/cosmoz-utils/function';
 import { html } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { until } from 'lit-html/directives/until.js';
+import { InputBaseOpts } from '../types';
 import { input } from './base';
 import { text } from './common';
-import { tagged as css } from '@neovici/cosmoz-utils';
-import { InputBaseOpts } from '../types';
 
 // TODO: wrap in a component
 export const inlineFileStyle = css`
@@ -84,6 +84,7 @@ export const inlineFile = input(
 				onValues: noop,
 				touched: false,
 				values,
+				context: {},
 			})}
 
 			<input

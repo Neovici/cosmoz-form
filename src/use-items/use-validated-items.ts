@@ -6,35 +6,46 @@ import type { ItemRule } from './apply-rules';
 import { useItems, UseItemsCore } from './use-items';
 
 export type ValidatedItem = Partial<{ [ERROR]: Errors | undefined }>;
-interface Props<T extends ValidatedItem> {
+interface Props<T extends ValidatedItem, C extends object = object> {
 	initial: T[];
-	rules?: ItemRule<T>[];
-	fields: Fields<T>;
+	rules?: ItemRule<T, C>[];
+	fields: Fields<T, C>;
+	context?: C;
+	touched?: boolean;
 }
 
-export interface UseValidatedItems<T extends object>
-	extends UseItemsCore<T & ValidatedItem> {
+export interface UseValidatedItems<T extends object> extends UseItemsCore<
+	T & ValidatedItem
+> {
 	invalid: boolean;
 }
 
-export const useValidatedItems = <T extends object>({
+export const useValidatedItems = <T extends object, C extends object = object>({
 	initial,
 	rules,
 	fields,
-}: Props<T>): UseValidatedItems<T> => {
+	context,
+	touched,
+}: Props<T, C>): UseValidatedItems<T> => {
 	const meta = useMeta({ fields }),
 		validation: ItemRule<T> = useMemo(
 			() => [
 				(item: T) =>
-					({ [ERROR]: validateFields(meta.fields, item) }) as Partial<
+					({ [ERROR]: validateFields(meta.fields, item, context) }) as Partial<
 						T & ValidatedItem
 					>,
 			],
-			[meta],
+			[meta, context],
 		),
-		{ items, ...rest } = useItems<T & ValidatedItem>({
+		{ items, ...rest } = useItems<T & ValidatedItem, C>({
 			initial,
-			rules: useMemo(() => [...(rules ?? []), validation], [rules, validation]),
+			rules: useMemo(
+				() =>
+					[...(rules ?? []), validation] as ItemRule<T & ValidatedItem, C>[],
+				[rules, validation],
+			),
+			context,
+			touched,
 		}),
 		invalid = useMemo(() => items.some((i) => i[ERROR]), [items]);
 

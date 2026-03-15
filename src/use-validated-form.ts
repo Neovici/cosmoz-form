@@ -1,26 +1,30 @@
 import { useState } from '@pionjs/pion';
+import { invoke } from './helpers';
 import type { Fields } from './types';
 import { processInitial } from './use-form';
-import type { ItemRule } from './use-items/apply-rules';
-import { computeRules, useValidatedFormCore } from './use-validated-form-core';
-// eslint-disable-next-line no-duplicate-imports
-import type { UseValidatedForm } from './use-validated-form-core';
-import { invoke } from './helpers';
 import { FormValues } from './use-form-core';
+import type { ItemRule } from './use-items/apply-rules';
+import {
+	computeRules,
+	useValidatedFormCore,
+	type UseValidatedForm,
+} from './use-validated-form-core';
 
-interface Props<T extends object> {
+interface Props<T extends object, C extends object = object> {
 	initial: Readonly<T>;
-	fields?: Fields<T> | (() => Fields<T>);
-	rules?: readonly ItemRule<T>[];
+	fields?: Fields<T, C> | (() => Fields<T, C>);
+	rules?: readonly ItemRule<T, C>[];
+	context?: C;
+	touched?: boolean;
 }
 
-export const useValidatedForm = <T extends object>(
-	options: Readonly<Props<T>>,
-): UseValidatedForm<T> => {
+export const useValidatedForm = <T extends object, C extends object = object>(
+	options: Readonly<Props<T, C>>,
+): UseValidatedForm<T, C> => {
 	const [state, setState] = useState<FormValues<T>>(() => {
 		const fields = invoke(options.fields) ?? [],
 			allRules = computeRules(fields, options.rules),
-			ini = processInitial(options.initial, allRules);
+			ini = processInitial(options.initial, allRules, options.context);
 
 		return [ini, ini];
 	});

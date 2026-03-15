@@ -1,8 +1,11 @@
 import type { AsyncRunner } from './async-rule';
 
-export type TakeLatestRunner<T> = AsyncRunner<T>;
+export type TakeLatestRunner<T, C extends object = object> = AsyncRunner<T, C>;
 
-export const makeTakeLatestRunner = <T>(): TakeLatestRunner<T> => {
+export const makeTakeLatestRunner = <
+	T,
+	C extends object = object,
+>(): TakeLatestRunner<T, C> => {
 	let ac: AbortController | null = null;
 
 	return {
@@ -13,6 +16,7 @@ export const makeTakeLatestRunner = <T>(): TakeLatestRunner<T> => {
 				update: onIntermediate,
 				signal: ac.signal,
 				index: opts?.index,
+				context: opts?.context,
 			};
 			try {
 				return await fn(values, asyncOpts);

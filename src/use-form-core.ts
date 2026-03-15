@@ -1,10 +1,17 @@
-import { useCallback, useMemo, StateUpdater } from '@pionjs/pion';
 import { invoke } from '@neovici/cosmoz-utils/function';
+import {
+	StateUpdater,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+} from '@pionjs/pion';
+import { touch, touched, untouch } from './touch';
 import { applyRules, ItemRule } from './use-items/apply-rules';
-import { touch, untouch, touched } from './touch';
 
-export interface UseForm<T extends object> {
+export interface UseForm<T extends object, C extends object = object> {
 	values: T;
+	context: C;
 	onReset: () => void;
 	onValues: (valueOrFn: T | ((values: T) => T), touched?: boolean) => void;
 	onChange: (
@@ -17,15 +24,40 @@ export interface UseForm<T extends object> {
 
 export type FormValues<T extends object> = readonly [T, T];
 
-export const useFormCore = <T extends object>(
+export const useFormCore = <T extends object, C extends object = object>(
 	state: FormValues<T>,
 	setState: StateUpdater<FormValues<T>>,
-	rules?: readonly ItemRule<T>[],
-): UseForm<T> => {
+	rules?: readonly ItemRule<T, C>[],
+	context?: C,
+	externalTouched?: boolean,
+): UseForm<T, C> => {
 	const [, values] = state;
+
+	// Re-apply rules when context changes, passing oldContext so depsFn comparisons
+	// correctly detect the change (new context vs old context for the same values).
+	const prevContextRef = useRef<C | undefined>(undefined);
+	useEffect(() => {
+		const oldContext = prevContextRef.current;
+		prevContextRef.current = context;
+		if (oldContext === undefined) return; // skip mount
+		setState(([initial, values]) => [
+			initial,
+			touch(
+				applyRules({
+					oldItem: values,
+					newItem: values,
+					rules,
+					context,
+					oldContext,
+				}),
+				touched(values),
+			),
+		]);
+	}, [context]);
 
 	return {
 		values,
+		context: (context ?? {}) as C,
 		onReset: useCallback(
 			() => setState(([initial]) => [initial, initial]),
 			[setState],
@@ -39,11 +71,12 @@ export const useFormCore = <T extends object>(
 							oldItem: prev,
 							newItem: invoke(valuesOrFn, prev),
 							rules,
+							context,
 						}),
 						touched,
 					),
 				]),
-			[rules, setState],
+			[rules, setState, context],
 		),
 		onChange: useCallback(
 			(update, touched = true) =>
@@ -57,11 +90,12 @@ export const useFormCore = <T extends object>(
 								...invoke(update, values),
 							},
 							rules,
+							context,
 						}),
 						touched,
 					),
 				]),
-			[rules, setState],
+			[rules, setState, context],
 		),
 		load: useCallback(
 			(values, rulesOverride) => {
@@ -75,12 +109,16 @@ export const useFormCore = <T extends object>(
 						oldItem: undefined,
 						newItem: values,
 						rules: rulesOverride ?? rules,
+						context,
 					}),
 				);
 				setState([ini, ini]);
 			},
-			[rules, setState],
+			[rules, setState, context],
 		),
-		touched: useMemo(() => touched(values), [values]),
+		touched: useMemo(
+			() => touched(values) || (externalTouched ?? false),
+			[values, externalTouched],
+		),
 	};
 };
