@@ -1,4 +1,4 @@
-import{d as b,j as y,b as A,u as E,k as T,t as p,m as V,p as v,q as $,c as D,s as c,n as R,g as u,v as C,w as S,h as M}from"./inline-file-CryJueh6.js";import{b as l}from"./iframe-CkpUpc05.js";import"./preload-helper-PPVm8Dsz.js";const L=(e,a)=>Array.isArray(e)?e:[[e,a]],W=({items:e,setItems:a,initial:s,rules:o,context:t})=>{const h=E(void 0);return T(()=>{const r=h.current;h.current=t,r!==void 0&&a(i=>i.map((n,d)=>p(y({oldItem:n,newItem:n,rules:o,index:d,context:t,oldContext:r}),V(n))))},[t]),{items:e,setItems:a,touched:V(e),update:v((r,i)=>a((n=[])=>p(L(r??n.length,i).reduce((d,[m,I])=>[...d.slice(0,m),p(y({oldItem:d[m],newItem:{...d[m],...I},rules:o,index:m,context:t})),...d.slice(m+1)],n))),[o,t]),updateAll:v(r=>a((i=[])=>i.map((n,d)=>{const m=$(r,n);return p(y({oldItem:n,newItem:{...n,...m},rules:o,index:d,context:t}))})),[o,t]),remove:v(r=>a((i=[])=>p([...i.slice(0,r),...i.slice(r+1).map((n,d)=>y({rules:o,newItem:n,oldItem:n,index:d+r,oldIndex:d+r+1,context:t}))])),[o,t]),append:v(r=>a((i=[])=>p(i.concat(r.map((n,d)=>y({rules:o,newItem:n,index:d+i.length,context:t}))))),[o,t]),reset:v(()=>a(s),[s]),clear:v(()=>a(p([])),[]),load:v((r,i)=>a(r.map((n,d)=>y({newItem:n,index:d,rules:i??o,context:t}))),[o,t])}},B=({initial:e,rules:a,context:s})=>{const o=b(()=>e.map((r,i)=>y({rules:a,newItem:r,index:i,context:s})),[e]),[t,h]=A(o);return W({items:t,setItems:h,initial:o,rules:a,context:s})},F=l`
+import{d as b,j as y,b as A,u as E,k as T,t as p,m as V,p as v,q as $,c as D,s as c,n as R,g as u,v as C,w as S,h as M}from"./inline-file-BLz8T0QW.js";import{b as l}from"./iframe-Ctjo_fZY.js";import"./preload-helper-PPVm8Dsz.js";const L=(e,a)=>Array.isArray(e)?e:[[e,a]],W=({items:e,setItems:a,initial:s,rules:o,context:t})=>{const h=E(void 0);return T(()=>{const r=h.current;h.current=t,r!==void 0&&a(i=>i.map((n,d)=>p(y({oldItem:n,newItem:n,rules:o,index:d,context:t,oldContext:r}),V(n))))},[t]),{items:e,setItems:a,touched:V(e),update:v((r,i)=>a((n=[])=>p(L(r??n.length,i).reduce((d,[m,I])=>[...d.slice(0,m),p(y({oldItem:d[m],newItem:{...d[m],...I},rules:o,index:m,context:t})),...d.slice(m+1)],n))),[o,t]),updateAll:v(r=>a((i=[])=>i.map((n,d)=>{const m=$(r,n);return p(y({oldItem:n,newItem:{...n,...m},rules:o,index:d,context:t}))})),[o,t]),remove:v(r=>a((i=[])=>p([...i.slice(0,r),...i.slice(r+1).map((n,d)=>y({rules:o,newItem:n,oldItem:n,index:d+r,oldIndex:d+r+1,context:t}))])),[o,t]),append:v(r=>a((i=[])=>p(i.concat(r.map((n,d)=>y({rules:o,newItem:n,index:d+i.length,context:t}))))),[o,t]),reset:v(()=>a(s),[s]),clear:v(()=>a(p([])),[]),load:v((r,i)=>a(r.map((n,d)=>y({newItem:n,index:d,rules:i??o,context:t}))),[o,t])}},B=({initial:e,rules:a,context:s})=>{const o=b(()=>e.map((r,i)=>y({rules:a,newItem:r,index:i,context:s})),[e]),[t,h]=A(o);return W({items:t,setItems:h,initial:o,rules:a,context:s})},F=l`
     <style>
         .story-wrap {
             font-family: sans-serif;
@@ -58,13 +58,13 @@ import{d as b,j as y,b as A,u as E,k as T,t as p,m as V,p as v,q as $,c as D,s a
 type CostRow = { cost: number };
 
 // suffix reads budget from context — shows a badge when cost exceeds it
-const costFields: Fields<CostRow> = [
+const costFields: Fields<CostRow, BudgetCtx> = [
   {
     id: 'cost',
     label: 'Cost (€)',
     input: number,
     suffix: (_value, values, _field, context) => {
-      const budget = (context as BudgetCtx)?.budget ?? Infinity;
+      const budget = context?.budget ?? Infinity;
       return values.cost > budget
         ? html\`<span class="badge">Over budget!</span>\`
         : undefined;
@@ -112,13 +112,13 @@ const rowForm = useValidatedForm<CostRow, BudgetCtx>({
 type RowItem = { rowDate: string };
 
 // validate reads the minimum date from context
-const rowDateFields: Fields<RowItem> = [
+const rowDateFields: Fields<RowItem, DeliveryCtx> = [
   {
     id: 'rowDate',
     label: 'Row date',
     input: text,
     validate: (value, _values, _field, context) => {
-      const minDate = (context as DeliveryCtx)?.deliveryDate;
+      const minDate = context?.deliveryDate;
       if (!value || !minDate) return false;
       return value < minDate
         ? \`Must be on or after delivery date (\${minDate})\`
