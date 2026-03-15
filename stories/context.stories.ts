@@ -72,10 +72,10 @@ const COST_FIELDS: Fields<CostRow, BudgetCtx> = [
 		label: 'Cost (€)',
 		input: number,
 		min: 0,
-		suffix: (_value, values, _field, context) => {
+		suffix: (value, _values, _field, context) => {
 			const budget = context?.budget ?? Infinity;
 			return when(
-				values.cost > budget,
+				value > budget,
 				() =>
 					html`<span class="story-badge story-badge-warn">Over budget!</span>`,
 			);
@@ -157,9 +157,9 @@ const costFields: Fields<CostRow, BudgetCtx> = [
     id: 'cost',
     label: 'Cost (€)',
     input: number,
-    suffix: (_value, values, _field, context) => {
+    suffix: (value, _values, _field, context) => {
       const budget = context?.budget ?? Infinity;
-      return values.cost > budget
+      return value > budget
         ? html\`<span class="badge">Over budget!</span>\`
         : undefined;
     },
