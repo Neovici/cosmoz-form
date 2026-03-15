@@ -94,9 +94,10 @@ export type Codec<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
+	C extends object = object,
 > = readonly [
-	Invoked<T, Field<T, K, V>, V, unknown>,
-	Invoked<T, Field<T, K, V>, unknown, V>,
+	Invoked<T, Field<T, K, V, C>, V, unknown, C>,
+	Invoked<T, Field<T, K, V, C>, unknown, V, C>,
 ];
 
 export interface Field<
@@ -125,7 +126,7 @@ export interface Field<
 	prefix?: Invokable<T, Field<T, K, V, C>, V, Renderable, C>;
 	suffix?: Invokable<T, Field<T, K, V, C>, V, Renderable, C>;
 	// TODO: figure out how to properly enforce the codec type to match the expect input type
-	value?: Codec<T, K, V>;
+	value?: Codec<T, K, V, C>;
 	styles?: Record<string, string>;
 	onFocus?: OnFocusFn<T, Field<T, K, V, C>, V>;
 	onChange?: OnChange<T, K, V>;

@@ -81,7 +81,7 @@ export const input =
 				// intercept the update and pass touched
 				(a) => update(a, touched),
 				(field.path as K) ?? field.id,
-				invokeValue(field.value?.[1], value, values, field as never),
+				invokeValue(field.value?.[1], value, values, field, context),
 				values,
 			);
 
@@ -112,7 +112,7 @@ export const input =
 			warning: invoke(field.warning, value, values, field, context),
 			prefix: invoke(field.prefix, value, values, field, context),
 			suffix: invoke(field.suffix, value, values, field, context),
-			value: invokeValue(field.value?.[0], value, values, field as never) as V,
+			value: invokeValue(field.value?.[0], value, values, field, context) as V,
 			onFocus: field.onFocus?.(onChange, value, values, field),
 			onChange,
 		});
