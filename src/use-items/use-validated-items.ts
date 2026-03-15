@@ -11,6 +11,7 @@ interface Props<T extends ValidatedItem, C extends object = object> {
 	rules?: ItemRule<T, C>[];
 	fields: Fields<T, C>;
 	context?: C;
+	touched?: boolean;
 }
 
 export interface UseValidatedItems<T extends object> extends UseItemsCore<
@@ -24,6 +25,7 @@ export const useValidatedItems = <T extends object, C extends object = object>({
 	rules,
 	fields,
 	context,
+	touched,
 }: Props<T, C>): UseValidatedItems<T> => {
 	const meta = useMeta({ fields }),
 		validation: ItemRule<T> = useMemo(
@@ -43,6 +45,7 @@ export const useValidatedItems = <T extends object, C extends object = object>({
 				[rules, validation],
 			),
 			context,
+			touched,
 		}),
 		invalid = useMemo(() => items.some((i) => i[ERROR]), [items]);
 

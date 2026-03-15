@@ -14,6 +14,7 @@ interface Props<T extends object, C extends object = object> {
 	initial: T[];
 	rules?: ItemRule<T, C>[];
 	context?: C;
+	touched?: boolean;
 }
 
 const changes = <T>(
@@ -48,6 +49,7 @@ export const useItemsCore = <T extends object, C extends object = object>({
 	initial,
 	rules,
 	context,
+	touched: externalTouched,
 }: Props<T, C> & {
 	items: T[];
 	setItems: StateUpdater<T[]>;
@@ -79,7 +81,10 @@ export const useItemsCore = <T extends object, C extends object = object>({
 	return {
 		items,
 		setItems,
-		touched: touched(items),
+		touched: useMemo(
+			() => touched(items) || (externalTouched ?? false),
+			[items, externalTouched],
+		),
 		update: useCallback(
 			(
 				indexOrChanges: number | readonly [number, Partial<T>][],
@@ -185,6 +190,7 @@ export const useItems = <T extends object, C extends object = object>({
 	initial,
 	rules,
 	context,
+	touched,
 }: Props<T, C>) => {
 	const _initial = useMemo(
 			() =>
@@ -195,5 +201,12 @@ export const useItems = <T extends object, C extends object = object>({
 		),
 		[items, setItems] = useState<T[]>(_initial);
 
-	return useItemsCore({ items, setItems, initial: _initial, rules, context });
+	return useItemsCore({
+		items,
+		setItems,
+		initial: _initial,
+		rules,
+		context,
+		touched,
+	});
 };

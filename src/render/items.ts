@@ -24,13 +24,21 @@ export const renderRemove = (remove: () => void) =>
 interface RenderOpts<T extends Item, C extends object = object> {
 	fields: Fields<T, C>;
 	context?: C;
+	touched?: boolean;
 	remove?: (index: number) => void;
 	update: (index: number, update: Partial<T>) => void;
 }
 export const renderItem = <T extends Item, C extends object = object>(
 	values: T,
 	index: number,
-	{ update, remove, fields, context, ...thru }: RenderOpts<T, C>,
+	{
+		update,
+		remove,
+		fields,
+		context,
+		touched = false,
+		...thru
+	}: RenderOpts<T, C>,
 ): TemplateResult =>
 	html`<div class="item" data-index=${index}>
 		${[
@@ -39,6 +47,7 @@ export const renderItem = <T extends Item, C extends object = object>(
 				values,
 				fields,
 				context: context ?? ({} as C),
+				touched,
 				onChange: (changes) =>
 					update(index, {
 						...invoke(changes, values),
@@ -48,7 +57,6 @@ export const renderItem = <T extends Item, C extends object = object>(
 				load: noop,
 				onReset: noop,
 				onValues: noop,
-				touched: false,
 			}),
 			when(remove, (remove) =>
 				renderRemove(values && remove && (() => remove(index))),
@@ -63,6 +71,7 @@ export interface RenderItems<T extends object, C extends object = object> {
 	items: T[];
 	fields: Fields<T, C>;
 	context?: C;
+	touched?: boolean;
 	paste?: (e: ClipboardEvent) => void;
 	renderItem?: typeof renderItem;
 	defaults?: T;

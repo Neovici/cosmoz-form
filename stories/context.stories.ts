@@ -243,11 +243,13 @@ const DeliveryDemo = () => {
 		fields: ROW_DATE_FIELDS,
 		initial: { rowDate: '2024-07-01' },
 		context: ctx,
+		touched: parentForm.touched,
 	});
 	const row1 = useValidatedForm<RowItem, DeliveryCtx>({
 		fields: ROW_DATE_FIELDS,
 		initial: { rowDate: '2024-05-01' },
 		context: ctx,
+		touched: parentForm.touched,
 	});
 
 	return html`

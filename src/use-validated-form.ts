@@ -15,6 +15,7 @@ interface Props<T extends object, C extends object = object> {
 	fields?: Fields<T, C> | (() => Fields<T, C>);
 	rules?: readonly ItemRule<T, C>[];
 	context?: C;
+	touched?: boolean;
 }
 
 export const useValidatedForm = <T extends object, C extends object = object>(

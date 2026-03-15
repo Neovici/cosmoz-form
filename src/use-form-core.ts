@@ -29,6 +29,7 @@ export const useFormCore = <T extends object, C extends object = object>(
 	setState: StateUpdater<FormValues<T>>,
 	rules?: readonly ItemRule<T, C>[],
 	context?: C,
+	externalTouched?: boolean,
 ): UseForm<T, C> => {
 	const [, values] = state;
 
@@ -115,6 +116,9 @@ export const useFormCore = <T extends object, C extends object = object>(
 			},
 			[rules, setState, context],
 		),
-		touched: useMemo(() => touched(values), [values]),
+		touched: useMemo(
+			() => touched(values) || (externalTouched ?? false),
+			[values, externalTouched],
+		),
 	};
 };

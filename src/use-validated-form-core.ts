@@ -28,6 +28,7 @@ interface Props<T extends object, C extends object = object> {
 	fields?: Fields<T, C> | (() => Fields<T, C>);
 	rules?: readonly ItemRule<T, C>[];
 	context?: C;
+	touched?: boolean;
 }
 
 export const useValidatedFormCore = <
@@ -36,11 +37,11 @@ export const useValidatedFormCore = <
 >(
 	state: FormValues<T>,
 	setState: StateUpdater<FormValues<T>>,
-	{ fields: _fields, rules, context }: Readonly<Props<T, C>>,
+	{ fields: _fields, rules, context, touched }: Readonly<Props<T, C>>,
 ): UseValidatedForm<T, C> => {
 	const fields = useMemo(() => invoke(_fields) ?? [], [_fields]);
 	const allRules = useMemo(() => computeRules(fields, rules), [fields, rules]);
-	const form = useFormCore(state, setState, allRules, context);
+	const form = useFormCore(state, setState, allRules, context, touched);
 	const { values } = form;
 
 	return {

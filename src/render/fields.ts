@@ -2,7 +2,6 @@ import { html } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { invoke } from '../helpers';
 import { text } from '../inputs/common';
-import { touched } from '../touch';
 import { Field, Fields, Renderable } from '../types';
 import { UseValidatedForm } from '../use-validated-form-core';
 import { ERROR } from '../validation';
@@ -38,7 +37,7 @@ export const renderField = <
 	...thru
 }: RenderField<T, K, V, C>) => {
 	const error =
-		(touched(values) && (values?.[ERROR]?.[field.id] ?? field.error)) ?? false;
+		(thru.touched && (values?.[ERROR]?.[field.id] ?? field.error)) ?? false;
 	const value = values?.[field.path ?? field.id] as V;
 
 	return (field.input ?? text)({
