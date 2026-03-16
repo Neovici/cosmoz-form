@@ -8,9 +8,16 @@ import { ReadOnlyNumberProps } from '../inputs/read-only-number';
 import { UseForm } from '../use-form-core';
 import { ItemRule } from '../use-items';
 
-export type Invoked<T, F, V, R> = (value: V, values: T, field: F) => R;
+export type Invoked<T, F, V, R, C extends object = object> = (
+	value: V,
+	values: T,
+	field: F,
+	context?: C,
+) => R;
 
-export type Invokable<T, F, V, R> = R | Invoked<T, F, V, R>;
+export type Invokable<T, F, V, R, C extends object = object> =
+	| R
+	| Invoked<T, F, V, R, C>;
 
 export type Resolvable<T, A extends unknown[] = []> =
 	| T
@@ -31,19 +38,28 @@ export type OnChange<T, K, V> = (
 	values: T,
 ) => void;
 
-export type Rule<T extends object, K extends keyof T, V extends T[K]> = (
+export type Rule<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+	C extends object = object,
+> = (
 	value: V,
 	values?: T,
-	field?: Field<T, K, V>,
+	field?: Field<T, K, V, C>,
+	context?: C,
 ) => false | string;
 
 export type Errors = {
 	[key: string]: string | true | undefined;
 };
 
-export type Validate<T extends object, K extends keyof T, V extends T[K]> =
-	| Rule<T, K, V>
-	| Rule<T, K, V>[];
+export type Validate<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+	C extends object = object,
+> = Rule<T, K, V, C> | Rule<T, K, V, C>[];
 
 export type Renderable =
 	| null
@@ -55,64 +71,72 @@ export interface InputProps<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
-> extends UseForm<T> {
+	C extends object = object,
+> extends UseForm<T, C> {
 	value: V;
-	field: Field<T, K, V>;
+	field: Field<T, K, V, C>;
 	error: false | string;
 	invalid: boolean;
 	touched: boolean;
 }
 
 // TODO: figure out a way to enforce the type of the input value, so you can't use a number input for a string field
-export interface Input<T extends object, K extends keyof T, V extends T[K]> {
-	(opts: InputProps<T, K, V>): Renderable;
+export interface Input<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+	C extends object = object,
+> {
+	(opts: InputProps<T, K, V, C>): Renderable;
 }
 
 export type Codec<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
+	C extends object = object,
 > = readonly [
-	Invoked<T, Field<T, K, V>, V, unknown>,
-	Invoked<T, Field<T, K, V>, unknown, V>,
+	Invoked<T, Field<T, K, V, C>, V, unknown, C>,
+	Invoked<T, Field<T, K, V, C>, unknown, V, C>,
 ];
 
 export interface Field<
 	T extends object,
 	K extends keyof T,
 	V extends T[K] = T[K],
+	C extends object = object,
 >
 	// TODO: drop all of the following props by moving them to input constructors
 	extends
-		CommonFieldProps<T, K, V>,
+		CommonFieldProps<T, K, V, C>,
 		TextareaProps,
 		AutocompleteProps<T, K, V>,
 		FileProps<T, K, V>,
 		ReadOnlyNumberProps {
 	id: K;
 	path?: keyof T;
-	label?: Invokable<T, Field<T, K, V>, V, string>;
+	label?: Invokable<T, Field<T, K, V, C>, V, string, C>;
 	description?: string;
-	placeholder?: Invokable<T, Field<T, K, V>, V, string>;
-	validate?: Validate<T, K, V>;
-	mandatory?: Invokable<T, Field<T, K, V>, V, boolean>;
-	disabled?: Invokable<T, Field<T, K, V>, V, boolean>;
-	hidden?: Invokable<T, Field<T, K, V>, V, boolean>;
-	warning?: Invokable<T, Field<T, K, V>, V, Renderable>;
-	prefix?: Invokable<T, Field<T, K, V>, V, Renderable>;
-	suffix?: Invokable<T, Field<T, K, V>, V, Renderable>;
+	placeholder?: Invokable<T, Field<T, K, V, C>, V, string, C>;
+	validate?: Validate<T, K, V, C>;
+	mandatory?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
+	disabled?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
+	hidden?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
+	warning?: Invokable<T, Field<T, K, V, C>, V, Renderable, C>;
+	prefix?: Invokable<T, Field<T, K, V, C>, V, Renderable, C>;
+	suffix?: Invokable<T, Field<T, K, V, C>, V, Renderable, C>;
 	// TODO: figure out how to properly enforce the codec type to match the expect input type
-	value?: Codec<T, K, V>;
+	value?: Codec<T, K, V, C>;
 	styles?: Record<string, string>;
-	onFocus?: OnFocusFn<T, Field<T, K, V>, V>;
+	onFocus?: OnFocusFn<T, Field<T, K, V, C>, V>;
 	onChange?: OnChange<T, K, V>;
 	rules?: ItemRule<T>[];
-	header?: Invokable<T, Field<T, K, V>, V, string>;
-	input?: Input<T, K, V>;
+	header?: Invokable<T, Field<T, K, V, C>, V, string, C>;
+	input?: Input<T, K, V, C>;
 }
 
-export type Fields<T extends object> = readonly {
-	[K in keyof T]-?: Readonly<Field<T, K, T[K]>>;
+export type Fields<T extends object, C extends object = object> = readonly {
+	[K in keyof T]-?: Readonly<Field<T, K, T[K], C>>;
 }[keyof T][];
 
 export { InputBaseProps as InputBaseOpts } from '../inputs/base';

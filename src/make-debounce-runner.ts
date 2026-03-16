@@ -1,14 +1,17 @@
 import type { AsyncRule, AsyncRunner } from './async-rule';
 
-export type DebounceRunner<T> = AsyncRunner<T>;
+export type DebounceRunner<T, C extends object = object> = AsyncRunner<T, C>;
 
-export const makeDebounceRunner = <T>(ms: number): DebounceRunner<T> => {
+export const makeDebounceRunner = <T, C extends object = object>(
+	ms: number,
+): DebounceRunner<T, C> => {
 	let timer: ReturnType<typeof setTimeout> | null = null;
 	let ac: AbortController | null = null;
 	let pending: {
-		fn: AsyncRule<T>;
+		fn: AsyncRule<T, C>;
 		values: T;
 		index?: number;
+		context?: C;
 		resolve: (v: Partial<T> | null) => void;
 		reject: (e: unknown) => void;
 	} | null = null;
@@ -21,12 +24,20 @@ export const makeDebounceRunner = <T>(ms: number): DebounceRunner<T> => {
 					pending.resolve(null);
 					clearTimeout(timer!);
 				}
-				pending = { fn, values, index: opts?.index, resolve, reject };
+				pending = {
+					fn,
+					values,
+					index: opts?.index,
+					context: opts?.context,
+					resolve,
+					reject,
+				};
 				timer = setTimeout(async () => {
 					const {
 						fn: f,
 						values: v,
 						index,
+						context,
 						resolve: res,
 						reject: rej,
 					} = pending!;
@@ -37,6 +48,7 @@ export const makeDebounceRunner = <T>(ms: number): DebounceRunner<T> => {
 						update: onIntermediate,
 						signal: ac.signal,
 						index,
+						context,
 					};
 					try {
 						res(await f(v, asyncOpts));

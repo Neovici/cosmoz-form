@@ -15,6 +15,7 @@ export interface CommonFieldProps<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
+	C extends object = object,
 > {
 	title?: string;
 	noLabelFloat?: boolean;
@@ -22,14 +23,17 @@ export interface CommonFieldProps<
 	allowedPattern?: string | RegExp;
 	step?: string;
 	maxlength?: number;
-	min?: Invokable<T, Field<T, K, V>, V, number | string>;
-	max?: Invokable<T, Field<T, K, V>, V, number | string>;
+	min?: Invokable<T, Field<T, K, V, C>, V, number | string, C>;
+	max?: Invokable<T, Field<T, K, V, C>, V, number | string, C>;
 	autosize?: boolean;
 	noSpinner?: boolean;
 }
 
-export interface Common<T extends object, K extends keyof T, V extends T[K]>
-	extends Omit<InputBaseOpts<T, K, V>, 'onChange'> {
+export interface Common<
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+> extends Omit<InputBaseOpts<T, K, V>, 'onChange'> {
 	type?: string;
 	onInput?: (e: InputEvent) => void;
 }
@@ -37,7 +41,7 @@ export interface Common<T extends object, K extends keyof T, V extends T[K]>
 export const common = <T extends object, K extends keyof T, V extends T[K]>(
 	props: Common<T, K, V>,
 ) => {
-	const { value, values, onFocus, onInput, ...field } = props;
+	const { value, values, onFocus, onInput, context, ...field } = props;
 	const {
 		id,
 		type = 'text',
@@ -78,8 +82,8 @@ export const common = <T extends object, K extends keyof T, V extends T[K]>(
 		.value=${value}
 		title=${ifDefined((error ?? title) || undefined)}
 		maxlength=${ifDefined(maxlength)}
-		min=${ifDefined(invoke(min, value, values, field))}
-		max=${ifDefined(invoke(max, value, values, field))}
+		min=${ifDefined(invoke(min, value, values, field, context))}
+		max=${ifDefined(invoke(max, value, values, field, context))}
 		@focus=${onFocus}
 		@input=${onInput}
 		>${renderContents({ prefix, suffix, warning, description })}</cosmoz-input
@@ -156,7 +160,7 @@ export const textarea = input(
 		maxRows,
 		rows,
 		maxlength,
-	}: InputBaseOpts<T,K,V>) =>
+	}: InputBaseOpts<T, K, V>) =>
 		html`<cosmoz-textarea
 			class="input input-textarea"
 			name=${id}

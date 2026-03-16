@@ -1,10 +1,10 @@
 /* eslint-disable mocha/max-top-level-suites */
 
-import { assert } from '@open-wc/testing';
 import { renderHook } from '@neovici/testing';
+import { assert, waitUntil } from '@open-wc/testing';
 
-import { useItems } from '../use-items';
 import { TOUCHED } from '../touch';
+import { useItems } from '../use-items';
 
 suite('useItems', () => {
 	let result;
@@ -439,5 +439,107 @@ suite('useItems', () => {
 
 			assert.isFalse(result.current.touched);
 		});
+	});
+});
+
+suite('useItems with context', () => {
+	// Rule: label = org/name. depsFn: [name, org] so re-runs when either changes.
+	const labelRule = [
+		({ name }, _old, _index, _oldIndex, context) => ({
+			label: `${context?.org ?? ''}/${name}`,
+		}),
+		({ name }, _index, context) => [name, context?.org],
+	];
+
+	test('rule computes derived field using context on initialization', async () => {
+		const ctx = { org: 'neovici' };
+
+		const { result } = await renderHook(() =>
+			useItems({
+				initial: [{ name: 'foo' }],
+				rules: [labelRule],
+				context: ctx,
+			}),
+		);
+
+		assert.equal(result.current.items[0].label, 'neovici/foo');
+	});
+
+	test('rule re-computes derived field using context on update', async () => {
+		const ctx = { org: 'neovici' };
+
+		const { result, nextUpdate } = await renderHook(() =>
+			useItems({
+				initial: [{ name: 'foo' }],
+				rules: [labelRule],
+				context: ctx,
+			}),
+		);
+
+		result.current.update(0, { name: 'bar' });
+		await nextUpdate();
+
+		assert.equal(result.current.items[0].label, 'neovici/bar');
+	});
+
+	test('context change re-runs rule and updates derived field', async () => {
+		const scoreRule = [
+			({ value }, _old, _index, _oldIndex, context) => ({
+				score: value * (context?.threshold ?? 1),
+			}),
+			({ value }, _index, context) => [value, context?.threshold],
+		];
+
+		const { result, rerender } = await renderHook(
+			({ ctx }) =>
+				useItems({
+					initial: [{ value: 5 }],
+					rules: [scoreRule],
+					context: ctx,
+				}),
+			{ initialProps: { ctx: { threshold: 10 } } },
+		);
+
+		assert.equal(result.current.items[0].score, 50);
+
+		await rerender({ ctx: { threshold: 20 } });
+		await waitUntil(
+			() => result.current.items[0].score === 100,
+			'score should update when context threshold changes',
+		);
+
+		assert.equal(result.current.items[0].score, 100);
+	});
+
+	test('append applies context-aware rule to new items', async () => {
+		const ctx = { org: 'test' };
+
+		const { result, nextUpdate } = await renderHook(() =>
+			useItems({
+				initial: [],
+				rules: [labelRule],
+				context: ctx,
+			}),
+		);
+
+		result.current.append([{ name: 'new' }]);
+		await nextUpdate();
+
+		assert.equal(result.current.items[0].label, 'test/new');
+	});
+
+	test('backward compat — rules without context arg work unchanged', async () => {
+		const rules = [
+			[({ name }) => ({ nameLength: name.length }), ({ name }) => [name]],
+		];
+
+		const { result } = await renderHook(() =>
+			useItems({
+				initial: [{ name: 'hello' }],
+				rules,
+			}),
+		);
+
+		assert.equal(result.current.items[0].nameLength, 5);
 	});
 });

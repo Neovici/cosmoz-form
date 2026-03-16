@@ -12,8 +12,8 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
 };
 
 /**
- * Composes with UseForm<T> to add async rules.
- * Returns UseForm<T> & { processing } where processing is true while any
+ * Composes with UseForm<T, C> to add async rules.
+ * Returns UseForm<T, C> & { processing } where processing is true while any
  * async rule is in flight.
  *
  * Async patches call onChange(patch, false) — they do not mark the form touched.
@@ -21,19 +21,19 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  * patch — sync rules cascade on top of them, which is expected.
  *
  * Usage:
- *   const form = useValidatedForm({ fields, initial, rules });
+ *   const form = useValidatedForm({ fields, initial, rules, context });
  *   const { processing } = useAsyncFormCore(form, asyncRules);
  */
-export const useAsyncFormCore = <T extends object>(
-	form: UseForm<T>,
-	asyncRules: readonly AsyncItemRule<T>[] | undefined,
-	opts?: { onError?: (err: unknown, rule: AsyncItemRule<T>) => void },
-): UseForm<T> & { processing: boolean } => {
+export const useAsyncFormCore = <T extends object, C extends object = object>(
+	form: UseForm<T, C>,
+	asyncRules: readonly AsyncItemRule<T, C>[] | undefined,
+	opts?: { onError?: (err: unknown, rule: AsyncItemRule<T, C>) => void },
+): UseForm<T, C> & { processing: boolean } => {
 	const onError = opts?.onError ?? DEFAULT_ON_ERROR;
 
 	// Refs persist across renders without triggering re-renders
-	const runnersRef = useRef(new Map<AsyncItemRule<T>, AsyncRunner<T>>());
-	const prevDepsRef = useRef(new Map<AsyncItemRule<T>, unknown[]>());
+	const runnersRef = useRef(new Map<AsyncItemRule<T, C>, AsyncRunner<T, C>>());
+	const prevDepsRef = useRef(new Map<AsyncItemRule<T, C>, unknown[]>());
 
 	// pendingCount tracks in-flight rules without causing re-renders itself.
 	// processing state is updated only on 0→1 and 1→0 transitions.
@@ -48,9 +48,11 @@ export const useAsyncFormCore = <T extends object>(
 		[],
 	);
 
-	// Dep-check + rule dispatch: runs after every values change
+	// Dep-check + rule dispatch: runs after every values or context change
 	useEffect(() => {
 		if (!asyncRules?.length) return;
+
+		const context = form.context;
 
 		for (const rule of asyncRules) {
 			const [ruleFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
@@ -59,7 +61,7 @@ export const useAsyncFormCore = <T extends object>(
 				runnersRef.current.set(rule, runnerFactory());
 			}
 
-			const deps = depsFn(form.values);
+			const deps = depsFn(form.values, undefined, context);
 			const prev = prevDepsRef.current.get(rule);
 
 			// Skip if deps unchanged (Object.is per element, same as applyRules)
@@ -79,6 +81,7 @@ export const useAsyncFormCore = <T extends object>(
 					ruleFn,
 					form.values,
 					(patch) => form.onChange(patch, false), // intermediate: no touch
+					{ context },
 				)
 				.then((result) => {
 					if (result !== null) {
@@ -91,7 +94,7 @@ export const useAsyncFormCore = <T extends object>(
 					if (pendingCount.current === 0) setProcessing(false);
 				});
 		}
-	}, [form.values]);
+	}, [form.values, form.context]);
 
 	return { ...form, processing };
 };
