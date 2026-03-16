@@ -1,3 +1,9 @@
+## [2.5.0](https://github.com/Neovici/cosmoz-form/compare/v2.4.1...v2.5.0) (2026-03-16)
+
+### Features
+
+* **context:** add generic context propagation to nested forms and rules (FE-332) ([#16](https://github.com/Neovici/cosmoz-form/issues/16)) ([5fbba97](https://github.com/Neovici/cosmoz-form/commit/5fbba97dd9536d83a2740477dbcaddfe4402fa84))
+
 ## [2.4.1](https://github.com/Neovici/cosmoz-form/compare/v2.4.0...v2.4.1) (2026-03-13)
 
 ### Bug Fixes
