@@ -1,4 +1,4 @@
-import{d as x,j as y,b as E,u as T,k as $,t as p,m as _,p as v,q as S,c as R,s as c,n as F,g as u,v as I,w as M,h as L}from"./inline-file-CNgybgwz.js";import{b as l}from"./iframe-GyOTYbBg.js";import"./preload-helper-PPVm8Dsz.js";const W=(e,a)=>Array.isArray(e)?e:[[e,a]],B=({items:e,setItems:a,initial:s,rules:o,context:t,touched:b})=>{const w=T(void 0);return $(()=>{const r=w.current;w.current=t,r!==void 0&&a(i=>i.map((n,d)=>p(y({oldItem:n,newItem:n,rules:o,index:d,context:t,oldContext:r}),_(n))))},[t]),{items:e,setItems:a,touched:x(()=>_(e)||(b??!1),[e,b]),update:v((r,i)=>a((n=[])=>p(W(r??n.length,i).reduce((d,[m,A])=>[...d.slice(0,m),p(y({oldItem:d[m],newItem:{...d[m],...A},rules:o,index:m,context:t})),...d.slice(m+1)],n))),[o,t]),updateAll:v(r=>a((i=[])=>i.map((n,d)=>{const m=S(r,n);return p(y({oldItem:n,newItem:{...n,...m},rules:o,index:d,context:t}))})),[o,t]),remove:v(r=>a((i=[])=>p([...i.slice(0,r),...i.slice(r+1).map((n,d)=>y({rules:o,newItem:n,oldItem:n,index:d+r,oldIndex:d+r+1,context:t}))])),[o,t]),append:v(r=>a((i=[])=>p(i.concat(r.map((n,d)=>y({rules:o,newItem:n,index:d+i.length,context:t}))))),[o,t]),reset:v(()=>a(s),[s]),clear:v(()=>a(p([])),[]),load:v((r,i)=>a(r.map((n,d)=>y({newItem:n,index:d,rules:i??o,context:t}))),[o,t])}},Y=({initial:e,rules:a,context:s,touched:o})=>{const t=x(()=>e.map((r,i)=>y({rules:a,newItem:r,index:i,context:s})),[e]),[b,w]=E(t);return B({items:b,setItems:w,initial:t,rules:a,context:s,touched:o})},V=l`
+import{d as x,j as c,b as E,u as T,k as $,t as u,m as _,p as m,q as S,c as R,s as p,n as F,g as v,v as I,w as M,h as L}from"./inline-file-C06oeLL9.js";import{b as l}from"./iframe-B0kM-or0.js";import"./preload-helper-PPVm8Dsz.js";const W=(e,o)=>Array.isArray(e)?e:[[e,o]],B=({items:e,setItems:o,initial:i,rules:a,context:t,touched:b})=>{const w=T(void 0);return $(()=>{const r=w.current;w.current=t,r!==void 0&&o(d=>d.map((s,n)=>u(c({oldItem:s,newItem:s,rules:a,index:n,context:t,oldContext:r}),_(s))))},[t]),{items:e,setItems:o,touched:x(()=>_(e)||(b??!1),[e,b]),update:m((r,d)=>o((s=[])=>u(W(r??s.length,d).reduce((n,[y,A])=>[...n.slice(0,y),u(c({oldItem:n[y],newItem:{...n[y],...A},rules:a,index:y,context:t})),...n.slice(y+1)],s))),[a,t]),updateAll:m(r=>o((d=[])=>d.map((s,n)=>{const y=S(r,s);return u(c({oldItem:s,newItem:{...s,...y},rules:a,index:n,context:t}))})),[a,t]),remove:m(r=>o((d=[])=>u([...d.slice(0,r),...d.slice(r+1).map((s,n)=>c({rules:a,newItem:s,oldItem:s,index:n+r,oldIndex:n+r+1,context:t}))])),[a,t]),append:m(r=>o((d=[])=>u(d.concat(r.map((s,n)=>c({rules:a,newItem:s,index:n+d.length,context:t}))))),[a,t]),prepend:m(r=>o((d=[])=>u([...r.map((s,n)=>c({rules:a,newItem:s,index:n,context:t})),...d.map((s,n)=>c({rules:a,newItem:s,oldItem:s,index:n+r.length,oldIndex:n,context:t}))])),[a,t]),reset:m(()=>o(i),[i]),clear:m(()=>o(u([])),[]),load:m((r,d)=>o(r.map((s,n)=>c({newItem:s,index:n,rules:d??a,context:t}))),[a,t])}},Y=({initial:e,rules:o,context:i,touched:a})=>{const t=x(()=>e.map((r,d)=>c({rules:o,newItem:r,index:d,context:i})),[e]),[b,w]=E(t);return B({items:b,setItems:w,initial:t,rules:o,context:i,touched:a})},V=l`
     <style>
         .story-wrap {
             font-family: sans-serif;
@@ -36,17 +36,17 @@ import{d as x,j as y,b as E,u as T,k as $,t as p,m as _,p as v,q as S,c as R,s a
             background: #c27803;
         }
     </style>
-`,D=[{id:"cost",label:"Cost (€)",input:F,min:0,suffix:(e,a,s,o)=>{const t=o?.budget??1/0;return L(e>t,()=>l`<span class="story-badge story-badge-warn">Over budget!</span>`)}}],P=[{id:"budget",label:"Budget (€)",input:F,min:0}],k=()=>{const e=c({fields:P,initial:{budget:100}}),a=x(()=>({budget:e.values.budget}),[e.values.budget]),s=c({fields:D,initial:{cost:50},context:a}),o=c({fields:D,initial:{cost:120},context:a}),t=c({fields:D,initial:{cost:80},context:a});return l`
+`,D=[{id:"cost",label:"Cost (€)",input:F,min:0,suffix:(e,o,i,a)=>{const t=a?.budget??1/0;return L(e>t,()=>l`<span class="story-badge story-badge-warn">Over budget!</span>`)}}],P=[{id:"budget",label:"Budget (€)",input:F,min:0}],k=()=>{const e=p({fields:P,initial:{budget:100}}),o=x(()=>({budget:e.values.budget}),[e.values.budget]),i=p({fields:D,initial:{cost:50},context:o}),a=p({fields:D,initial:{cost:120},context:o}),t=p({fields:D,initial:{cost:80},context:o});return l`
         ${V}
         <div class="story-wrap">
             <div class="story-section">
                 <h3>Parent form — set the budget</h3>
-                ${u(e)}
+                ${v(e)}
             </div>
 
             <div class="story-section">
                 <h3>Rows — cost suffix reflects parent budget via context</h3>
-                ${u(s)} ${u(o)} ${u(t)}
+                ${v(i)} ${v(a)} ${v(t)}
             </div>
 
             <p class="story-hint">
@@ -89,17 +89,17 @@ const rowForm = useValidatedForm<CostRow, BudgetCtx>({
   fields: costFields,
   initial: { cost: 120 },
   context: ctx,
-});`}}};const z=[{id:"deliveryDate",label:"Delivery date",input:I,placeholder:"YYYY-MM-DD"}],C=[{id:"rowDate",label:"Row date",input:I,placeholder:"YYYY-MM-DD",validate:(e,a,s,o)=>{const t=o?.deliveryDate;return!e||!t?!1:e<t?`Must be on or after delivery date (${t})`:!1},suffix:(e,a,s,o)=>{const t=o?.deliveryDate;return e&&t&&e>=t?l`<span class="story-badge">✓</span>`:void 0}}],N=()=>{const e=c({fields:z,initial:{deliveryDate:"2024-06-01"}}),a=x(()=>({deliveryDate:e.values.deliveryDate}),[e.values.deliveryDate]),s=c({fields:C,initial:{rowDate:"2024-07-01"},context:a,touched:e.touched}),o=c({fields:C,initial:{rowDate:"2024-05-01"},context:a,touched:e.touched});return l`
+});`}}};const z=[{id:"deliveryDate",label:"Delivery date",input:I,placeholder:"YYYY-MM-DD"}],C=[{id:"rowDate",label:"Row date",input:I,placeholder:"YYYY-MM-DD",validate:(e,o,i,a)=>{const t=a?.deliveryDate;return!e||!t?!1:e<t?`Must be on or after delivery date (${t})`:!1},suffix:(e,o,i,a)=>{const t=a?.deliveryDate;return e&&t&&e>=t?l`<span class="story-badge">✓</span>`:void 0}}],N=()=>{const e=p({fields:z,initial:{deliveryDate:"2024-06-01"}}),o=x(()=>({deliveryDate:e.values.deliveryDate}),[e.values.deliveryDate]),i=p({fields:C,initial:{rowDate:"2024-07-01"},context:o,touched:e.touched}),a=p({fields:C,initial:{rowDate:"2024-05-01"},context:o,touched:e.touched});return l`
         ${V}
         <div class="story-wrap">
             <div class="story-section">
                 <h3>Parent form — set the delivery date</h3>
-                ${u(e)}
+                ${v(e)}
             </div>
 
             <div class="story-section">
                 <h3>Rows — row date validated against parent delivery date</h3>
-                ${u(s)} ${u(o)}
+                ${v(i)} ${v(a)}
             </div>
 
             <p class="story-hint">
@@ -143,26 +143,26 @@ const rowForm = useValidatedForm<RowItem, DeliveryCtx>({
   fields: rowDateFields,
   initial: { rowDate: '2024-05-01' },
   context: ctx,
-});`}}};const O=[{id:"vatRate",label:"VAT rate (%)",input:F,min:0,max:100}],j=[[({price:e},a,s,o,t)=>({totalWithVat:Math.round(e*(1+(t?.vatRate??0)/100)*100)/100}),({price:e},a,s)=>[e,s?.vatRate]]],U=()=>{const e=c({fields:O,initial:{vatRate:20}}),a=x(()=>({vatRate:e.values.vatRate}),[e.values.vatRate]),{items:s}=Y({initial:[{price:100,totalWithVat:0},{price:250,totalWithVat:0},{price:75,totalWithVat:0}],rules:j,context:a});return l`
+});`}}};const O=[{id:"vatRate",label:"VAT rate (%)",input:F,min:0,max:100}],j=[[({price:e},o,i,a,t)=>({totalWithVat:Math.round(e*(1+(t?.vatRate??0)/100)*100)/100}),({price:e},o,i)=>[e,i?.vatRate]]],U=()=>{const e=p({fields:O,initial:{vatRate:20}}),o=x(()=>({vatRate:e.values.vatRate}),[e.values.vatRate]),{items:i}=Y({initial:[{price:100,totalWithVat:0},{price:250,totalWithVat:0},{price:75,totalWithVat:0}],rules:j,context:o});return l`
         ${V}
         <div class="story-wrap">
             <div class="story-section">
                 <h3>Parent form — set the VAT rate</h3>
-                ${u(e)}
+                ${v(e)}
             </div>
 
             <div class="story-section">
                 <h3>Line items — totals recomputed when VAT rate changes</h3>
-                ${M(s,(o,t)=>t,o=>l`
+                ${M(i,(a,t)=>t,a=>l`
                         <div
                             style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #eee"
                         >
                             <span style="font-size:0.9rem"
-                                >Price: <strong>${o.price.toFixed(2)} €</strong></span
+                                >Price: <strong>${a.price.toFixed(2)} €</strong></span
                             >
                             <span style="font-size:0.9rem"
                                 >Total with VAT:
-                                <strong>${o.totalWithVat.toFixed(2)} €</strong></span
+                                <strong>${a.totalWithVat.toFixed(2)} €</strong></span
                             >
                         </div>
                     `)}
