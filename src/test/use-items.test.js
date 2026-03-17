@@ -542,4 +542,6 @@ suite('useItems with context', () => {
 
 		assert.equal(result.current.items[0].nameLength, 5);
 	});
+
+	// TODO: add tests for append and prepend
 });

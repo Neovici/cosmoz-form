@@ -38,6 +38,7 @@ export type UseItemsCore<T extends object> = {
 	updateAll: (updateOrFn: Partial<T> | ((i: T) => Partial<T>)) => void;
 	remove: (index: number) => void;
 	append: (items: T[]) => void;
+	prepend: (items: T[]) => void;
 	reset: () => void;
 	clear: () => void;
 	load: (items: T[], rulesOverride?: ItemRule<T>[]) => void;
@@ -164,6 +165,32 @@ export const useItemsCore = <T extends object, C extends object = object>({
 							),
 						),
 					),
+				),
+			[rules, context],
+		),
+		prepend: useCallback(
+			(prependedItems: T[]) =>
+				setItems((items = []) =>
+					touch([
+						...prependedItems.map((item, index) =>
+							applyRules({
+								rules,
+								newItem: item,
+								index,
+								context,
+							}),
+						),
+						...items.map((item, index) =>
+							applyRules({
+								rules,
+								newItem: item,
+								oldItem: item,
+								index: index + prependedItems.length,
+								oldIndex: index,
+								context,
+							}),
+						),
+					]),
 				),
 			[rules, context],
 		),
