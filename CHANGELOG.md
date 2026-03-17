@@ -1,3 +1,9 @@
+## [2.6.0](https://github.com/Neovici/cosmoz-form/compare/v2.5.0...v2.6.0) (2026-03-17)
+
+### Features
+
+* **use-items:** add prepend functionality ([#17](https://github.com/Neovici/cosmoz-form/issues/17)) ([ab5cb03](https://github.com/Neovici/cosmoz-form/commit/ab5cb033e5f238645631984e531c61c4cefe1ce0))
+
 ## [2.5.0](https://github.com/Neovici/cosmoz-form/compare/v2.4.1...v2.5.0) (2026-03-16)
 
 ### Features
