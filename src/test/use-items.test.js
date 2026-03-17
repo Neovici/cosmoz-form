@@ -349,6 +349,129 @@ suite('useItems', () => {
 		});
 	});
 
+	suite('append', () => {
+		test('appends items to the list', async () => {
+			result.current.append([{ name: 'appended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items.length, 2);
+			assert.equal(result.current.items[0].name, 'initial');
+			assert.equal(result.current.items[1].name, 'appended');
+		});
+
+		test('appends multiple items at once', async () => {
+			result.current.append([{ name: 'a' }, { name: 'b' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items.length, 3);
+			assert.equal(result.current.items[0].name, 'initial');
+			assert.equal(result.current.items[1].name, 'a');
+			assert.equal(result.current.items[2].name, 'b');
+		});
+
+		test('rules are applied to appended items', async () => {
+			result.current.append([{ name: 'appended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[1].nameLength, 8);
+			assert.equal(result.current.items[1].doubledNameLength, 16);
+			assert.equal(result.current.items[1].history, '#1: appended(8)');
+		});
+
+		test('appended items have correct indexes', async () => {
+			result.current.append([{ name: 'a' }, { name: 'b' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[1].index, 1);
+			assert.equal(result.current.items[2].index, 2);
+		});
+
+		test('one-off rules are applied to appended items', async () => {
+			result.current.append([{ name: 'appended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[1].originalName, 'appended');
+			assert.equal(result.current.items[1].id, 1);
+		});
+
+		test('existing items are not re-processed on append', async () => {
+			result.current.append([{ name: 'appended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[0].name, 'initial');
+			assert.equal(result.current.items[0].nameLength, 7);
+			assert.equal(result.current.items[0].history, '#0: initial(7)');
+			assert.equal(result.current.items[0].originalName, 'initial');
+			assert.equal(result.current.items[0].id, 0);
+			assert.equal(result.current.items[0].index, 0);
+		});
+	});
+
+	suite('prepend', () => {
+		test('prepends items to the list', async () => {
+			result.current.prepend([{ name: 'prepended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items.length, 2);
+			assert.equal(result.current.items[0].name, 'prepended');
+			assert.equal(result.current.items[1].name, 'initial');
+		});
+
+		test('prepends multiple items at once', async () => {
+			result.current.prepend([{ name: 'a' }, { name: 'b' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items.length, 3);
+			assert.equal(result.current.items[0].name, 'a');
+			assert.equal(result.current.items[1].name, 'b');
+			assert.equal(result.current.items[2].name, 'initial');
+		});
+
+		test('rules are applied to prepended items', async () => {
+			result.current.prepend([{ name: 'prepended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[0].nameLength, 9);
+			assert.equal(result.current.items[0].doubledNameLength, 18);
+			assert.equal(result.current.items[0].history, '#0: prepended(9)');
+		});
+
+		test('prepended items have correct indexes', async () => {
+			result.current.prepend([{ name: 'a' }, { name: 'b' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[0].index, 0);
+			assert.equal(result.current.items[1].index, 1);
+		});
+
+		test('existing items are re-indexed after prepend', async () => {
+			result.current.prepend([{ name: 'prepended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[1].index, 1);
+			assert.equal(
+				result.current.items[1].history,
+				'#0: initial(7) -> #1: initial(7)',
+			);
+		});
+
+		test('one-off rules are applied to prepended items', async () => {
+			result.current.prepend([{ name: 'prepended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[0].originalName, 'prepended');
+			assert.equal(result.current.items[0].id, 1);
+		});
+
+		test('one-off rules are not re-applied to existing items on prepend', async () => {
+			result.current.prepend([{ name: 'prepended' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[1].originalName, 'initial');
+			assert.equal(result.current.items[1].id, 0);
+		});
+	});
+
 	suite('touched', () => {
 		test('initial items are not touched', async () => {
 			assert.isTrue(!result.current.items[0][TOUCHED]);
@@ -366,6 +489,20 @@ suite('useItems', () => {
 			await nextUpdate();
 
 			assert.isTrue(result.current.items[1][TOUCHED]);
+		});
+
+		test('appended items are not individually touched', async () => {
+			result.current.append([{ name: 'appended' }]);
+			await nextUpdate();
+
+			assert.isTrue(!result.current.items[1][TOUCHED]);
+		});
+
+		test('prepended items are not individually touched', async () => {
+			result.current.prepend([{ name: 'prepended' }]);
+			await nextUpdate();
+
+			assert.isTrue(!result.current.items[0][TOUCHED]);
 		});
 
 		test('replaced items are not touched', async () => {
@@ -404,6 +541,20 @@ suite('useItems', () => {
 
 		test('touched after remove', async () => {
 			result.current.remove(0);
+			await nextUpdate();
+
+			assert.isTrue(result.current.touched);
+		});
+
+		test('touched after append', async () => {
+			result.current.append([{ name: 'appended' }]);
+			await nextUpdate();
+
+			assert.isTrue(result.current.touched);
+		});
+
+		test('touched after prepend', async () => {
+			result.current.prepend([{ name: 'prepended' }]);
 			await nextUpdate();
 
 			assert.isTrue(result.current.touched);
@@ -511,21 +662,86 @@ suite('useItems with context', () => {
 		assert.equal(result.current.items[0].score, 100);
 	});
 
-	test('append applies context-aware rule to new items', async () => {
-		const ctx = { org: 'test' };
+	suite('append', () => {
+		test('applies context-aware rule to new items', async () => {
+			const ctx = { org: 'test' };
 
-		const { result, nextUpdate } = await renderHook(() =>
-			useItems({
-				initial: [],
-				rules: [labelRule],
-				context: ctx,
-			}),
-		);
+			const { result, nextUpdate } = await renderHook(() =>
+				useItems({
+					initial: [],
+					rules: [labelRule],
+					context: ctx,
+				}),
+			);
 
-		result.current.append([{ name: 'new' }]);
-		await nextUpdate();
+			result.current.append([{ name: 'new' }]);
+			await nextUpdate();
 
-		assert.equal(result.current.items[0].label, 'test/new');
+			assert.equal(result.current.items[0].label, 'test/new');
+		});
+
+		test('applies context-aware rule to appended items alongside existing ones', async () => {
+			const ctx = { org: 'acme' };
+
+			const { result, nextUpdate } = await renderHook(() =>
+				useItems({
+					initial: [{ name: 'first' }],
+					rules: [labelRule],
+					context: ctx,
+				}),
+			);
+
+			result.current.append([{ name: 'second' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[0].label, 'acme/first');
+			assert.equal(result.current.items[1].label, 'acme/second');
+		});
+	});
+
+	suite('prepend', () => {
+		test('applies context-aware rule to prepended items', async () => {
+			const ctx = { org: 'test' };
+
+			const { result, nextUpdate } = await renderHook(() =>
+				useItems({
+					initial: [],
+					rules: [labelRule],
+					context: ctx,
+				}),
+			);
+
+			result.current.prepend([{ name: 'new' }]);
+			await nextUpdate();
+
+			assert.equal(result.current.items[0].label, 'test/new');
+		});
+
+		test('existing items keep context-aware labels when index changes', async () => {
+			const ctx = { org: 'acme' };
+
+			const { result, nextUpdate } = await renderHook(() =>
+				useItems({
+					initial: [{ name: 'existing' }],
+					rules: [labelRule],
+					context: ctx,
+				}),
+			);
+
+			result.current.prepend([{ name: 'new' }]);
+			await nextUpdate();
+
+			assert.equal(
+				result.current.items[0].label,
+				'acme/new',
+				'prepended item gets correct label',
+			);
+			assert.equal(
+				result.current.items[1].label,
+				'acme/existing',
+				'existing item keeps its label since labelRule does not depend on index',
+			);
+		});
 	});
 
 	test('backward compat — rules without context arg work unchanged', async () => {
@@ -542,6 +758,4 @@ suite('useItems with context', () => {
 
 		assert.equal(result.current.items[0].nameLength, 5);
 	});
-
-	// TODO: add tests for append and prepend
 });
