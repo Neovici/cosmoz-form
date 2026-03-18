@@ -110,7 +110,7 @@ export interface Field<
 	extends
 		CommonFieldProps<T, K, V, C>,
 		TextareaProps,
-		AutocompleteProps<T, K, V>,
+		AutocompleteProps<T, K, V, C>,
 		FileProps<T, K, V>,
 		ReadOnlyNumberProps {
 	id: K;
