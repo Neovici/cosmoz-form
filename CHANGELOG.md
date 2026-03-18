@@ -1,3 +1,9 @@
+## [2.7.0](https://github.com/Neovici/cosmoz-form/compare/v2.6.0...v2.7.0) (2026-03-18)
+
+### Features
+
+* context in autocomplete options ([#19](https://github.com/Neovici/cosmoz-form/issues/19)) ([8fcb9ea](https://github.com/Neovici/cosmoz-form/commit/8fcb9ea3a41089ea68fbf099f2043d94b09caf1f))
+
 ## [2.6.0](https://github.com/Neovici/cosmoz-form/compare/v2.5.0...v2.6.0) (2026-03-17)
 
 ### Features
