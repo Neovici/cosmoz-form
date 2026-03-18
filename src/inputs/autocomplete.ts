@@ -9,19 +9,21 @@ import { InputBaseOpts, Resolvable } from '../types';
 import { input } from './base';
 import { renderContents } from './render';
 
-type OptionsOpts<T, V> = {
+type OptionsOpts<T, V, C> = {
 	active: boolean;
 	query: string;
 	value: V;
 	values: T;
+	context: C;
 };
 
 export interface AutocompleteProps<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
+	C extends object,
 > {
-	options?: Resolvable<unknown[] | false | undefined, [OptionsOpts<T, V>]>;
+	options?: Resolvable<unknown[] | false | undefined, [OptionsOpts<T, V, C>]>;
 	limit?: number;
 	textProperty?: string;
 	valueProperty?: string;
@@ -43,7 +45,7 @@ interface Info {
 }
 
 export const autocomplete = input(
-	<T extends object, K extends keyof T, V extends T[K]>({
+	<T extends object, K extends keyof T, V extends T[K], C extends object>({
 		id,
 		label,
 		noLabelFloat,
@@ -73,8 +75,9 @@ export const autocomplete = input(
 		description,
 		externalSearch,
 		itemHeight,
+		context,
 		...thru
-	}: InputBaseOpts<T, K, V>) => {
+	}: InputBaseOpts<T, K, V, C>) => {
 		return html`<cosmoz-autocomplete
 			class="input input-autocomplete"
 			?data-warning=${!!warning}
@@ -94,9 +97,10 @@ export const autocomplete = input(
 			.errorMessage=${error}
 			.label=${label}
 			.value=${live(value)}
-			.source=${guard([options, value, values], () =>
+			.source=${guard([options, value, values, context], () =>
 				typeof options === 'function'
-					? (info: Info) => options({ ...thru, ...info, value, values })
+					? (info: Info) =>
+							options({ ...thru, ...info, value, values, context })
 					: options,
 			)}
 			.textProperty=${textProperty}
