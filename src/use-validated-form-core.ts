@@ -6,17 +6,6 @@ import { FormValues, useFormCore } from './use-form-core';
 import type { ItemRule } from './use-items/apply-rules';
 import { validate } from './validation';
 
-export const computeRules = <T extends object, C extends object = object>(
-	fields: Fields<T, C>,
-	rules: readonly ItemRule<T, C>[] = [],
-): ItemRule<T, C>[] => {
-	const fieldRules = fields
-		.filter((f) => f?.rules != null)
-		.flatMap((f) => f?.rules);
-
-	return [...rules, ...(fieldRules as ItemRule<T, C>[])];
-};
-
 type Validate<T extends object, C extends object = object> = ReturnType<
 	typeof validate<T, C>
 >;
@@ -40,8 +29,7 @@ export const useValidatedFormCore = <
 	{ fields: _fields, rules, context, touched }: Readonly<Props<T, C>>,
 ): UseValidatedForm<T, C> => {
 	const fields = useMemo(() => invoke(_fields) ?? [], [_fields]);
-	const allRules = useMemo(() => computeRules(fields, rules), [fields, rules]);
-	const form = useFormCore(state, setState, allRules, context, touched);
+	const form = useFormCore(state, setState, rules, context, touched);
 	const { values } = form;
 
 	return {

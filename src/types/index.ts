@@ -6,8 +6,6 @@ import {
 } from '../inputs';
 import { ReadOnlyNumberProps } from '../inputs/read-only-number';
 import { UseForm } from '../use-form-core';
-import { ItemRule } from '../use-items';
-
 export type Invoked<T, F, V, R, C extends object = object> = (
 	value: V,
 	values: T,
@@ -130,7 +128,6 @@ export interface Field<
 	styles?: Record<string, string>;
 	onFocus?: OnFocusFn<T, Field<T, K, V, C>, V>;
 	onChange?: OnChange<T, K, V>;
-	rules?: ItemRule<T>[];
 	header?: Invokable<T, Field<T, K, V, C>, V, string, C>;
 	input?: Input<T, K, V, C>;
 }
