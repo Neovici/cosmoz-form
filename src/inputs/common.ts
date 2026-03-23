@@ -27,6 +27,7 @@ export interface CommonFieldProps<
 	max?: Invokable<T, Field<T, K, V, C>, V, number | string, C>;
 	autosize?: boolean;
 	noSpinner?: boolean;
+	autocomplete?: string;
 }
 
 export interface Common<
@@ -61,6 +62,7 @@ export const common = <T extends object, K extends keyof T, V extends T[K]>(
 		max,
 		autosize,
 		noSpinner,
+		autocomplete,
 		title,
 		description,
 	} = field;
@@ -84,6 +86,7 @@ export const common = <T extends object, K extends keyof T, V extends T[K]>(
 		maxlength=${ifDefined(maxlength)}
 		min=${ifDefined(invoke(min, value, values, field, context))}
 		max=${ifDefined(invoke(max, value, values, field, context))}
+		autocomplete=${ifDefined(autocomplete)}
 		@focus=${onFocus}
 		@input=${onInput}
 		>${renderContents({ prefix, suffix, warning, description })}</cosmoz-input
