@@ -1,3 +1,9 @@
+## [2.8.0](https://github.com/Neovici/cosmoz-form/compare/v2.7.0...v2.8.0) (2026-03-23)
+
+### Features
+
+* **common:** pass autocomplete attribute to cosmoz-input ([#21](https://github.com/Neovici/cosmoz-form/issues/21)) ([e269acc](https://github.com/Neovici/cosmoz-form/commit/e269acc51ef894bd538a7eef69d2b84bd9fd464d))
+
 ## [2.7.0](https://github.com/Neovici/cosmoz-form/compare/v2.6.0...v2.7.0) (2026-03-18)
 
 ### Features
