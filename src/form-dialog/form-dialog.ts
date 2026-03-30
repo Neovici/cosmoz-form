@@ -76,13 +76,11 @@ export interface Dialog<T extends object> extends Props<T> {
 	name?: string;
 	title?: string;
 	renderInPortal?: boolean;
-	backdrop?: boolean;
 }
 
 export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	if (!props) return nothing;
 	const dialog = html`<cosmoz-form-dialog
-		?backdrop=${props.backdrop ?? true}
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
 		.heading=${props.heading ?? props.title}
@@ -95,7 +93,6 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		.auto=${props.auto}
 		.uncancelable=${props.uncancelable}
 		.hideCancelButton=${props.hideCancelButton}
-		.manualFocus=${props.manualFocus}
 		.saveText=${props.saveText}
 	></cosmoz-form-dialog>`;
 	return props.renderInPortal ? portal(dialog) : dialog;
