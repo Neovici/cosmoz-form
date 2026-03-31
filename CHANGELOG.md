@@ -1,3 +1,9 @@
+## [2.9.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v2.8.0...v2.9.0-beta.1) (2026-03-31)
+
+### Features
+
+* support cosmoz-dialog v5.0.0 (native dialog migration) ([5de78c7](https://github.com/Neovici/cosmoz-form/commit/5de78c779011670d7043f31ac67d112ce555cf99))
+
 ## [2.8.1](https://github.com/Neovici/cosmoz-form/compare/v2.8.0...v2.8.1) (2026-04-03)
 
 ### Bug Fixes
