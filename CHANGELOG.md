@@ -1,3 +1,9 @@
+## [2.9.0-beta.2](https://github.com/Neovici/cosmoz-form/compare/v2.9.0-beta.1...v2.9.0-beta.2) (2026-03-31)
+
+### Bug Fixes
+
+* remove portal rendering (no longer needed with native dialog) ([bae25ac](https://github.com/Neovici/cosmoz-form/commit/bae25ac2acb17cf659f16e5a51c9c74500b438bd))
+
 ## [2.9.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v2.8.0...v2.9.0-beta.1) (2026-03-31)
 
 ### Features
