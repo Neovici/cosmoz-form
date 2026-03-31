@@ -2,7 +2,6 @@ import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
 import { _ } from '@neovici/cosmoz-i18next';
 import '@neovici/cosmoz-spinner';
-import { portal } from '@neovici/cosmoz-utils/directives/portal';
 import { invoke } from '@neovici/cosmoz-utils/function';
 import { useEffect } from '@pionjs/pion';
 import { html, nothing } from 'lit-html';
@@ -75,7 +74,6 @@ customElements.define(
 export interface Dialog<T extends object> extends Props<T> {
 	name?: string;
 	title?: string;
-	renderInPortal?: boolean;
 }
 
 export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
@@ -95,7 +93,7 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		.hideCancelButton=${props.hideCancelButton}
 		.saveText=${props.saveText}
 	></cosmoz-form-dialog>`;
-	return props.renderInPortal ? portal(dialog) : dialog;
+	return dialog;
 };
 
 export const formDialog$ = <T extends object>(props$: Resolvable<Dialog<T>>) =>
