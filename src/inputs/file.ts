@@ -2,9 +2,9 @@ import { invoke } from '@neovici/cosmoz-utils/function';
 import { html } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { until } from 'lit-html/directives/until.js';
-import { input } from './base';
 import { when } from 'lit-html/directives/when.js';
 import { InputBaseOpts } from '../types';
+import { input } from './base';
 
 export interface FileProps<
 	T extends object,
@@ -20,7 +20,12 @@ export interface FileProps<
 }
 
 export const file = input(
-	<T extends object, K extends keyof T, V extends T[K]>({
+	<
+		T extends object,
+		K extends keyof T,
+		V extends T[K],
+		C extends object = object,
+	>({
 		id,
 		error,
 		onChange,
@@ -29,7 +34,7 @@ export const file = input(
 		value,
 		values,
 		autoReset,
-	}: InputBaseOpts<T, K, V>) =>
+	}: InputBaseOpts<T, K, V, C>) =>
 		html`<div class="input input-file" name=${id}>
 			<input
 				class="file"

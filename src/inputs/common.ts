@@ -34,13 +34,19 @@ export interface Common<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
-> extends Omit<InputBaseOpts<T, K, V>, 'onChange'> {
+	C extends object = object,
+> extends Omit<InputBaseOpts<T, K, V, C>, 'onChange'> {
 	type?: string;
 	onInput?: (e: InputEvent) => void;
 }
 
-export const common = <T extends object, K extends keyof T, V extends T[K]>(
-	props: Common<T, K, V>,
+export const common = <
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+	C extends object = object,
+>(
+	props: Common<T, K, V, C>,
 ) => {
 	const { value, values, onFocus, onInput, context, ...field } = props;
 	const {
@@ -94,21 +100,31 @@ export const common = <T extends object, K extends keyof T, V extends T[K]>(
 };
 
 export const text = input(
-	<T extends object, K extends keyof T, V extends T[K]>({
+	<
+		T extends object,
+		K extends keyof T,
+		V extends T[K],
+		C extends object = object,
+	>({
 		onChange,
 		...props
-	}: InputBaseOpts<T, K, V>) =>
+	}: InputBaseOpts<T, K, V, C>) =>
 		common({
 			...props,
 			onInput: (e) => onChange!((e.target as HTMLInputElement).value as V),
 		}),
 );
 export const number = input(
-	<T extends object, K extends keyof T, V extends T[K]>({
+	<
+		T extends object,
+		K extends keyof T,
+		V extends T[K],
+		C extends object = object,
+	>({
 		onChange,
 		allowedPattern = patternNumber,
 		...props
-	}: InputBaseOpts<T, K, V>) =>
+	}: InputBaseOpts<T, K, V, C>) =>
 		common({
 			...props,
 			type: 'number',
@@ -120,10 +136,15 @@ export const number = input(
 		}),
 );
 export const date = input(
-	<T extends object, K extends keyof T, V extends T[K]>({
+	<
+		T extends object,
+		K extends keyof T,
+		V extends T[K],
+		C extends object = object,
+	>({
 		onChange,
 		...props
-	}: InputBaseOpts<T, K, V>) =>
+	}: InputBaseOpts<T, K, V, C>) =>
 		common({
 			...props,
 			type: 'date',
@@ -131,10 +152,15 @@ export const date = input(
 		}),
 );
 export const color = input(
-	<T extends object, K extends keyof T, V extends T[K]>({
+	<
+		T extends object,
+		K extends keyof T,
+		V extends T[K],
+		C extends object = object,
+	>({
 		onChange,
 		...props
-	}: InputBaseOpts<T, K, V>) =>
+	}: InputBaseOpts<T, K, V, C>) =>
 		common({
 			...props,
 			type: 'color',
@@ -149,7 +175,12 @@ export interface TextareaProps {
 }
 
 export const textarea = input(
-	<T extends object, K extends keyof T, V extends T[K]>({
+	<
+		T extends object,
+		K extends keyof T,
+		V extends T[K],
+		C extends object = object,
+	>({
 		id,
 		label,
 		placeholder,
@@ -163,7 +194,7 @@ export const textarea = input(
 		maxRows,
 		rows,
 		maxlength,
-	}: InputBaseOpts<T, K, V>) =>
+	}: InputBaseOpts<T, K, V, C>) =>
 		html`<cosmoz-textarea
 			class="input input-textarea"
 			name=${id}
