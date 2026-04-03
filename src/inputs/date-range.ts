@@ -1,10 +1,10 @@
-import { html } from 'lit-html';
-import { live } from 'lit-html/directives/live.js';
-import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { _ } from '@neovici/cosmoz-i18next';
-import { input } from './base';
-import { missing } from '../validation';
+import { html } from 'lit-html';
+import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { live } from 'lit-html/directives/live.js';
 import { InputBaseOpts } from '../types';
+import { missing } from '../validation';
+import { input } from './base';
 
 interface Value {
 	to: string;
@@ -20,7 +20,12 @@ const checkFormat = (value: unknown): value is Value | undefined =>
 
 const _dateRange = (type: 'date' | 'datetime-local') =>
 	input(
-		<T extends object, K extends keyof T, V extends T[K]>({
+		<
+			T extends object,
+			K extends keyof T,
+			V extends T[K],
+			C extends object = object,
+		>({
 			id,
 			label,
 			error,
@@ -28,7 +33,7 @@ const _dateRange = (type: 'date' | 'datetime-local') =>
 			disabled,
 			onChange,
 			value,
-		}: InputBaseOpts<T, K, V>) => {
+		}: InputBaseOpts<T, K, V, C>) => {
 			if (!checkFormat(value)) return;
 			return [
 				html`<cosmoz-input

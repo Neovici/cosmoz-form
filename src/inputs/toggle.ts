@@ -1,15 +1,16 @@
+import '@neovici/cosmoz-input';
 import { html } from 'lit-html';
-import { live } from 'lit-html/directives/live.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { live } from 'lit-html/directives/live.js';
+import { InputBaseOpts } from '../types';
 import { input } from './base';
 import { renderDescription, renderWarning } from './render';
-import '@neovici/cosmoz-input';
-import { InputBaseOpts } from '../types';
 
 export const toggleInput = <
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
+	C extends object = object,
 >({
 	id,
 	label,
@@ -20,7 +21,7 @@ export const toggleInput = <
 	value,
 	title,
 	description,
-}: InputBaseOpts<T, K, V>) =>
+}: InputBaseOpts<T, K, V, C>) =>
 	html`<cosmoz-toggle
 		class="input input-toggle"
 		name=${id}
