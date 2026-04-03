@@ -1,3 +1,9 @@
+## [2.8.1](https://github.com/Neovici/cosmoz-form/compare/v2.8.0...v2.8.1) (2026-04-03)
+
+### Bug Fixes
+
+* add Context generic to all input functions ([#23](https://github.com/Neovici/cosmoz-form/issues/23)) ([bab1a99](https://github.com/Neovici/cosmoz-form/commit/bab1a99045c49cec57b482bb1756f93d2af8a453))
+
 ## [2.8.0](https://github.com/Neovici/cosmoz-form/compare/v2.7.0...v2.8.0) (2026-03-23)
 
 ### Features
