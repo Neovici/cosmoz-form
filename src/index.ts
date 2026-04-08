@@ -14,7 +14,7 @@ export type * from './types';
 
 // Core hooks
 export { useFormCore, type FormValues } from './use-form-core';
-export { computeRules, useValidatedFormCore } from './use-validated-form-core';
+export { useValidatedFormCore } from './use-validated-form-core';
 
 // Add form utilities
 export * from './add';

@@ -59,15 +59,18 @@ suite('useValidatedForm with field rules', () => {
 			oneTimeRule = [() => ({ id: ++id }), () => []];
 
 		const fields = [
-			{ id: 'id', rules: [oneTimeRule], validate: required },
-			{ id: 'name', rules: [computeFullName], validate: tooShort(5) },
+			{ id: 'id', validate: required },
+			{ id: 'name', validate: tooShort(5) },
 			{ id: 'lastName', validate: required },
 			{ id: 'fullName', validate: required },
 		];
 
+		const rules = [oneTimeRule, computeFullName];
+
 		({ result, nextUpdate } = await renderHook(
-			({ fields, initial }) => useValidatedForm({ fields, initial }),
-			{ initialProps: { fields, initial } },
+			({ fields, initial, rules }) =>
+				useValidatedForm({ fields, initial, rules }),
+			{ initialProps: { fields, initial, rules } },
 		));
 	});
 

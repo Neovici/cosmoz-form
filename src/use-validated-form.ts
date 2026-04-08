@@ -1,11 +1,9 @@
 import { useState } from '@pionjs/pion';
-import { invoke } from './helpers';
 import type { Fields } from './types';
 import { processInitial } from './use-form';
 import { FormValues } from './use-form-core';
 import type { ItemRule } from './use-items/apply-rules';
 import {
-	computeRules,
 	useValidatedFormCore,
 	type UseValidatedForm,
 } from './use-validated-form-core';
@@ -22,9 +20,7 @@ export const useValidatedForm = <T extends object, C extends object = object>(
 	options: Readonly<Props<T, C>>,
 ): UseValidatedForm<T, C> => {
 	const [state, setState] = useState<FormValues<T>>(() => {
-		const fields = invoke(options.fields) ?? [],
-			allRules = computeRules(fields, options.rules),
-			ini = processInitial(options.initial, allRules, options.context);
+		const ini = processInitial(options.initial, options.rules, options.context);
 
 		return [ini, ini];
 	});
