@@ -73,7 +73,6 @@ customElements.define(
 
 export interface Dialog<T extends object> extends Props<T> {
 	name?: string;
-	title?: string;
 }
 
 export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
@@ -81,7 +80,7 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	const dialog = html`<cosmoz-form-dialog
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
-		.heading=${props.heading ?? props.title}
+		.heading=${props.heading}
 		.description=${props.description}
 		.fields=${props.fields}
 		.initial=${props.initial}
