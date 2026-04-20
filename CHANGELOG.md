@@ -1,3 +1,9 @@
+## [2.8.2](https://github.com/Neovici/cosmoz-form/compare/v2.8.1...v2.8.2) (2026-04-20)
+
+### Bug Fixes
+
+* widen validator generic constraints to include null ([#24](https://github.com/Neovici/cosmoz-form/issues/24)) ([14f1fe2](https://github.com/Neovici/cosmoz-form/commit/14f1fe2316b1fd69170453da862d87776cc6a123))
+
 ## [2.8.1](https://github.com/Neovici/cosmoz-form/compare/v2.8.0...v2.8.1) (2026-04-03)
 
 ### Bug Fixes
