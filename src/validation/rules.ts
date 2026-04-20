@@ -53,40 +53,40 @@ export function notAnOption<
 
 export const tooShort =
 	(length: number) =>
-	<V extends string | undefined>(value: V) =>
+	<V extends string | null | undefined>(value: V) =>
 		exists(value) &&
 		value.length < length &&
 		_('Must have at least {0} characters', length);
 
 export const tooLong =
 	(length: number) =>
-	<V extends string | undefined>(value: V) =>
+	<V extends string | null | undefined>(value: V) =>
 		exists(value) &&
 		value.length > length &&
 		_('Must have maximum {0} characters', length);
 
 export const exactLength =
 	(length: number) =>
-	<V extends string | undefined>(value: V) =>
+	<V extends string | null | undefined>(value: V) =>
 		exists(value) &&
 		value.length !== length &&
 		_('Must have exactly {0} characters', length);
 
 export const tooSmall =
 	(min: number) =>
-	<V extends number | undefined>(value: V) =>
+	<V extends number | null | undefined>(value: V) =>
 		exists(value) &&
 		value < min &&
 		_('Value must be greater or equal to {0}', min);
 
 export const tooSmallStrict =
 	(min: number) =>
-	<V extends number | undefined>(value: V) =>
+	<V extends number | null | undefined>(value: V) =>
 		exists(value) && value <= min && _('Value must be greater than {0}', min);
 
 export const tooBig =
 	(max: number) =>
-	<V extends number | undefined>(value: V) =>
+	<V extends number | null | undefined>(value: V) =>
 		exists(value) &&
 		exists(max) &&
 		value > max &&
@@ -94,16 +94,16 @@ export const tooBig =
 
 export const doesNotMatchFormat =
 	(regexp: RegExp, message = 'Does not match format: ' + regexp) =>
-	<V extends string | undefined>(value: V) =>
+	<V extends string | null | undefined>(value: V) =>
 		exists(value) && !value.match(regexp) && message;
 
-export const luhn = <V extends string | undefined>(value: V) =>
+export const luhn = <V extends string | null | undefined>(value: V) =>
 	exists(value) && !isLuhn(value) && _('Not a valid identification number');
 
-export const gln = <V extends string | undefined>(value: V) =>
+export const gln = <V extends string | null | undefined>(value: V) =>
 	exists(value) && !isGln(value) && _('Not a valid identification number');
 
-export const onlyDigits = <V extends string | undefined>(value: V) =>
+export const onlyDigits = <V extends string | null | undefined>(value: V) =>
 	exists(value) && !/^[0-9]+$/u.test(value) && _('Only digits allowed');
 
 export const hint = <K extends PropertyKey>(field: K) => ({
