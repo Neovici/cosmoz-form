@@ -1,3 +1,23 @@
+## [3.0.0](https://github.com/Neovici/cosmoz-form/compare/v2.8.2...v3.0.0) (2026-05-04)
+
+### ⚠ BREAKING CHANGES
+
+* **form-dialog:** The  prop has been removed from the Dialog interface.
+Use  instead. The  prop was deprecated and redundant with .
+
+### Features
+
+* support cosmoz-dialog v5.0.0 (native dialog migration) ([6b40980](https://github.com/Neovici/cosmoz-form/commit/6b4098024bdb2bd9f149b9d3a43e400c5ec66604))
+
+### Bug Fixes
+
+* **release:** configure beta branch for semantic-release ([6d0d1a4](https://github.com/Neovici/cosmoz-form/commit/6d0d1a461391e50d55bbe7118fc69c9bf22fa1cd))
+* remove portal rendering (no longer needed with native dialog) ([1839854](https://github.com/Neovici/cosmoz-form/commit/18398541c86823ade94f6229317cdf5179c8723c))
+
+### Code Refactoring
+
+* **form-dialog:** remove deprecated title prop ([6cc6f65](https://github.com/Neovici/cosmoz-form/commit/6cc6f65e959697db5744196169e035c9bf78dc95))
+
 ## [2.8.2](https://github.com/Neovici/cosmoz-form/compare/v2.8.1...v2.8.2) (2026-04-20)
 
 ### Bug Fixes
