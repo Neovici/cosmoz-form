@@ -2,133 +2,165 @@
 
 ### Bug Fixes
 
-* widen validator generic constraints to include null ([#24](https://github.com/Neovici/cosmoz-form/issues/24)) ([14f1fe2](https://github.com/Neovici/cosmoz-form/commit/14f1fe2316b1fd69170453da862d87776cc6a123))
+- widen validator generic constraints to include null ([#24](https://github.com/Neovici/cosmoz-form/issues/24)) ([14f1fe2](https://github.com/Neovici/cosmoz-form/commit/14f1fe2316b1fd69170453da862d87776cc6a123))
+
+## [3.0.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v2.8.1...v3.0.0-beta.1) (2026-04-14)
+
+### ⚠ BREAKING CHANGES
+
+- **form-dialog:** The prop has been removed from the Dialog interface.
+  Use instead. The prop was deprecated and redundant with .
+
+### Features
+
+- support cosmoz-dialog v5.0.0 (native dialog migration) ([6b40980](https://github.com/Neovici/cosmoz-form/commit/6b4098024bdb2bd9f149b9d3a43e400c5ec66604))
+
+### Bug Fixes
+
+- **release:** configure beta branch for semantic-release ([6d0d1a4](https://github.com/Neovici/cosmoz-form/commit/6d0d1a461391e50d55bbe7118fc69c9bf22fa1cd))
+- remove portal rendering (no longer needed with native dialog) ([1839854](https://github.com/Neovici/cosmoz-form/commit/18398541c86823ade94f6229317cdf5179c8723c))
+
+### Code Refactoring
+
+- **form-dialog:** remove deprecated title prop ([6cc6f65](https://github.com/Neovici/cosmoz-form/commit/6cc6f65e959697db5744196169e035c9bf78dc95))
+
+## [2.9.0-beta.2](https://github.com/Neovici/cosmoz-form/compare/v2.9.0-beta.1...v2.9.0-beta.2) (2026-03-31)
+
+### Bug Fixes
+
+- remove portal rendering (no longer needed with native dialog) ([bae25ac](https://github.com/Neovici/cosmoz-form/commit/bae25ac2acb17cf659f16e5a51c9c74500b438bd))
+
+## [2.9.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v2.8.0...v2.9.0-beta.1) (2026-03-31)
+
+### Features
+
+- support cosmoz-dialog v5.0.0 (native dialog migration) ([5de78c7](https://github.com/Neovici/cosmoz-form/commit/5de78c779011670d7043f31ac67d112ce555cf99))
 
 ## [2.8.1](https://github.com/Neovici/cosmoz-form/compare/v2.8.0...v2.8.1) (2026-04-03)
 
 ### Bug Fixes
 
-* add Context generic to all input functions ([#23](https://github.com/Neovici/cosmoz-form/issues/23)) ([bab1a99](https://github.com/Neovici/cosmoz-form/commit/bab1a99045c49cec57b482bb1756f93d2af8a453))
+- add Context generic to all input functions ([#23](https://github.com/Neovici/cosmoz-form/issues/23)) ([bab1a99](https://github.com/Neovici/cosmoz-form/commit/bab1a99045c49cec57b482bb1756f93d2af8a453))
 
 ## [2.8.0](https://github.com/Neovici/cosmoz-form/compare/v2.7.0...v2.8.0) (2026-03-23)
 
 ### Features
 
-* **common:** pass autocomplete attribute to cosmoz-input ([#21](https://github.com/Neovici/cosmoz-form/issues/21)) ([e269acc](https://github.com/Neovici/cosmoz-form/commit/e269acc51ef894bd538a7eef69d2b84bd9fd464d))
+- **common:** pass autocomplete attribute to cosmoz-input ([#21](https://github.com/Neovici/cosmoz-form/issues/21)) ([e269acc](https://github.com/Neovici/cosmoz-form/commit/e269acc51ef894bd538a7eef69d2b84bd9fd464d))
 
 ## [2.7.0](https://github.com/Neovici/cosmoz-form/compare/v2.6.0...v2.7.0) (2026-03-18)
 
 ### Features
 
-* context in autocomplete options ([#19](https://github.com/Neovici/cosmoz-form/issues/19)) ([8fcb9ea](https://github.com/Neovici/cosmoz-form/commit/8fcb9ea3a41089ea68fbf099f2043d94b09caf1f))
+- context in autocomplete options ([#19](https://github.com/Neovici/cosmoz-form/issues/19)) ([8fcb9ea](https://github.com/Neovici/cosmoz-form/commit/8fcb9ea3a41089ea68fbf099f2043d94b09caf1f))
 
 ## [2.6.0](https://github.com/Neovici/cosmoz-form/compare/v2.5.0...v2.6.0) (2026-03-17)
 
 ### Features
 
-* **use-items:** add prepend functionality ([#17](https://github.com/Neovici/cosmoz-form/issues/17)) ([ab5cb03](https://github.com/Neovici/cosmoz-form/commit/ab5cb033e5f238645631984e531c61c4cefe1ce0))
+- **use-items:** add prepend functionality ([#17](https://github.com/Neovici/cosmoz-form/issues/17)) ([ab5cb03](https://github.com/Neovici/cosmoz-form/commit/ab5cb033e5f238645631984e531c61c4cefe1ce0))
 
 ## [2.5.0](https://github.com/Neovici/cosmoz-form/compare/v2.4.1...v2.5.0) (2026-03-16)
 
 ### Features
 
-* **context:** add generic context propagation to nested forms and rules (FE-332) ([#16](https://github.com/Neovici/cosmoz-form/issues/16)) ([5fbba97](https://github.com/Neovici/cosmoz-form/commit/5fbba97dd9536d83a2740477dbcaddfe4402fa84))
+- **context:** add generic context propagation to nested forms and rules (FE-332) ([#16](https://github.com/Neovici/cosmoz-form/issues/16)) ([5fbba97](https://github.com/Neovici/cosmoz-form/commit/5fbba97dd9536d83a2740477dbcaddfe4402fa84))
 
 ## [2.4.1](https://github.com/Neovici/cosmoz-form/compare/v2.4.0...v2.4.1) (2026-03-13)
 
 ### Bug Fixes
 
-* **validation/rules:** return false instead of undefined ([#3](https://github.com/Neovici/cosmoz-form/issues/3)) ([025b8c6](https://github.com/Neovici/cosmoz-form/commit/025b8c622ae38212bcc4428e1b484dca50292fff))
+- **validation/rules:** return false instead of undefined ([#3](https://github.com/Neovici/cosmoz-form/issues/3)) ([025b8c6](https://github.com/Neovici/cosmoz-form/commit/025b8c622ae38212bcc4428e1b484dca50292fff))
 
 ## [2.4.0](https://github.com/Neovici/cosmoz-form/compare/v2.3.0...v2.4.0) (2026-03-13)
 
 ### Features
 
-* **autocomplete:** expose itemHeight prop from cosmoz-autocomplete ([#15](https://github.com/Neovici/cosmoz-form/issues/15)) ([a99f565](https://github.com/Neovici/cosmoz-form/commit/a99f565b3f93772c5e9dc5cc1bc46397caa43a15))
+- **autocomplete:** expose itemHeight prop from cosmoz-autocomplete ([#15](https://github.com/Neovici/cosmoz-form/issues/15)) ([a99f565](https://github.com/Neovici/cosmoz-form/commit/a99f565b3f93772c5e9dc5cc1bc46397caa43a15))
 
 ## [2.3.0](https://github.com/Neovici/cosmoz-form/compare/v2.2.0...v2.3.0) (2026-03-13)
 
 ### Features
 
-* add chipRenderer passthrough to autocomplete input (FE-363) ([#14](https://github.com/Neovici/cosmoz-form/issues/14)) ([f74eff6](https://github.com/Neovici/cosmoz-form/commit/f74eff689e7e1c396773d0017ae4f027f2dc8b78))
+- add chipRenderer passthrough to autocomplete input (FE-363) ([#14](https://github.com/Neovici/cosmoz-form/issues/14)) ([f74eff6](https://github.com/Neovici/cosmoz-form/commit/f74eff689e7e1c396773d0017ae4f027f2dc8b78))
 
 ## [2.2.0](https://github.com/Neovici/cosmoz-form/compare/v2.1.1...v2.2.0) (2026-03-13)
 
 ### Features
 
-* async rules (FE-62) ([#13](https://github.com/Neovici/cosmoz-form/issues/13)) ([64dba11](https://github.com/Neovici/cosmoz-form/commit/64dba119ffa5488fd5b75ea5f4d52a7f39a98921))
+- async rules (FE-62) ([#13](https://github.com/Neovici/cosmoz-form/issues/13)) ([64dba11](https://github.com/Neovici/cosmoz-form/commit/64dba119ffa5488fd5b75ea5f4d52a7f39a98921))
 
 ## [2.1.1](https://github.com/Neovici/cosmoz-form/compare/v2.1.0...v2.1.1) (2026-02-28)
 
 ### Bug Fixes
 
-* make Rule type params after value optional ([#12](https://github.com/Neovici/cosmoz-form/issues/12)) ([d257bde](https://github.com/Neovici/cosmoz-form/commit/d257bde98099da7f22bb54f3aa1d0eaea5d9d2f4))
+- make Rule type params after value optional ([#12](https://github.com/Neovici/cosmoz-form/issues/12)) ([d257bde](https://github.com/Neovici/cosmoz-form/commit/d257bde98099da7f22bb54f3aa1d0eaea5d9d2f4))
 
 ## [2.1.0](https://github.com/Neovici/cosmoz-form/compare/v2.0.0...v2.1.0) (2026-02-24)
 
 ### Features
 
-* rename cosmoz-form-dialog-next element to cosmoz-form-dialog ([392e481](https://github.com/Neovici/cosmoz-form/commit/392e481a8cd43448a39e8f3d349ea18ae17a10be))
+- rename cosmoz-form-dialog-next element to cosmoz-form-dialog ([392e481](https://github.com/Neovici/cosmoz-form/commit/392e481a8cd43448a39e8f3d349ea18ae17a10be))
 
 ## [2.0.0](https://github.com/Neovici/cosmoz-form/compare/v1.1.2...v2.0.0) (2026-02-23)
 
 ### ⚠ BREAKING CHANGES
 
-* @neovici/cosmoz-dialog-next has been renamed to @neovici/cosmoz-dialog.
-Consumers importing from cosmoz-dialog-next should update their imports.
+- @neovici/cosmoz-dialog-next has been renamed to @neovici/cosmoz-dialog.
+  Consumers importing from cosmoz-dialog-next should update their imports.
 
 Ref: NEO-1130
 
 ### Features
 
-* replace @neovici/cosmoz-dialog-next with @neovici/cosmoz-dialog ([df4ec9c](https://github.com/Neovici/cosmoz-form/commit/df4ec9cc8c0c9d32a096e0d60e9a140e985f3e18))
+- replace @neovici/cosmoz-dialog-next with @neovici/cosmoz-dialog ([df4ec9c](https://github.com/Neovici/cosmoz-form/commit/df4ec9cc8c0c9d32a096e0d60e9a140e985f3e18))
 
 ## [1.1.2](https://github.com/Neovici/cosmoz-form/compare/v1.1.1...v1.1.2) (2026-02-17)
 
 ### Bug Fixes
 
-* **deps:** support cosmoz-autocomplete v11–v13 ([#9](https://github.com/Neovici/cosmoz-form/issues/9)) ([b3ac1ce](https://github.com/Neovici/cosmoz-form/commit/b3ac1ce9c941febf64ca2abe1d7d0c2ba580a047))
+- **deps:** support cosmoz-autocomplete v11–v13 ([#9](https://github.com/Neovici/cosmoz-form/issues/9)) ([b3ac1ce](https://github.com/Neovici/cosmoz-form/commit/b3ac1ce9c941febf64ca2abe1d7d0c2ba580a047))
 
 ## [1.1.1](https://github.com/Neovici/cosmoz-form/compare/v1.1.0...v1.1.1) (2026-01-26)
 
 ### Bug Fixes
 
-* use CSS custom properties for button theming ([#7](https://github.com/Neovici/cosmoz-form/issues/7)) ([b1eacee](https://github.com/Neovici/cosmoz-form/commit/b1eaceeabb03180c00c9a99894bc612d8803e9c0)), closes [#596679](https://github.com/Neovici/cosmoz-form/issues/596679) [#a4abae](https://github.com/Neovici/cosmoz-form/issues/a4abae) [#fff](https://github.com/Neovici/cosmoz-form/issues/fff) [#f0f0f0](https://github.com/Neovici/cosmoz-form/issues/f0f0f0) [#6](https://github.com/Neovici/cosmoz-form/issues/6)
+- use CSS custom properties for button theming ([#7](https://github.com/Neovici/cosmoz-form/issues/7)) ([b1eacee](https://github.com/Neovici/cosmoz-form/commit/b1eaceeabb03180c00c9a99894bc612d8803e9c0)), closes [#596679](https://github.com/Neovici/cosmoz-form/issues/596679) [#a4abae](https://github.com/Neovici/cosmoz-form/issues/a4abae) [#fff](https://github.com/Neovici/cosmoz-form/issues/fff) [#f0f0f0](https://github.com/Neovici/cosmoz-form/issues/f0f0f0) [#6](https://github.com/Neovici/cosmoz-form/issues/6)
 
 ## [1.1.0](https://github.com/Neovici/cosmoz-form/compare/v1.0.1...v1.1.0) (2026-01-23)
 
 ### Features
 
-* export all modules from main index ([#4](https://github.com/Neovici/cosmoz-form/issues/4)) ([6188357](https://github.com/Neovici/cosmoz-form/commit/61883573a77ec7f9ee03354e1bacbef46cc9aa16))
+- export all modules from main index ([#4](https://github.com/Neovici/cosmoz-form/issues/4)) ([6188357](https://github.com/Neovici/cosmoz-form/commit/61883573a77ec7f9ee03354e1bacbef46cc9aa16))
 
 ## [1.0.1](https://github.com/Neovici/cosmoz-form/compare/v1.0.0...v1.0.1) (2026-01-20)
 
 ### Bug Fixes
 
-* test npm publishing ([a6d96ec](https://github.com/Neovici/cosmoz-form/commit/a6d96ec4cbaee64fc22faf0fb4b8ea56c019b85f))
+- test npm publishing ([a6d96ec](https://github.com/Neovici/cosmoz-form/commit/a6d96ec4cbaee64fc22faf0fb4b8ea56c019b85f))
 
 ## 1.0.0 (2026-01-20)
 
 ### Features
 
-* adjust tests with @neovici/testing ([e0590f8](https://github.com/neovici/cosmoz-form/commit/e0590f83eb73f771ed02b2c931578a321c6ab43a))
-* adjust types ([fb8a60c](https://github.com/neovici/cosmoz-form/commit/fb8a60c1b25e07a2c0fc18248e23c36f1068efab))
-* cleanup number ([873961e](https://github.com/neovici/cosmoz-form/commit/873961e72c800a6f984b8ae4d7fbe68ff8028976))
-* cleanup number inputs ([c261191](https://github.com/neovici/cosmoz-form/commit/c2611910c91b4722840876664a358fddb942e7d9))
-* cleanup reason, month and comment inputs ([41ca216](https://github.com/neovici/cosmoz-form/commit/41ca2168598d802e8135ce2f354ab032f15e158e))
-* cleanup shared-styles import ([0d4da29](https://github.com/neovici/cosmoz-form/commit/0d4da2907b5939442e1669fc0956c44c4a9ec51a))
-* cleanup use-add-form ([00db905](https://github.com/neovici/cosmoz-form/commit/00db9053ac56f13844c6ac38162dc47bce61a1a4))
-* **cosmoz-form:** init as is ([4d1a1b0](https://github.com/neovici/cosmoz-form/commit/4d1a1b0564883f965b84ee46fcfcdc89410a9da3))
-* initialize cosmoz-form package ([c8f3018](https://github.com/neovici/cosmoz-form/commit/c8f30181191e7ce9ee4be95f5598275c5855aa06))
-* missing use-opened ([367dc1e](https://github.com/neovici/cosmoz-form/commit/367dc1eb3be95c1212cd51b4cb07670fcd8ce160))
-* **toggle:** add styles ([4867992](https://github.com/neovici/cosmoz-form/commit/4867992f458febe97cf2f16218fda974f0309b9e))
-* update workflows ([d9124a8](https://github.com/neovici/cosmoz-form/commit/d9124a8e18af244368051f5f4528195c3dc4c6e2))
-* use dialog from @neovici/cosmoz-dialog-next ([931707c](https://github.com/neovici/cosmoz-form/commit/931707c3e4cceeeb86ba6e80baa3f3c384f6d051))
-* **validation/rules:** gln and luhn ([17361f1](https://github.com/neovici/cosmoz-form/commit/17361f1c69a9c3c392f87d960ad454dcf85dce78))
+- adjust tests with @neovici/testing ([e0590f8](https://github.com/neovici/cosmoz-form/commit/e0590f83eb73f771ed02b2c931578a321c6ab43a))
+- adjust types ([fb8a60c](https://github.com/neovici/cosmoz-form/commit/fb8a60c1b25e07a2c0fc18248e23c36f1068efab))
+- cleanup number ([873961e](https://github.com/neovici/cosmoz-form/commit/873961e72c800a6f984b8ae4d7fbe68ff8028976))
+- cleanup number inputs ([c261191](https://github.com/neovici/cosmoz-form/commit/c2611910c91b4722840876664a358fddb942e7d9))
+- cleanup reason, month and comment inputs ([41ca216](https://github.com/neovici/cosmoz-form/commit/41ca2168598d802e8135ce2f354ab032f15e158e))
+- cleanup shared-styles import ([0d4da29](https://github.com/neovici/cosmoz-form/commit/0d4da2907b5939442e1669fc0956c44c4a9ec51a))
+- cleanup use-add-form ([00db905](https://github.com/neovici/cosmoz-form/commit/00db9053ac56f13844c6ac38162dc47bce61a1a4))
+- **cosmoz-form:** init as is ([4d1a1b0](https://github.com/neovici/cosmoz-form/commit/4d1a1b0564883f965b84ee46fcfcdc89410a9da3))
+- initialize cosmoz-form package ([c8f3018](https://github.com/neovici/cosmoz-form/commit/c8f30181191e7ce9ee4be95f5598275c5855aa06))
+- missing use-opened ([367dc1e](https://github.com/neovici/cosmoz-form/commit/367dc1eb3be95c1212cd51b4cb07670fcd8ce160))
+- **toggle:** add styles ([4867992](https://github.com/neovici/cosmoz-form/commit/4867992f458febe97cf2f16218fda974f0309b9e))
+- update workflows ([d9124a8](https://github.com/neovici/cosmoz-form/commit/d9124a8e18af244368051f5f4528195c3dc4c6e2))
+- use dialog from @neovici/cosmoz-dialog-next ([931707c](https://github.com/neovici/cosmoz-form/commit/931707c3e4cceeeb86ba6e80baa3f3c384f6d051))
+- **validation/rules:** gln and luhn ([17361f1](https://github.com/neovici/cosmoz-form/commit/17361f1c69a9c3c392f87d960ad454dcf85dce78))
 
 ### Bug Fixes
 
-* adjust test thresholds ([2c0b782](https://github.com/neovici/cosmoz-form/commit/2c0b7825f9c773f9b87d23ed92d623616824088a))
-* correct packages ([99e0e08](https://github.com/neovici/cosmoz-form/commit/99e0e08205afc4cfe8ccd6b4e264e271f5549b78))
-* correct types ([2b4e217](https://github.com/neovici/cosmoz-form/commit/2b4e2174e81680c5cb96aafb66b2282d27eb1e37))
-* import icons from cosmoz-icons ([1a8dc5f](https://github.com/neovici/cosmoz-form/commit/1a8dc5f8ac84ef8d2a3a40733a33058775eca5a3))
+- adjust test thresholds ([2c0b782](https://github.com/neovici/cosmoz-form/commit/2c0b7825f9c773f9b87d23ed92d623616824088a))
+- correct packages ([99e0e08](https://github.com/neovici/cosmoz-form/commit/99e0e08205afc4cfe8ccd6b4e264e271f5549b78))
+- correct types ([2b4e217](https://github.com/neovici/cosmoz-form/commit/2b4e2174e81680c5cb96aafb66b2282d27eb1e37))
+- import icons from cosmoz-icons ([1a8dc5f](https://github.com/neovici/cosmoz-form/commit/1a8dc5f8ac84ef8d2a3a40733a33058775eca5a3))

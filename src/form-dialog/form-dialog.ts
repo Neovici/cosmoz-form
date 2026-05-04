@@ -2,7 +2,6 @@ import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
 import { _ } from '@neovici/cosmoz-i18next';
 import '@neovici/cosmoz-spinner';
-import { portal } from '@neovici/cosmoz-utils/directives/portal';
 import { invoke } from '@neovici/cosmoz-utils/function';
 import { useEffect } from '@pionjs/pion';
 import { html, nothing } from 'lit-html';
@@ -74,18 +73,14 @@ customElements.define(
 
 export interface Dialog<T extends object> extends Props<T> {
 	name?: string;
-	title?: string;
-	renderInPortal?: boolean;
-	backdrop?: boolean;
 }
 
 export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	if (!props) return nothing;
 	const dialog = html`<cosmoz-form-dialog
-		?backdrop=${props.backdrop ?? true}
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
-		.heading=${props.heading ?? props.title}
+		.heading=${props.heading}
 		.description=${props.description}
 		.fields=${props.fields}
 		.initial=${props.initial}
@@ -95,10 +90,9 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		.auto=${props.auto}
 		.uncancelable=${props.uncancelable}
 		.hideCancelButton=${props.hideCancelButton}
-		.manualFocus=${props.manualFocus}
 		.saveText=${props.saveText}
 	></cosmoz-form-dialog>`;
-	return props.renderInPortal ? portal(dialog) : dialog;
+	return dialog;
 };
 
 export const formDialog$ = <T extends object>(props$: Resolvable<Dialog<T>>) =>
