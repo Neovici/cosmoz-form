@@ -1,7 +1,7 @@
-import { _ } from '@neovici/cosmoz-i18next';
 import { ensureDate } from '@neovici/cosmoz-utils/date';
 import { format } from 'date-fns/format';
 import { addDays } from 'date-fns/fp/addDays';
+import { t } from 'i18next';
 import { Rule } from '../types';
 import { gln as isGln } from '../util/gln';
 import { luhn as isLuhn } from '../util/luhn';
@@ -18,7 +18,7 @@ export const missing = <V>(value: V) =>
 
 export const exists = <V>(value: V): value is NonNullable<V> => !missing(value);
 
-export const required = <T>(value: T) => missing(value) && _('Required');
+export const required = <T>(value: T) => missing(value) && t('Required');
 
 export const requiredWhen =
 	<T extends object, K extends keyof T, V extends T[K]>(
@@ -35,7 +35,7 @@ export const requireEither =
 		missing(value) &&
 		values != null &&
 		missing(values[otherField]) &&
-		_('Required');
+		t('Required');
 
 export function notAnOption<
 	T extends object,
@@ -48,7 +48,7 @@ export function notAnOption<
 		!missing(value) &&
 		options != null &&
 		!options.some((option) => option[(key ?? 'value') as keyof O] === value) &&
-		_('Option not among possible values');
+		t('Option not among possible values');
 }
 
 export const tooShort =
@@ -56,33 +56,35 @@ export const tooShort =
 	<V extends string | null | undefined>(value: V) =>
 		exists(value) &&
 		value.length < length &&
-		_('Must have at least {0} characters', length);
+		t('Must have at least {0} characters', { 0: length });
 
 export const tooLong =
 	(length: number) =>
 	<V extends string | null | undefined>(value: V) =>
 		exists(value) &&
 		value.length > length &&
-		_('Must have maximum {0} characters', length);
+		t('Must have maximum {0} characters', { 0: length });
 
 export const exactLength =
 	(length: number) =>
 	<V extends string | null | undefined>(value: V) =>
 		exists(value) &&
 		value.length !== length &&
-		_('Must have exactly {0} characters', length);
+		t('Must have exactly {0} characters', { 0: length });
 
 export const tooSmall =
 	(min: number) =>
 	<V extends number | null | undefined>(value: V) =>
 		exists(value) &&
 		value < min &&
-		_('Value must be greater or equal to {0}', min);
+		t('Value must be greater or equal to {0}', { 0: min });
 
 export const tooSmallStrict =
 	(min: number) =>
 	<V extends number | null | undefined>(value: V) =>
-		exists(value) && value <= min && _('Value must be greater than {0}', min);
+		exists(value) &&
+		value <= min &&
+		t('Value must be greater than {0}', { 0: min });
 
 export const tooBig =
 	(max: number) =>
@@ -90,7 +92,7 @@ export const tooBig =
 		exists(value) &&
 		exists(max) &&
 		value > max &&
-		_('Value must be less or equal to {0}', max);
+		t('Value must be less or equal to {0}', { 0: max });
 
 export const doesNotMatchFormat =
 	(regexp: RegExp, message = 'Does not match format: ' + regexp) =>
@@ -98,13 +100,13 @@ export const doesNotMatchFormat =
 		exists(value) && !value.match(regexp) && message;
 
 export const luhn = <V extends string | null | undefined>(value: V) =>
-	exists(value) && !isLuhn(value) && _('Not a valid identification number');
+	exists(value) && !isLuhn(value) && t('Not a valid identification number');
 
 export const gln = <V extends string | null | undefined>(value: V) =>
-	exists(value) && !isGln(value) && _('Not a valid identification number');
+	exists(value) && !isGln(value) && t('Not a valid identification number');
 
 export const onlyDigits = <V extends string | null | undefined>(value: V) =>
-	exists(value) && !/^[0-9]+$/u.test(value) && _('Only digits allowed');
+	exists(value) && !/^[0-9]+$/u.test(value) && t('Only digits allowed');
 
 export const hint = <K extends PropertyKey>(field: K) => ({
 	value: [
@@ -131,7 +133,7 @@ export const hint = <K extends PropertyKey>(field: K) => ({
 			return false;
 		}
 		const hintValue = values[field];
-		return hintValue == null ? req : _('Option not among possible values');
+		return hintValue == null ? req : t('Option not among possible values');
 	},
 });
 
@@ -144,7 +146,7 @@ export const afterStartDate =
 		const endTime = end.getTime();
 		const startTime = start.getTime();
 		const invalid = eq ? endTime < startTime : endTime <= startTime;
-		return invalid && _('End date must be after start date');
+		return invalid && t('End date must be after start date');
 	};
 
 export const minDate =
@@ -157,7 +159,7 @@ export const minDate =
 			dateValue &&
 			minDateValue &&
 			dateValue.getTime() <= minDateValue.getTime() &&
-			_('Date must be bigger than {0}', date)
+			t('Date must be bigger than {0}', { 0: date })
 		);
 	};
 export const maxDate =
@@ -168,7 +170,7 @@ export const maxDate =
 		if (!dateValue || !maxDateValue) return false;
 		return (
 			maxDateValue.getTime() <= dateValue.getTime() &&
-			_('Date must be lower than {0}', date)
+			t('Date must be lower than {0}', { 0: date })
 		);
 	};
 export const maxDays = (days: number) =>
