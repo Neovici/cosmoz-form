@@ -1,3 +1,9 @@
+## [3.1.0](https://github.com/Neovici/cosmoz-form/compare/v3.0.0...v3.1.0) (2026-05-08)
+
+### Features
+
+* replace @neovici/cosmoz-i18next with i18next direct dependency ([#25](https://github.com/Neovici/cosmoz-form/issues/25)) ([7285dc1](https://github.com/Neovici/cosmoz-form/commit/7285dc1733c8b34265451514930158bb23289b01))
+
 ## [3.0.0](https://github.com/Neovici/cosmoz-form/compare/v2.8.2...v3.0.0) (2026-05-04)
 
 ### ⚠ BREAKING CHANGES
