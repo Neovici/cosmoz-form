@@ -1,9 +1,9 @@
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
-import { _ } from '@neovici/cosmoz-i18next';
 import '@neovici/cosmoz-spinner';
 import { invoke } from '@neovici/cosmoz-utils/function';
 import { useEffect } from '@pionjs/pion';
+import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { until } from 'lit-html/directives/until.js';
@@ -30,7 +30,7 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			auto,
 			uncancelable,
 			hideCancelButton,
-			saveText = _('OK'),
+			saveText = t('OK'),
 		} = host,
 		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host);
 
@@ -54,7 +54,7 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 				!hideCancelButton,
 				() =>
 					html`<button class="button" value="cancel" ?disabled=${uncancelable}>
-						${_('Cancel')}
+						${t('Cancel')}
 					</button>`,
 			)}
 		</div>`;

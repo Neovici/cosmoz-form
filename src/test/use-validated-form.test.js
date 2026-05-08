@@ -2,9 +2,16 @@
 
 import { renderHook } from '@neovici/testing';
 import { assert, waitUntil } from '@open-wc/testing';
+import i18next from 'i18next';
 
 import { useValidatedForm } from '../use-validated-form';
 import { required, tooLong, tooShort } from '../validation';
+
+i18next.init({
+	lng: 'en',
+	resources: { en: { translation: {} } },
+	fallbackLng: false,
+});
 
 suite('useValidatedForm', () => {
 	let result;

@@ -1,6 +1,6 @@
-import { _ } from '@neovici/cosmoz-i18next';
 import { tagged as css } from '@neovici/cosmoz-utils';
 import { invoke, noop } from '@neovici/cosmoz-utils/function';
+import { t } from 'i18next';
 import { html } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { until } from 'lit-html/directives/until.js';
@@ -49,10 +49,10 @@ const icon = html`<svg
 </svg>`;
 
 const humanLabel = (value?: File | File[]) => {
-	if (!value) return _('Choose file');
+	if (!value) return t('Choose file');
 	if (Array.isArray(value)) {
 		if (value.length === 1) return value[0].name;
-		return _('{0} files', value.length);
+		return t('{0} files', { 0: value.length });
 	}
 	return value.name;
 };

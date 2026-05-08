@@ -1,4 +1,4 @@
-import { _ } from '@neovici/cosmoz-i18next';
+import { t } from 'i18next';
 import { html } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { live } from 'lit-html/directives/live.js';
@@ -44,7 +44,7 @@ const _dateRange = (type: 'date' | 'datetime-local') =>
 					?disabled=${disabled}
 					?invalid=${!!(error as any)?.from}
 					.errorMessage=${(error as any)?.from}
-					.label=${_('From ({0})', label)}
+					.label=${t('From ({0})', { 0: label })}
 					.value=${live(value?.from)}
 					.max=${ifDefined(value?.to)}
 					@change=${({ target }: Ev) =>
@@ -58,7 +58,7 @@ const _dateRange = (type: 'date' | 'datetime-local') =>
 					?disabled=${disabled}
 					?invalid=${!!(error as any)?.to}
 					.errorMessage=${(error as any)?.to}
-					.label=${_('To ({0})', label)}
+					.label=${t('To ({0})', { 0: label })}
 					.value=${live(value?.to)}
 					.min=${ifDefined(value?.from)}
 					@change=${({ target }: Ev) =>
@@ -74,6 +74,6 @@ export const dateRange = _dateRange('date'),
 	// TODO: review how the error is handled
 	missingRange = (value?: Value) =>
 		(missing(value?.from) || missing(value?.to)) && {
-			from: missing(value?.from) && _('Required'),
-			to: missing(value?.to) && _('Required'),
+			from: missing(value?.from) && t('Required'),
+			to: missing(value?.to) && t('Required'),
 		};
