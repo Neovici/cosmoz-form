@@ -75,7 +75,7 @@ const ORDER_FIELDS = [
 		label: 'Supplier (select)',
 		input: autocomplete,
 		options: SUPPLIERS,
-		mode: 'select',
+		mode: 'select' as const,
 		preserveOrder: true,
 	},
 	{ id: 'contactEmail' as const, label: 'Contact email', disabled: true },
