@@ -72,11 +72,10 @@ const fetchContactEmail = async (
 const ORDER_FIELDS = [
 	{
 		id: 'supplier' as const,
-		label: 'Supplier',
+		label: 'Supplier (select)',
 		input: autocomplete,
 		options: SUPPLIERS,
-		limit: 1,
-		showSingle: true,
+		mode: 'select',
 		preserveOrder: true,
 	},
 	{ id: 'contactEmail' as const, label: 'Contact email', disabled: true },

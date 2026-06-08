@@ -1,11 +1,12 @@
+import '@neovici/cosmoz-button';
+import '@neovici/cosmoz-spinner';
 import { html, nothing } from 'lit-html';
-import { until } from 'lit-html/directives/until.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { until } from 'lit-html/directives/until.js';
 import { when } from 'lit-html/directives/when.js';
 import { renderFields } from '../render';
-import { Progress } from './types';
 import { UseValidatedForm } from '../use-validated-form-core';
-
+import { Progress } from './types';
 export const nothing$ = () => nothing;
 export const then$ = <P, R>(p$?: PromiseLike<P>, fn?: () => R) =>
 	Promise.resolve(p$).then(fn, fn);
@@ -50,7 +51,7 @@ export const renderButton$ = ({ save$, progress, ...thru }: RenderButton) => {
 		content = nothing,
 		slot,
 	}: Button) =>
-		html` <button
+		html` <cosmoz-button
 			class="button save"
 			slot=${ifDefined(slot)}
 			?disabled=${disabled}
@@ -61,14 +62,14 @@ export const renderButton$ = ({ save$, progress, ...thru }: RenderButton) => {
 			}}
 		>
 			${content} ${title}
-		</button>`;
+		</cosmoz-button>`;
 	return until(
 		then$(save$, () => button(thru)),
 		button({
 			...thru,
 			disabled: true,
 			progress: true,
-			content: html`<cz-spinner></cz-spinner> ${when(progress, (p) =>
+			content: html`<cosmoz-spinner></cosmoz-spinner> ${when(progress, (p) =>
 					p.join('/'),
 				)}`,
 		}),

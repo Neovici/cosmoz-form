@@ -1,3 +1,4 @@
+import '@neovici/cosmoz-tokens';
 const preview = {
 	parameters: {
 		controls: {

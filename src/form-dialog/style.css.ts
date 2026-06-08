@@ -26,7 +26,7 @@ const styles = css`
 		opacity: 0.6;
 	}
 	.failure {
-		color: #fc5c5b;
+		color: var(--cz-color-text-error);
 		align-self: center;
 		flex: 1;
 	}

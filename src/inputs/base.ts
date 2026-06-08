@@ -8,6 +8,7 @@ type ComputedRenderOpts<T extends object, K extends keyof T, V extends T[K]> = {
 	label: string;
 	placeholder?: string;
 	disabled?: boolean;
+	required?: boolean;
 	warning?: Renderable;
 	prefix?: Renderable;
 	suffix?: Renderable;
@@ -85,16 +86,6 @@ export const input =
 				values,
 			);
 
-		const mandatory = invoke(
-			field.mandatory ?? isRequired(field.validate),
-			value,
-			values,
-			field,
-			context,
-		)
-			? ' *'
-			: undefined;
-
 		const hidden = invoke(field.hidden, value, values, field, context);
 		if (hidden) return;
 
@@ -103,10 +94,8 @@ export const input =
 			...thru,
 			context,
 			values,
-			label: [
-				invoke(field.label, value, values, field, context),
-				mandatory,
-			].join(''),
+			required: isRequired(field.validate),
+			label: invoke(field.label, value, values, field, context) as string,
 			placeholder: invoke(field.placeholder, value, values, field, context),
 			disabled: invoke(field.disabled, value, values, field, context),
 			warning: invoke(field.warning, value, values, field, context),

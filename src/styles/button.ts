@@ -1,10 +1,6 @@
 import { tagged as css } from '@neovici/cosmoz-utils';
 
 export default css`
-	.button {
-		font-family: inherit;
-	}
-	.button:not([slot='bottom-bar-menu']),
 	.file::-webkit-file-upload-button,
 	.file::file-selector-button {
 		background: var(--cosmoz-button-bg-color, #101010);
@@ -25,25 +21,12 @@ export default css`
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-	.button:not([slot='bottom-bar-menu']):hover,
-	.button:not([slot='bottom-bar-menu']):active,
+
 	.file::-webkit-file-upload-button:hover,
 	.file::file-selector-button:hover {
 		background: var(--cosmoz-button-hover-bg-color, #3a3f44);
 	}
-	.button[disabled],
-	.button:disabled {
-		opacity: var(--cosmoz-button-disabled-opacity, 0.15);
-		pointer-events: none;
-	}
-	.button:active {
-		background: hsl(
-			from var(--cosmoz-button-hover-bg-color, #3a3f44) h s calc(l + 10)
-		);
-	}
-	a.button {
-		text-decoration: none;
-	}
+
 	.buttons {
 		display: flex;
 		justify-content: flex-end;

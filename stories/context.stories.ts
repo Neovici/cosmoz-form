@@ -1,8 +1,8 @@
+import '@neovici/cosmoz-badge';
 import { component, useMemo } from '@pionjs/pion';
 import { html } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { when } from 'lit-html/directives/when.js';
-
 import {
 	number,
 	renderFields,
@@ -76,8 +76,7 @@ const COST_FIELDS: Fields<CostRow, BudgetCtx> = [
 			const budget = context?.budget ?? Infinity;
 			return when(
 				value > budget,
-				() =>
-					html`<span class="story-badge story-badge-warn">Over budget!</span>`,
+				() => html`<cosmoz-badge color="warning">Over budget!</cosmoz-badge>`,
 			);
 		},
 	},
