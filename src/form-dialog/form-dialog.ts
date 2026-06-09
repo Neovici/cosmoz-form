@@ -1,7 +1,7 @@
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
 import '@neovici/cosmoz-spinner';
-import { invoke } from '@neovici/cosmoz-utils/function';
+import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
@@ -95,8 +95,10 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	return dialog;
 };
 
-export const formDialog$ = <T extends object>(props$: Resolvable<Dialog<T>>) =>
+export const formDialog$ = <T extends object>(
+	props$: Resolvable<Dialog<T>> | undefined,
+) =>
 	until(
-		Promise.resolve(invoke(props$)).then(formDialog, () => nothing),
+		invoke$(props$).then(formDialog, () => nothing),
 		html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`,
 	);
