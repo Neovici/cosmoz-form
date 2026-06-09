@@ -35,6 +35,7 @@ export interface AutocompleteProps<
 	preserveOrder?: boolean;
 	itemRenderer?: unknown;
 	chipRenderer?: unknown;
+	required?: boolean;
 	textual?: unknown;
 	externalSearch?: boolean;
 	itemHeight?: number | 'auto';
@@ -50,6 +51,7 @@ export const autocomplete = input(
 		id,
 		label,
 		error,
+		required,
 		warning,
 		suffix,
 		mode,
@@ -86,6 +88,7 @@ export const autocomplete = input(
 			?disabled=${disabled}
 			?wrap=${wrap}
 			?invalid=${!!error}
+			?required=${required}
 			?keep-opened=${!!keepOpened}
 			?keep-query=${!!keepQuery}
 			?show-single=${!!showSingle}
