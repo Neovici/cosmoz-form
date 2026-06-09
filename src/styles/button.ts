@@ -3,38 +3,42 @@ import { tagged as css } from '@neovici/cosmoz-utils';
 export default css`
 	.file::-webkit-file-upload-button,
 	.file::file-selector-button {
-		background: var(--cosmoz-button-bg-color, #101010);
-		color: var(--cosmoz-button-color, #fff);
+		background: var(--cz-color-bg-overlay);
+		color: var(--cz-color-text-on-brand);
 		box-sizing: border-box;
 		cursor: pointer;
 		outline: none;
 		flex: none;
 		border: none;
-		padding: 0 18px;
-		border-radius: 6px;
+		padding-inline: calc(var(--cz-spacing) * 4);
+		border-radius: var(--cz-radius-md);
 		min-height: 40px;
 		min-width: 78px;
 		font-family: inherit;
-		font-size: 14px;
-		font-weight: 500;
-		line-height: 40px;
+		font-size: var(--cz-text-sm);
+		line-height: var(--cz-text-sm-line-height);
+		font-weight: var(--cz-font-weight-medium);
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
 
 	.file::-webkit-file-upload-button:hover,
 	.file::file-selector-button:hover {
-		background: var(--cosmoz-button-hover-bg-color, #3a3f44);
+		opacity: 0.8;
 	}
 
 	.buttons {
 		display: flex;
 		justify-content: flex-end;
-		padding: 8px 8px 8px 24px;
+		padding-inline: calc(var(--cz-spacing) * 6);
+		padding-block: calc(var(--cz-spacing) * 5.5);
+		gap: var(--cz-spacing);
+
+		& cosmoz-button {
+			min-width: calc(var(--cz-spacing) * 20);
+		}
 	}
-	.buttons .button {
-		margin: 0 4px;
-	}
+
 	.button-ricon {
 		border: none;
 		border-radius: 50%;

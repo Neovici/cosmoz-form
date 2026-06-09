@@ -1,6 +1,6 @@
+import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
-import '@neovici/cosmoz-spinner';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
@@ -53,9 +53,14 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			${when(
 				!hideCancelButton,
 				() =>
-					html`<button class="button" value="cancel" ?disabled=${uncancelable}>
+					html`<cosmoz-button
+						class="button"
+						variant="secondary"
+						value="cancel"
+						?disabled=${uncancelable}
+					>
 						${t('Cancel')}
-					</button>`,
+					</cosmoz-button>`,
 			)}
 		</div>`;
 };

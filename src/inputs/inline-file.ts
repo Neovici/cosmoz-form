@@ -12,6 +12,7 @@ import { text } from './common';
 export const inlineFileStyle = css`
 	.input-inline-file {
 		position: relative;
+		margin-bottom: calc(var(--cz-spacing) * 4);
 	}
 
 	.input-inline-file > .file {
