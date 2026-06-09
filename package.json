@@ -75,6 +75,8 @@
     "@neovici/cosmoz-spinner": "^1.0.2",
     "@neovici/cosmoz-utils": "^6.22.0",
     "@pionjs/pion": "^2.5.2",
+    "@playwright/test": "^1.60.0",
+    "@web/test-runner-playwright": "^0.11.1",
     "date-fns": "^4.1.0",
     "i18next": ">=23.0.0 <27.0.0",
     "lit-html": "^3.3.1"
@@ -82,7 +84,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.0.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@neovici/cfg": "^2.11.0",
+    "@neovici/cfg": "^2.13.0",
     "@neovici/testing": "^2.0.0",
     "@open-wc/testing": "^4.0.0",
     "@open-wc/testing-helpers": "^3.0.1",
