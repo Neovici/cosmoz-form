@@ -2,7 +2,7 @@ name: Preview
 
 on:
   pull_request:
-    branches: [master, main]
+    branches: [master, main, beta]
 
 jobs:
   preview:
