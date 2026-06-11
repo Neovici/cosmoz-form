@@ -1,3 +1,9 @@
+## [3.2.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v3.1.0...v3.2.0-beta.1) (2026-06-09)
+
+### Features
+
+* add useFormDialogable$ — async-compatible form dialog hook ([f5d4f6e](https://github.com/Neovici/cosmoz-form/commit/f5d4f6e53df702dea91aee851bece060856b9c63))
+
 ## [3.1.0](https://github.com/Neovici/cosmoz-form/compare/v3.0.0...v3.1.0) (2026-05-08)
 
 ### Features
