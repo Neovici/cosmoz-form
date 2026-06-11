@@ -3,15 +3,17 @@ import { tagged as css } from '@neovici/cosmoz-utils';
 export const styles = css`
 	.headers {
 		display: flex;
-		border-bottom: solid 1px #ccc;
-		font-weight: 400;
-		font-size: 16px;
-		padding: 10px 0 10px 0;
+		border-bottom: solid 1px var(--cz-color-border-primary);
+		font-size: var(--cz-text-base);
+		line-height: var(--cz-text-base-line-height);
+		font-weight: var(--cz-font-weight-regular);
+		color: var(--cz-color-text-secondary);
+		padding-block: calc(var(--cz-spacing) * 2.5);
 		width: 100%;
 	}
 	.header {
 		flex: auto;
-		margin: 0 4px;
+		margin-inline: var(--cz-spacing);
 		flex: 1 1 0px;
 	}
 	.items {
@@ -29,33 +31,16 @@ export const styles = css`
 		flex: 1 1 0px;
 	}
 	.item > .input {
-		margin: 0 4px;
+		margin: var(--cz-spacing);
 	}
-	.item cosmoz-input::part(error),
-	.item cosmoz-autocomplete::part(input-error) {
-		position: static;
-		margin-bottom: -10px;
-	}
+
 	.input-basic {
-		font-size: 16px;
-		line-height: 24px;
-		border-bottom: 2px solid var(--secondary-text-color, #737373);
-		margin: 8px 4px;
+		font-size: var(--cz-text-base);
+		line-height: var(--cz-text-base-line-height);
+		border-bottom: 2px solid var(--cz-color-border-primary);
+		margin: var(--cz-spacing);
 	}
-	.remove {
-		background: none;
-		border: none;
-		outline: none;
-		cursor: pointer;
-		width: 24px;
-		height: 24px;
-		align-self: center;
-		flex: none;
-		margin: 0 8px;
-		padding: 0;
-	}
-	.remove[disabled] {
-		opacity: 0;
-		pointer-events: none;
+	cosmoz-button {
+		margin-inline: var(--cz-spacing);
 	}
 `;

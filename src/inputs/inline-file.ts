@@ -1,3 +1,4 @@
+import { fileAttachment02Icon } from '@neovici/cosmoz-icons/untitled';
 import { tagged as css } from '@neovici/cosmoz-utils';
 import { invoke, noop } from '@neovici/cosmoz-utils/function';
 import { t } from 'i18next';
@@ -7,15 +8,11 @@ import { until } from 'lit-html/directives/until.js';
 import { InputBaseOpts } from '../types';
 import { input } from './base';
 import { text } from './common';
-
 // TODO: wrap in a component
 export const inlineFileStyle = css`
 	.input-inline-file {
 		position: relative;
-	}
-
-	.input-inline-file svg {
-		margin-right: 5px;
+		margin-bottom: calc(var(--cz-spacing) * 4);
 	}
 
 	.input-inline-file > .file {
@@ -28,25 +25,6 @@ export const inlineFileStyle = css`
 		cursor: pointer;
 	}
 `;
-
-const icon = html`<svg
-	xmlns="http://www.w3.org/2000/svg"
-	width="18"
-	height="18"
-	viewBox="0 0 24 24"
->
-	<g
-		fill="none"
-		stroke="#000"
-		stroke-linecap="round"
-		stroke-linejoin="round"
-		stroke-width="2"
-	>
-		<path
-			d="M18 22H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h7.1a2 2 0 0 1 1.5.6l4.9 5.2a2 2 0 0 1 .5 1.4V20a2 2 0 0 1-2 2ZM7.9 17.5h8.2M7.9 13.5h8.2M8 9.5h5"
-		/>
-	</g>
-</svg>`;
 
 const humanLabel = (value?: File | File[]) => {
 	if (!value) return t('Choose file');
@@ -75,7 +53,12 @@ export const inlineFile = input(
 		html`<div class="input input-inline-file" name=${id}>
 			${text<T, K, T[K]>({
 				value: humanLabel(value as File | File[] | undefined) as T[K],
-				field: { label, disabled, prefix: icon, id },
+				field: {
+					label,
+					disabled,
+					prefix: fileAttachment02Icon({ styles: 'vertical-align: middle;' }),
+					id,
+				},
 				error: false,
 				invalid: false,
 				load: noop,

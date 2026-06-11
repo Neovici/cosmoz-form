@@ -24,6 +24,7 @@ export interface AutocompleteProps<
 	C extends object,
 > {
 	options?: Resolvable<unknown[] | false | undefined, [OptionsOpts<T, V, C>]>;
+	mode?: 'select';
 	limit?: number;
 	textProperty?: string;
 	valueProperty?: string;
@@ -34,6 +35,7 @@ export interface AutocompleteProps<
 	preserveOrder?: boolean;
 	itemRenderer?: unknown;
 	chipRenderer?: unknown;
+	required?: boolean;
 	textual?: unknown;
 	externalSearch?: boolean;
 	itemHeight?: number | 'auto';
@@ -48,11 +50,11 @@ export const autocomplete = input(
 	<T extends object, K extends keyof T, V extends T[K], C extends object>({
 		id,
 		label,
-		noLabelFloat,
-		alwaysFloatLabel,
 		error,
+		required,
 		warning,
 		suffix,
+		mode,
 		disabled,
 		onChange,
 		options,
@@ -80,13 +82,13 @@ export const autocomplete = input(
 	}: InputBaseOpts<T, K, V, C>) => {
 		return html`<cosmoz-autocomplete
 			class="input input-autocomplete"
+			mode=${ifDefined(mode)}
 			?data-warning=${!!warning}
 			name=${id}
 			?disabled=${disabled}
 			?wrap=${wrap}
-			?no-label-float=${noLabelFloat}
-			?always-float-label=${alwaysFloatLabel}
 			?invalid=${!!error}
+			?required=${required}
 			?keep-opened=${!!keepOpened}
 			?keep-query=${!!keepQuery}
 			?show-single=${!!showSingle}

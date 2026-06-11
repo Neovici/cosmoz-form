@@ -1,5 +1,5 @@
 import { virtualize } from '@lit-labs/virtualizer/virtualize.js';
-import { cancelIcon } from '@neovici/cosmoz-icons';
+import { xCircleIcon } from '@neovici/cosmoz-icons/untitled';
 import { tagged as css } from '@neovici/cosmoz-utils';
 import { invoke, noop } from '@neovici/cosmoz-utils/function';
 import { TemplateResult, html } from 'lit-html';
@@ -17,9 +17,14 @@ const mkDefaults = <T extends object>(defaults: T) => {
 };
 
 export const renderRemove = (remove: () => void) =>
-	html`<button class="remove" ?disabled=${!remove} @click=${remove}>
-		${cancelIcon()}
-	</button>`;
+	html`<cosmoz-button
+		variant="destructive"
+		size="sm"
+		?disabled=${!remove}
+		@click=${remove}
+	>
+		${xCircleIcon()}
+	</cosmoz-button>`;
 
 interface RenderOpts<T extends Item, C extends object = object> {
 	fields: Fields<T, C>;

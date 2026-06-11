@@ -8,36 +8,16 @@ export const renderAddStyles = () => css`
 		height: 100%;
 	}
 
-	.forbidden {
-		font-size: 16px;
-	}
-
 	.failure {
-		font-size: 12px;
-		line-height: 20px;
-		margin: 8px 0;
-	}
-
-	.failure,
-	.forbidden {
-		color: var(--error-color, #fc5c5b);
-	}
-
-	.input-common::part(float) {
-		font-size: 14px;
-		line-height: 20px;
+		font-size: var(--cz-text-xs);
+		line-height: var(--cz-text-xs-line-height);
+		margin: calc(var(--cz-spacing) * 2) 0;
+		color: var(--cz-color-text-error);
 	}
 
 	.input-toggle {
-		margin-top: 0.875em;
-	}
-
-	cosmoz-tab-card::part(content) {
-		padding-bottom: 24px;
+		margin-block: calc(var(--cz-spacing) * 2);
 	}
 
 	${buttonStyles}
-	.button cz-spinner {
-		margin-right: 8px;
-	}
 `;

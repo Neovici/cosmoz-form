@@ -119,7 +119,6 @@ export interface Field<
 	description?: string;
 	placeholder?: Invokable<T, Field<T, K, V, C>, V, string, C>;
 	validate?: Validate<T, K, V, C>;
-	mandatory?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
 	disabled?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
 	hidden?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
 	warning?: Invokable<T, Field<T, K, V, C>, V, Renderable, C>;

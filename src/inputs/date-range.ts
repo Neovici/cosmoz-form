@@ -28,6 +28,7 @@ const _dateRange = (type: 'date' | 'datetime-local') =>
 		>({
 			id,
 			label,
+			variant,
 			error,
 			warning,
 			disabled,
@@ -39,6 +40,7 @@ const _dateRange = (type: 'date' | 'datetime-local') =>
 				html`<cosmoz-input
 					class="input input-date-range"
 					type=${type}
+					variant=${ifDefined(variant)}
 					?data-warning=${!!warning}
 					name=${String(id) + 'From'}
 					?disabled=${disabled}
@@ -53,6 +55,7 @@ const _dateRange = (type: 'date' | 'datetime-local') =>
 				html`<cosmoz-input
 					class="input input-date-range"
 					type=${type}
+					variant=${ifDefined(variant)}
 					?data-warning=${!!warning}
 					name=${String(id) + 'To'}
 					?disabled=${disabled}
