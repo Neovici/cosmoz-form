@@ -43,6 +43,9 @@ export const styles = css`
 		margin: 8px 4px;
 	}
 	.remove {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
 		background: none;
 		border: none;
 		outline: none;
@@ -57,5 +60,13 @@ export const styles = css`
 	.remove[disabled] {
 		opacity: 0;
 		pointer-events: none;
+	}
+	/* Empty stand-in matching the remove button's footprint, so rows without a
+	   remove button (the header row and the add row) keep their columns aligned
+	   with the removable rows. */
+	.remove-placeholder {
+		flex: none;
+		width: 24px;
+		margin: 0 8px;
 	}
 `;
