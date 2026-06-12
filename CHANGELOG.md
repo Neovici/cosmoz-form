@@ -1,3 +1,9 @@
+## [3.2.1](https://github.com/Neovici/cosmoz-form/compare/v3.2.0...v3.2.1) (2026-06-12)
+
+### Bug Fixes
+
+* **render:** align item columns and modernize the remove button ([#30](https://github.com/Neovici/cosmoz-form/issues/30)) ([99b91ee](https://github.com/Neovici/cosmoz-form/commit/99b91ee0025c800dcad7f0e5325f90478d68af3e))
+
 ## [3.2.0](https://github.com/Neovici/cosmoz-form/compare/v3.1.0...v3.2.0) (2026-06-11)
 
 ### Features
