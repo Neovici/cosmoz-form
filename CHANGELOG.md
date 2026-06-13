@@ -1,3 +1,9 @@
+## [3.3.0](https://github.com/Neovici/cosmoz-form/compare/v3.2.1...v3.3.0) (2026-06-13)
+
+### Features
+
+* widen OnChange type to support functional updaters ([#31](https://github.com/Neovici/cosmoz-form/issues/31)) ([7ed8159](https://github.com/Neovici/cosmoz-form/commit/7ed8159e990821d1bdbb373156ea932383e8f67c))
+
 ## [3.2.1](https://github.com/Neovici/cosmoz-form/compare/v3.2.0...v3.2.1) (2026-06-12)
 
 ### Bug Fixes
