@@ -33,7 +33,10 @@ export type InputBaseProps<
 	RenderThru<T, K, V, C>;
 
 const defaultOnChange = <T extends object, K extends keyof T, V extends T[K]>(
-	update: (changes: Partial<T>, touched?: boolean) => void,
+	update: (
+		update: Partial<T> | ((values: T) => Partial<T>),
+		touched?: boolean,
+	) => void,
 	id: K,
 	value: V,
 	values: T,

@@ -32,7 +32,10 @@ export type OnFocusFn<T, F, V> = (
 ) => (event: FocusEvent) => void;
 
 export type OnChange<T, K, V> = (
-	update: (changes: Partial<T>, touched?: boolean) => void,
+	update: (
+		update: Partial<T> | ((values: T) => Partial<T>),
+		touched?: boolean,
+	) => void,
 	id: K,
 	value: V,
 	values: T,
