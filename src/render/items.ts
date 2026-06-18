@@ -1,5 +1,5 @@
 import { virtualize } from '@lit-labs/virtualizer/virtualize.js';
-import { xCircleIcon } from '@neovici/cosmoz-icons/untitled';
+import { xCloseIcon } from '@neovici/cosmoz-icons/untitled';
 import { tagged as css } from '@neovici/cosmoz-utils';
 import { invoke, noop } from '@neovici/cosmoz-utils/function';
 import { TemplateResult, html } from 'lit-html';
@@ -23,7 +23,7 @@ export const renderRemove = (remove: () => void) =>
 		?disabled=${!remove}
 		@click=${remove}
 	>
-		${xCircleIcon()}
+		${xCloseIcon()}
 	</cosmoz-button>`;
 
 // An empty cell the size of the remove button, used to keep the columns

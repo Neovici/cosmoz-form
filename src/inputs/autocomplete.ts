@@ -25,6 +25,7 @@ export interface AutocompleteProps<
 > {
 	options?: Resolvable<unknown[] | false | undefined, [OptionsOpts<T, V, C>]>;
 	mode?: 'select';
+	variant?: 'cell';
 	limit?: number;
 	textProperty?: string;
 	valueProperty?: string;
@@ -49,6 +50,7 @@ interface Info {
 export const autocomplete = input(
 	<T extends object, K extends keyof T, V extends T[K], C extends object>({
 		id,
+		variant,
 		label,
 		error,
 		required,
@@ -83,6 +85,7 @@ export const autocomplete = input(
 		return html`<cosmoz-autocomplete
 			class="input input-autocomplete"
 			mode=${ifDefined(mode)}
+			variant=${ifDefined(variant)}
 			?data-warning=${!!warning}
 			name=${id}
 			?disabled=${disabled}
