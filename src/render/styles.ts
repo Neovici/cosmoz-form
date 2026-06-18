@@ -43,4 +43,12 @@ export const styles = css`
 	cosmoz-button {
 		margin-inline: var(--cz-spacing);
 	}
+	/* Empty stand-in matching the remove button's footprint, so rows without a
+	   remove button (the header row and the add row) keep their columns aligned
+	   with the removable rows. */
+	.remove-placeholder {
+		flex: none;
+		width: 24px;
+		margin: 0 8px;
+	}
 `;

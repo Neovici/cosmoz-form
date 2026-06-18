@@ -1,40 +1,52 @@
-## [3.2.0-beta.2](https://github.com/Neovici/cosmoz-form/compare/v3.2.0-beta.1...v3.2.0-beta.2) (2026-06-11)
+## [3.3.0](https://github.com/Neovici/cosmoz-form/compare/v3.2.1...v3.3.0) (2026-06-13)
 
 ### Features
 
-* add new props and migrate to cosmoz-tokens ([#26](https://github.com/Neovici/cosmoz-form/issues/26)) ([db90661](https://github.com/Neovici/cosmoz-form/commit/db90661378252b3e467294eebb3950a41072d6b0))
+- widen OnChange type to support functional updaters ([#31](https://github.com/Neovici/cosmoz-form/issues/31)) ([7ed8159](https://github.com/Neovici/cosmoz-form/commit/7ed8159e990821d1bdbb373156ea932383e8f67c))
+
+## [3.2.1](https://github.com/Neovici/cosmoz-form/compare/v3.2.0...v3.2.1) (2026-06-12)
+
+### Bug Fixes
+
+- **render:** align item columns and modernize the remove button ([#30](https://github.com/Neovici/cosmoz-form/issues/30)) ([99b91ee](https://github.com/Neovici/cosmoz-form/commit/99b91ee0025c800dcad7f0e5325f90478d68af3e))
+
+## [3.2.0](https://github.com/Neovici/cosmoz-form/compare/v3.1.0...v3.2.0) (2026-06-11)
+
+### Features
+
+- add useFormDialogable$ — async-compatible form dialog hook ([f5d4f6e](https://github.com/Neovici/cosmoz-form/commit/f5d4f6e53df702dea91aee851bece060856b9c63))
 
 ## [3.2.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v3.1.0...v3.2.0-beta.1) (2026-06-09)
 
 ### Features
 
-* add useFormDialogable$ — async-compatible form dialog hook ([f5d4f6e](https://github.com/Neovici/cosmoz-form/commit/f5d4f6e53df702dea91aee851bece060856b9c63))
+- add useFormDialogable$ — async-compatible form dialog hook ([f5d4f6e](https://github.com/Neovici/cosmoz-form/commit/f5d4f6e53df702dea91aee851bece060856b9c63))
 
 ## [3.1.0](https://github.com/Neovici/cosmoz-form/compare/v3.0.0...v3.1.0) (2026-05-08)
 
 ### Features
 
-* replace @neovici/cosmoz-i18next with i18next direct dependency ([#25](https://github.com/Neovici/cosmoz-form/issues/25)) ([7285dc1](https://github.com/Neovici/cosmoz-form/commit/7285dc1733c8b34265451514930158bb23289b01))
+- replace @neovici/cosmoz-i18next with i18next direct dependency ([#25](https://github.com/Neovici/cosmoz-form/issues/25)) ([7285dc1](https://github.com/Neovici/cosmoz-form/commit/7285dc1733c8b34265451514930158bb23289b01))
 
 ## [3.0.0](https://github.com/Neovici/cosmoz-form/compare/v2.8.2...v3.0.0) (2026-05-04)
 
 ### ⚠ BREAKING CHANGES
 
-* **form-dialog:** The  prop has been removed from the Dialog interface.
-Use  instead. The  prop was deprecated and redundant with .
+- **form-dialog:** The prop has been removed from the Dialog interface.
+  Use instead. The prop was deprecated and redundant with .
 
 ### Features
 
-* support cosmoz-dialog v5.0.0 (native dialog migration) ([6b40980](https://github.com/Neovici/cosmoz-form/commit/6b4098024bdb2bd9f149b9d3a43e400c5ec66604))
+- support cosmoz-dialog v5.0.0 (native dialog migration) ([6b40980](https://github.com/Neovici/cosmoz-form/commit/6b4098024bdb2bd9f149b9d3a43e400c5ec66604))
 
 ### Bug Fixes
 
-* **release:** configure beta branch for semantic-release ([6d0d1a4](https://github.com/Neovici/cosmoz-form/commit/6d0d1a461391e50d55bbe7118fc69c9bf22fa1cd))
-* remove portal rendering (no longer needed with native dialog) ([1839854](https://github.com/Neovici/cosmoz-form/commit/18398541c86823ade94f6229317cdf5179c8723c))
+- **release:** configure beta branch for semantic-release ([6d0d1a4](https://github.com/Neovici/cosmoz-form/commit/6d0d1a461391e50d55bbe7118fc69c9bf22fa1cd))
+- remove portal rendering (no longer needed with native dialog) ([1839854](https://github.com/Neovici/cosmoz-form/commit/18398541c86823ade94f6229317cdf5179c8723c))
 
 ### Code Refactoring
 
-* **form-dialog:** remove deprecated title prop ([6cc6f65](https://github.com/Neovici/cosmoz-form/commit/6cc6f65e959697db5744196169e035c9bf78dc95))
+- **form-dialog:** remove deprecated title prop ([6cc6f65](https://github.com/Neovici/cosmoz-form/commit/6cc6f65e959697db5744196169e035c9bf78dc95))
 
 ## [2.8.2](https://github.com/Neovici/cosmoz-form/compare/v2.8.1...v2.8.2) (2026-04-20)
 

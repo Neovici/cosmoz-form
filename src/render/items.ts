@@ -26,11 +26,19 @@ export const renderRemove = (remove: () => void) =>
 		${xCircleIcon()}
 	</cosmoz-button>`;
 
+// An empty cell the size of the remove button, used to keep the columns
+// aligned in rows that have no remove button (the header and the add row).
+export const renderRemovePlaceholder = () =>
+	html`<span class="remove-placeholder" aria-hidden="true"></span>`;
+
 interface RenderOpts<T extends Item, C extends object = object> {
 	fields: Fields<T, C>;
 	context?: C;
 	touched?: boolean;
 	remove?: (index: number) => void;
+	// Reserve the remove-button gutter even though this row has no button, so
+	// it stays aligned with the removable rows.
+	removePlaceholder?: boolean;
 	update: (index: number, update: Partial<T>) => void;
 }
 export const renderItem = <T extends Item, C extends object = object>(
@@ -39,6 +47,7 @@ export const renderItem = <T extends Item, C extends object = object>(
 	{
 		update,
 		remove,
+		removePlaceholder,
 		fields,
 		context,
 		touched = false,
@@ -66,6 +75,7 @@ export const renderItem = <T extends Item, C extends object = object>(
 			when(remove, (remove) =>
 				renderRemove(values && remove && (() => remove(index))),
 			),
+			when(removePlaceholder, renderRemovePlaceholder),
 		]}
 	</div>`;
 
@@ -112,6 +122,7 @@ export const renderItems = <T extends object, C extends object = object>({
 					case index === 0:
 						return html`<div class="headers">
 							${renderHeaders({ fields })}
+							${when(thru.remove != null, renderRemovePlaceholder)}
 						</div>`;
 
 					case defaults != null && index === items.length + 1:
@@ -119,6 +130,7 @@ export const renderItems = <T extends object, C extends object = object>({
 							...thru,
 							fields,
 							remove: undefined,
+							removePlaceholder: thru.remove != null,
 							update: (index, changes) =>
 								update(index, { ...item, ...changes }),
 						});
