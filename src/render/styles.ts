@@ -48,7 +48,7 @@ export const styles = css`
 	   with the removable rows. */
 	.remove-placeholder {
 		flex: none;
-		width: 24px;
+		width: 36px;
 		margin: 0 8px;
 	}
 `;

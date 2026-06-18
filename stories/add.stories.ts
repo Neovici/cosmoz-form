@@ -348,24 +348,27 @@ FormDialog.storyName = 'Form Dialog';
 // ── Story: Items list (renderItems) ──────────────────────────────────────────
 
 type LineItem = {
-	description: string;
+	description?: string;
 	quantity: number;
 	unitPrice: number;
 };
 
 const INITIAL_ITEMS: LineItem[] = [
-	{ description: 'Widget A', quantity: 5, unitPrice: 12.5 },
-	{ description: 'Widget B', quantity: 2, unitPrice: 29.99 },
-	{ description: 'Gadget C', quantity: 10, unitPrice: 4.0 },
+	{ quantity: 5, unitPrice: 12.5 },
+	{ quantity: 2, unitPrice: 29.99 },
+	{ quantity: 10, unitPrice: 4.0 },
 ];
 
 const LINE_ITEM_FIELDS: Fields<LineItem> = [
 	{
 		id: 'description',
-		label: 'Description',
-		input: text,
-		validate: [required],
 		variant: 'cell',
+		label: 'Description',
+		input: autocomplete,
+		options: CATEGORIES,
+		mode: 'select',
+		preserveOrder: true,
+		validate: required,
 	},
 	{ id: 'quantity', label: 'Qty', input: number, min: 1, variant: 'cell' },
 	{
@@ -377,7 +380,7 @@ const LINE_ITEM_FIELDS: Fields<LineItem> = [
 	},
 ];
 
-const DEFAULTS: LineItem = { description: '', quantity: 1, unitPrice: 0 };
+const DEFAULTS: LineItem = { quantity: 1, unitPrice: 0 };
 
 const ItemsDemo = () => {
 	const { items, update, remove, append } = useValidatedItems({
