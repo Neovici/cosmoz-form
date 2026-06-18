@@ -1,3 +1,9 @@
+## [3.4.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v3.3.0...v3.4.0-beta.1) (2026-06-18)
+
+### Features
+
+* add new props and migrate to cosmoz-tokens ([#26](https://github.com/Neovici/cosmoz-form/issues/26)) ([db90661](https://github.com/Neovici/cosmoz-form/commit/db90661378252b3e467294eebb3950a41072d6b0))
+
 ## [3.3.0](https://github.com/Neovici/cosmoz-form/compare/v3.2.1...v3.3.0) (2026-06-13)
 
 ### Features
