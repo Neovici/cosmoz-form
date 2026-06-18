@@ -1,3 +1,9 @@
+## [3.4.0-beta.2](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.1...v3.4.0-beta.2) (2026-06-18)
+
+### Features
+
+* add variant cell support for autocomplete ([#32](https://github.com/Neovici/cosmoz-form/issues/32)) ([e17e694](https://github.com/Neovici/cosmoz-form/commit/e17e694c84adf8eb8475b7894836188f946e8fe5))
+
 ## [3.4.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v3.3.0...v3.4.0-beta.1) (2026-06-18)
 
 ### Features
