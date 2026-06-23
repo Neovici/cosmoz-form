@@ -1,3 +1,9 @@
+## [3.4.0-beta.3](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.2...v3.4.0-beta.3) (2026-06-23)
+
+### Features
+
+* mode=select unwraps value in onChange ([#33](https://github.com/Neovici/cosmoz-form/issues/33)) ([bd452a4](https://github.com/Neovici/cosmoz-form/commit/bd452a4e1c5be84b5f61e3cfe470ac47f1f33e4e))
+
 ## [3.4.0-beta.2](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.1...v3.4.0-beta.2) (2026-06-18)
 
 ### Features
