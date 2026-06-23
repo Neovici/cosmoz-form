@@ -68,7 +68,7 @@
   },
   "dependencies": {
     "@lit-labs/virtualizer": "^2.1.1",
-    "@neovici/cosmoz-autocomplete": "^13.7.0-beta.3",
+    "@neovici/cosmoz-autocomplete": "^13.7.0-beta.4",
     "@neovici/cosmoz-button": "^1.1.0",
     "@neovici/cosmoz-dialog": "^4.0.0 || ^5.0.0",
     "@neovici/cosmoz-icons": "^1.4.0",
