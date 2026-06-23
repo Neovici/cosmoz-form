@@ -116,7 +116,9 @@ export const autocomplete = input(
 			.title=${ifDefined(title)}
 			.textual=${textual}
 			.onChange=${(options?: V[]) =>
-				onChange((limit === 1 ? options?.[0] : options) as V)}
+				onChange(
+					(limit === 1 || mode === 'select' ? options?.[0] : options) as V,
+				)}
 			?external-search=${externalSearch}
 			>${renderContents({ suffix, warning, description })}</cosmoz-autocomplete
 		>`;
