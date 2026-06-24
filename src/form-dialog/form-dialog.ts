@@ -96,9 +96,11 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 };
 
 export const formDialog$ = <T extends object>(
-	props$: Resolvable<Dialog<T>> | undefined,
+	maybeProps$: Resolvable<Dialog<T>> | undefined,
 ) =>
-	until(
-		invoke$(props$).then(formDialog, () => nothing),
-		html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`,
+	when(maybeProps$, (props$) =>
+		until(
+			invoke$(props$).then(formDialog, () => nothing),
+			html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`,
+		),
 	);
