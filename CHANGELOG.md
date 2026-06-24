@@ -1,3 +1,9 @@
+## [3.3.1](https://github.com/Neovici/cosmoz-form/compare/v3.3.0...v3.3.1) (2026-06-24)
+
+### Bug Fixes
+
+* **form-dialog:** prevent cosmoz-dialog-loading flash when no dialog is open (FE-831) ([#34](https://github.com/Neovici/cosmoz-form/issues/34)) ([b22a593](https://github.com/Neovici/cosmoz-form/commit/b22a593f71c7b6133ae86f9a4062fb16c98d67d6))
+
 ## [3.3.0](https://github.com/Neovici/cosmoz-form/compare/v3.2.1...v3.3.0) (2026-06-13)
 
 ### Features
