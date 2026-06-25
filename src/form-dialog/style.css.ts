@@ -1,6 +1,10 @@
 import { tagged as css } from '@neovici/cosmoz-utils';
 
 const styles = css`
+	:host::part(content) {
+		padding: 0;
+	}
+
 	.description {
 		font-size: var(--cz-text-base);
 		line-height: var(--cz-text-base-line-height);
@@ -13,6 +17,9 @@ const styles = css`
 	.form {
 		display: flex;
 		flex-direction: column;
+		padding: calc(var(--cz-spacing) * 3);
+		overflow: auto;
+		scrollbar-gutter: stable both-edges;
 	}
 
 	.failure {
