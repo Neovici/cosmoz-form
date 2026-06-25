@@ -1,4 +1,4 @@
-import{A as V,w as ie,b as p,r as St,D as At,E as N,n as bo,M as yo,u as K,v as de,h as Be,p as Tt,t as re}from"./iframe-DBfXMCbQ.js";import{_ as zo}from"./preload-helper-PPVm8Dsz.js";const y=t=>t??V;function _(t,e,o){return t?e(t):o?.(t)}const wo=({slot:t,title:e,className:o,width:n="24",height:s="24",styles:r}={})=>p`
+import{A as V,w as ie,b as p,r as St,D as At,E as N,n as bo,M as yo,u as K,v as de,h as Be,p as Tt,t as re}from"./iframe-GNBATVmi.js";import{_ as zo}from"./preload-helper-PPVm8Dsz.js";const y=t=>t??V;function _(t,e,o){return t?e(t):o?.(t)}const wo=({slot:t,title:e,className:o,width:n="24",height:s="24",styles:r}={})=>p`
   <svg
     slot=${y(t)}
     class=${`alert-circle-icon ${o??""}`}
@@ -1421,7 +1421,8 @@ import{A as V,w as ie,b as p,r as St,D as At,E as N,n as bo,M as yo,u as K,v as 
 	.buttons {
 		display: flex;
 		justify-content: flex-end;
-		padding-block: calc(var(--cz-spacing) * 5.5);
+		padding-inline: calc(var(--cz-spacing) * 6);
+		padding-block: 0 calc(var(--cz-spacing) * 5.5);
 		gap: calc(var(--cz-spacing) * 2);
 
 		& cosmoz-button {
@@ -1476,6 +1477,10 @@ import{A as V,w as ie,b as p,r as St,D as At,E as N,n as bo,M as yo,u as K,v as 
 		color: var(--cz-accent-color);
 	}
 `,ds=()=>{let t=null;return{run:async(e,o,n,s)=>{t?.abort(),t=new AbortController;const r={update:n,signal:t.signal,index:s?.index,context:s?.context};try{return await e(o,r)}catch(i){if(i instanceof DOMException&&i.name==="AbortError")return null;throw i}},cancel:()=>{t?.abort(),t=null}}},hs=(t,e)=>t.length!==e.length||t.some((o,n)=>!Object.is(o,e[n])),us=t=>{console.error("[cosmoz-form] async rule error:",t)},ps=(t,e,o)=>{const n=us,s=M(new Map),r=M(new Map),i=M(0),[a,l]=H(!1);return x(()=>()=>{for(const c of s.current.values())c.cancel()},[]),x(()=>{if(!e?.length)return;const c=t.context;for(const h of e){const[d,g,u=ds]=h;s.current.has(h)||s.current.set(h,u());const v=g(t.values,void 0,c),m=r.current.get(h);if(m!=null&&!hs(v,m))continue;r.current.set(h,v);const b=s.current.get(h);i.current++,i.current===1&&l(!0),b.run(d,t.values,f=>t.onChange(f,!1),{context:c}).then(f=>{f!==null&&t.onChange(f,!1)}).catch(f=>n(f,h)).finally(()=>{i.current--,i.current===0&&l(!1)})}},[t.values,t.context]),{...t,processing:a}},Ue=Symbol("touched");function Ce(t,e=!0){if(t==null)return;const o=t;return e?o[Ue]=!0:delete o[Ue],t}const Wt=t=>Ce(t,!1),yt=t=>!!t?.[Ue],ms=(t,e)=>!e||t.some((o,n)=>!Object.is(e[n],o)),he=({oldItem:t,newItem:e,rules:o,index:n,oldIndex:s=n,context:r,oldContext:i=r})=>o?o.reduce((a,[l,c])=>t&&c&&!ms(c(a,n,r),c(t,s,i))?a:{...a,...l(a,t,n,s,r)},e):e,gs=(t,e,o,n,s)=>{const[,r]=t,i=M(void 0);return x(()=>{const a=i.current;i.current=n,a!==void 0&&e(([l,c])=>[l,Ce(he({oldItem:c,newItem:c,rules:o,context:n,oldContext:a}),yt(c))])},[n]),{values:r,context:n??{},onReset:w(()=>e(([a])=>[a,a]),[e]),onValues:w((a,l=!0)=>e(([c,h])=>[c,Ce(he({oldItem:h,newItem:R(a,h),rules:o,context:n}),l)]),[o,e,n]),onChange:w((a,l=!0)=>e(([c,h])=>[c,Ce(he({oldItem:h,newItem:{...h,...R(a,h)},rules:o,context:n}),l)]),[o,e,n]),load:w((a,l)=>{if(!a){e([a,a]);return}const c=Wt(he({oldItem:void 0,newItem:a,rules:l??o,context:n}));e([c,c])},[o,e,n]),touched:S(()=>yt(r)||(s??!1),[r,s])}},fs=(t,e,o)=>Wt(he({oldItem:void 0,newItem:t,rules:e,context:o})),Xt=(t,e=[])=>{const o=t.filter(n=>n?.rules!=null).flatMap(n=>n?.rules);return[...e,...o]},vs=(t,e,{fields:o,rules:n,context:s,touched:r})=>{const i=S(()=>R(o)??[],[o]),a=S(()=>Xt(i,n),[i,n]),l=gs(t,e,a,s,r),{values:c}=l;return{...S(()=>Fn(i,c,s),[i,c,s]),...l}},bs=t=>{const[e,o]=H(()=>{const n=R(t.fields)??[],s=Xt(n,t.rules),r=fs(t.initial,s,t.context);return[r,r]});return vs(e,o,t)};function ys({fields:t,initial:e,rules:o,asyncRules:n,context:s,onSave:r,allowEmpty:i}){const a=bs({fields:t,initial:e,rules:o,context:s}),{processing:l}=ps(a,n),{values:c,invalid:h}=a,[d,g]=H(),[u,v]=H(),m=c==null||c===e,b=a.fields?.length>0&&!(m&&i)&&(m||h);return{...a,save$:d,onSave:w(()=>g(r?.(c,e,v)),[r,c,e]),disabled:b,processing:l,progress:u}}const zs=ce`
+	:host::part(content) {
+		padding: 0;
+	}
+
 	.description {
 		font-size: var(--cz-text-base);
 		line-height: var(--cz-text-base-line-height);
@@ -1488,6 +1493,9 @@ import{A as V,w as ie,b as p,r as St,D as At,E as N,n as bo,M as yo,u as K,v as 
 	.form {
 		display: flex;
 		flex-direction: column;
+		padding: calc(var(--cz-spacing) * 3);
+		overflow: auto;
+		scrollbar-gutter: stable both-edges;
 	}
 
 	.failure {
