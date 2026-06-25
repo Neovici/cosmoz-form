@@ -1,7 +1,6 @@
 import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
-import { xCircleIcon } from '@neovici/cosmoz-icons/untitled';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
@@ -52,7 +51,7 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 						value="cancel"
 						?disabled=${uncancelable}
 					>
-						${xCircleIcon({ slot: 'prefix' })} ${t('Cancel')}
+						${t('Cancel')}
 					</cosmoz-button>`,
 			)}
 		</div>`;
