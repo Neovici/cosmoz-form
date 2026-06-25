@@ -44,7 +44,7 @@ const preview = {
 						color: var(--cz-color-text-primary);
 						background: var(--cz-color-bg-primary);
 						padding: calc(var(--cz-spacing) * 4);
-						min-height: 100%;
+						min-height: 100dvh;
 						transition:
 							background-color 0.2s,
 							color 0.2s;

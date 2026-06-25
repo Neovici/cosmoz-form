@@ -30,12 +30,11 @@ export default css`
 	.buttons {
 		display: flex;
 		justify-content: flex-end;
-		padding-inline: calc(var(--cz-spacing) * 6);
 		padding-block: calc(var(--cz-spacing) * 5.5);
-		gap: var(--cz-spacing);
+		gap: calc(var(--cz-spacing) * 2);
 
 		& cosmoz-button {
-			min-width: calc(var(--cz-spacing) * 20);
+			flex: 1;
 		}
 	}
 
