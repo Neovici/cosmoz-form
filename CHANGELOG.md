@@ -1,3 +1,13 @@
+## [3.4.0-beta.4](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.3...v3.4.0-beta.4) (2026-06-26)
+
+### Features
+
+* update cosmoz-form to beta version ([#35](https://github.com/Neovici/cosmoz-form/issues/35)) ([624710d](https://github.com/Neovici/cosmoz-form/commit/624710dac4d1dc3ddae20d3283bd98f1acc53573))
+
+### Bug Fixes
+
+* **story:** assign type to currency input ([d855c1a](https://github.com/Neovici/cosmoz-form/commit/d855c1a72a875765024d8a800e500984a2c27501))
+
 ## [3.4.0-beta.3](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.2...v3.4.0-beta.3) (2026-06-23)
 
 ### Features
