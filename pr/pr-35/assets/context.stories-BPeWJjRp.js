@@ -1,4 +1,4 @@
-import{p as m,q as i,z as v,h as p,b as n,y as g,K as h,n as f}from"./inline-file-BesmN0rx.js";import{b as r}from"./iframe-GNBATVmi.js";import{u as b}from"./use-items-BByZ2-ra.js";import"./preload-helper-PPVm8Dsz.js";const x=r`
+import{b as r,e as m,d as v,j as h,n as f}from"./iframe-9g9OU6Q5.js";import{u as i,n as p,b as n,t as y}from"./inline-file-NNbAZmLa.js";import{u as b}from"./use-items-CfzCKcng.js";import"./preload-helper-PPVm8Dsz.js";const x=r`
     <style>
         .story-wrap {
             font-family: sans-serif;
@@ -36,7 +36,7 @@ import{p as m,q as i,z as v,h as p,b as n,y as g,K as h,n as f}from"./inline-fil
             background: #c27803;
         }
     </style>
-`,u=[{id:"cost",label:"Cost (€)",input:v,min:0,suffix:(e,o,s,t)=>{const a=t?.budget??1/0;return f(e>a,()=>r`<cosmoz-badge color="warning">Over budget!</cosmoz-badge>`)}}],w=[{id:"budget",label:"Budget (€)",input:v,min:0}],D=()=>{const e=i({fields:w,initial:{budget:100}}),o=p(()=>({budget:e.values.budget}),[e.values.budget]),s=i({fields:u,initial:{cost:50},context:o}),t=i({fields:u,initial:{cost:120},context:o}),a=i({fields:u,initial:{cost:80},context:o});return r`
+`,u=[{id:"cost",label:"Cost (€)",input:p,min:0,suffix:(e,o,s,t)=>{const a=t?.budget??1/0;return f(e>a,()=>r`<cosmoz-badge color="warning">Over budget!</cosmoz-badge>`)}}],w=[{id:"budget",label:"Budget (€)",input:p,min:0}],D=()=>{const e=i({fields:w,initial:{budget:100}}),o=v(()=>({budget:e.values.budget}),[e.values.budget]),s=i({fields:u,initial:{cost:50},context:o}),t=i({fields:u,initial:{cost:120},context:o}),a=i({fields:u,initial:{cost:80},context:o});return r`
         ${x}
         <div class="story-wrap">
             <div class="story-section">
@@ -89,7 +89,7 @@ const rowForm = useValidatedForm<CostRow, BudgetCtx>({
   fields: costFields,
   initial: { cost: 120 },
   context: ctx,
-});`}}};const R=[{id:"deliveryDate",label:"Delivery date",input:g,placeholder:"YYYY-MM-DD"}],y=[{id:"rowDate",label:"Row date",input:g,placeholder:"YYYY-MM-DD",validate:(e,o,s,t)=>{const a=t?.deliveryDate;return!e||!a?!1:e<a?`Must be on or after delivery date (${a})`:!1},suffix:(e,o,s,t)=>{const a=t?.deliveryDate;return e&&a&&e>=a?r`<span class="story-badge">✓</span>`:void 0}}],F=()=>{const e=i({fields:R,initial:{deliveryDate:"2024-06-01"}}),o=p(()=>({deliveryDate:e.values.deliveryDate}),[e.values.deliveryDate]),s=i({fields:y,initial:{rowDate:"2024-07-01"},context:o,touched:e.touched}),t=i({fields:y,initial:{rowDate:"2024-05-01"},context:o,touched:e.touched});return r`
+});`}}};const R=[{id:"deliveryDate",label:"Delivery date",input:y,placeholder:"YYYY-MM-DD"}],g=[{id:"rowDate",label:"Row date",input:y,placeholder:"YYYY-MM-DD",validate:(e,o,s,t)=>{const a=t?.deliveryDate;return!e||!a?!1:e<a?`Must be on or after delivery date (${a})`:!1},suffix:(e,o,s,t)=>{const a=t?.deliveryDate;return e&&a&&e>=a?r`<span class="story-badge">✓</span>`:void 0}}],F=()=>{const e=i({fields:R,initial:{deliveryDate:"2024-06-01"}}),o=v(()=>({deliveryDate:e.values.deliveryDate}),[e.values.deliveryDate]),s=i({fields:g,initial:{rowDate:"2024-07-01"},context:o,touched:e.touched}),t=i({fields:g,initial:{rowDate:"2024-05-01"},context:o,touched:e.touched});return r`
         ${x}
         <div class="story-wrap">
             <div class="story-section">
@@ -143,7 +143,7 @@ const rowForm = useValidatedForm<RowItem, DeliveryCtx>({
   fields: rowDateFields,
   initial: { rowDate: '2024-05-01' },
   context: ctx,
-});`}}};const V=[{id:"vatRate",label:"VAT rate (%)",input:v,min:0,max:100}],_=[[({price:e},o,s,t,a)=>({totalWithVat:Math.round(e*(1+(a?.vatRate??0)/100)*100)/100}),({price:e},o,s)=>[e,s?.vatRate]]],C=()=>{const e=i({fields:V,initial:{vatRate:20}}),o=p(()=>({vatRate:e.values.vatRate}),[e.values.vatRate]),{items:s}=b({initial:[{price:100,totalWithVat:0},{price:250,totalWithVat:0},{price:75,totalWithVat:0}],rules:_,context:o});return r`
+});`}}};const V=[{id:"vatRate",label:"VAT rate (%)",input:p,min:0,max:100}],_=[[({price:e},o,s,t,a)=>({totalWithVat:Math.round(e*(1+(a?.vatRate??0)/100)*100)/100}),({price:e},o,s)=>[e,s?.vatRate]]],C=()=>{const e=i({fields:V,initial:{vatRate:20}}),o=v(()=>({vatRate:e.values.vatRate}),[e.values.vatRate]),{items:s}=b({initial:[{price:100,totalWithVat:0},{price:250,totalWithVat:0},{price:75,totalWithVat:0}],rules:_,context:o});return r`
         ${x}
         <div class="story-wrap">
             <div class="story-section">
