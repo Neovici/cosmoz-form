@@ -30,7 +30,7 @@ export default css`
 	.buttons {
 		display: flex;
 		justify-content: flex-end;
-		padding-block: 0 calc(var(--cz-spacing) * 5.5);
+		padding-block: calc(var(--cz-spacing) * 5.5);
 		gap: calc(var(--cz-spacing) * 2);
 
 		& cosmoz-button {
