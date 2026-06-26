@@ -17,9 +17,6 @@ const styles = css`
 	.form {
 		display: flex;
 		flex-direction: column;
-		padding: calc(var(--cz-spacing) * 3);
-		overflow: auto;
-		scrollbar-gutter: stable both-edges;
 	}
 
 	.failure {

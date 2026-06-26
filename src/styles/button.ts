@@ -30,7 +30,6 @@ export default css`
 	.buttons {
 		display: flex;
 		justify-content: flex-end;
-		padding-inline: calc(var(--cz-spacing) * 6);
 		padding-block: 0 calc(var(--cz-spacing) * 5.5);
 		gap: calc(var(--cz-spacing) * 2);
 
