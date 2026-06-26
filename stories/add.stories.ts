@@ -296,6 +296,7 @@ type ContactForm = {
 	invoiceNumber: string;
 	message: string;
 	category: string;
+	currency?: string[];
 	tags?: string[];
 };
 
@@ -304,6 +305,7 @@ const CONTACT_INITIAL: ContactForm = {
 	invoiceNumber: '',
 	message: '',
 	category: '',
+	currency: [],
 	tags: [],
 };
 
