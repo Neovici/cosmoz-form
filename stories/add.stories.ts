@@ -1,7 +1,7 @@
+import { edit02Icon } from '@neovici/cosmoz-icons/untitled';
 import '@neovici/cosmoz-spinner';
 import { component, useState } from '@pionjs/pion';
 import { html, nothing } from 'lit-html';
-
 import {
 	autocomplete,
 	dateRange,
@@ -16,6 +16,7 @@ import {
 	renderItemsStyles,
 	required,
 	text,
+	textarea,
 	toggle,
 	useValidatedForm,
 	useValidatedItems,
@@ -42,6 +43,7 @@ type Product = {
 };
 
 const CATEGORIES = ['Electronics', 'Clothing', 'Food', 'Books', 'Toys'];
+const CURRENCIES = ['USD', 'EUR', 'GBP', 'JPY', 'CAD'];
 const TAGS = ['new', 'sale', 'popular', 'limited', 'exclusive', 'seasonal'];
 
 const INITIAL_PRODUCT: Product = {
@@ -290,17 +292,54 @@ DateRangeAndReadOnly.storyName = 'Date range, read-only & cell variant';
 import { formDialog, type Dialog } from '../src/form-dialog/form-dialog.js';
 
 type ContactForm = {
-	name: string;
-	email: string;
+	supplier: string;
+	invoiceNumber: string;
 	message: string;
+	category: string;
+	tags?: string[];
 };
 
-const CONTACT_INITIAL: ContactForm = { name: '', email: '', message: '' };
+const CONTACT_INITIAL: ContactForm = {
+	supplier: '',
+	invoiceNumber: '',
+	message: '',
+	category: '',
+	tags: [],
+};
 
 const CONTACT_FIELDS: Fields<ContactForm> = [
-	{ id: 'name', label: 'Name', input: text, validate: [required] },
-	{ id: 'email', label: 'Email', input: text, validate: [required] },
-	{ id: 'message', label: 'Message', input: text },
+	{ id: 'supplier', label: 'Supplier', input: text, validate: [required] },
+	{
+		id: 'invoiceNumber',
+		label: 'Invoice number',
+		input: text,
+		validate: [required],
+	},
+	{
+		id: 'category',
+		label: 'Category',
+		input: autocomplete,
+		options: CATEGORIES,
+		mode: 'select',
+		preserveOrder: true,
+		validate: [required],
+	},
+	{
+		id: 'currency',
+		label: 'Currency',
+		input: autocomplete,
+		options: CURRENCIES,
+
+		preserveOrder: true,
+		validate: [required],
+	},
+	{
+		id: 'message',
+		label: 'Comment',
+		input: textarea,
+		rows: 3,
+		validate: [required],
+	},
 ];
 
 const FormDialogDemo = () => {
@@ -311,8 +350,9 @@ const FormDialogDemo = () => {
 
 	const openDialog = () => {
 		setDialog({
-			heading: 'Contact us',
-			description: 'Fill in the form to send a message.',
+			heading: 'Change and reimport invoice',
+			description: 'Are you sure you want to re-import this invoice?',
+			icon: edit02Icon(),
 			fields: CONTACT_FIELDS,
 			initial: CONTACT_INITIAL,
 			saveText: 'OK',

@@ -14,7 +14,6 @@ import buttonStyles from '../styles/button';
 import { Renderable, Resolvable } from '../types';
 import { Props as AddProps, useValidatedForm$ } from '../use-validated-form$';
 import styles from './style.css';
-
 interface Props<T extends object> extends DialogProps, AddProps<T> {
 	heading: string;
 	description?: Renderable;
@@ -25,13 +24,7 @@ interface Props<T extends object> extends DialogProps, AddProps<T> {
 }
 
 const FormDialog = <T extends object>(host: Props<T>) => {
-	const {
-			description,
-			auto,
-			uncancelable,
-			hideCancelButton,
-			saveText = t('OK'),
-		} = host,
+	const { auto, uncancelable, hideCancelButton, saveText = t('OK') } = host,
 		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host);
 
 	useEffect(() => {
@@ -45,7 +38,6 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 	return html` <style>
 			${buttonStyles} ${renderStyles(form)}${styles}
 		</style>
-		${when(description, () => html`<p class="description">${description}</p>`)}
 		<div class="form" part="form">${renderFields(form)}</div>
 		<div class="buttons">
 			${renderFailure$(save$)}
@@ -85,7 +77,9 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	const dialog = html`<cosmoz-form-dialog
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
-		.heading=${props.heading}
+		.title=${props.heading}
+		.subtitle=${props.description}
+		.icon=${props.icon}
 		.description=${props.description}
 		.fields=${props.fields}
 		.initial=${props.initial}
