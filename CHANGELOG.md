@@ -1,3 +1,9 @@
+## [3.4.0-beta.5](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.4...v3.4.0-beta.5) (2026-06-26)
+
+### Bug Fixes
+
+* remove unused css ([ea293b1](https://github.com/Neovici/cosmoz-form/commit/ea293b19353cad9639bf6f43921c4a6544e9d4d6))
+
 ## [3.4.0-beta.4](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.3...v3.4.0-beta.4) (2026-06-26)
 
 ### Features
