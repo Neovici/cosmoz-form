@@ -2,35 +2,41 @@
 
 ### Bug Fixes
 
-* remove unused css ([ea293b1](https://github.com/Neovici/cosmoz-form/commit/ea293b19353cad9639bf6f43921c4a6544e9d4d6))
+- remove unused css ([ea293b1](https://github.com/Neovici/cosmoz-form/commit/ea293b19353cad9639bf6f43921c4a6544e9d4d6))
 
 ## [3.4.0-beta.4](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.3...v3.4.0-beta.4) (2026-06-26)
 
 ### Features
 
-* update cosmoz-form to beta version ([#35](https://github.com/Neovici/cosmoz-form/issues/35)) ([624710d](https://github.com/Neovici/cosmoz-form/commit/624710dac4d1dc3ddae20d3283bd98f1acc53573))
+- update cosmoz-form to beta version ([#35](https://github.com/Neovici/cosmoz-form/issues/35)) ([624710d](https://github.com/Neovici/cosmoz-form/commit/624710dac4d1dc3ddae20d3283bd98f1acc53573))
 
 ### Bug Fixes
 
-* **story:** assign type to currency input ([d855c1a](https://github.com/Neovici/cosmoz-form/commit/d855c1a72a875765024d8a800e500984a2c27501))
+- **story:** assign type to currency input ([d855c1a](https://github.com/Neovici/cosmoz-form/commit/d855c1a72a875765024d8a800e500984a2c27501))
 
 ## [3.4.0-beta.3](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.2...v3.4.0-beta.3) (2026-06-23)
 
 ### Features
 
-* mode=select unwraps value in onChange ([#33](https://github.com/Neovici/cosmoz-form/issues/33)) ([bd452a4](https://github.com/Neovici/cosmoz-form/commit/bd452a4e1c5be84b5f61e3cfe470ac47f1f33e4e))
+- mode=select unwraps value in onChange ([#33](https://github.com/Neovici/cosmoz-form/issues/33)) ([bd452a4](https://github.com/Neovici/cosmoz-form/commit/bd452a4e1c5be84b5f61e3cfe470ac47f1f33e4e))
 
 ## [3.4.0-beta.2](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.1...v3.4.0-beta.2) (2026-06-18)
 
 ### Features
 
-* add variant cell support for autocomplete ([#32](https://github.com/Neovici/cosmoz-form/issues/32)) ([e17e694](https://github.com/Neovici/cosmoz-form/commit/e17e694c84adf8eb8475b7894836188f946e8fe5))
+- add variant cell support for autocomplete ([#32](https://github.com/Neovici/cosmoz-form/issues/32)) ([e17e694](https://github.com/Neovici/cosmoz-form/commit/e17e694c84adf8eb8475b7894836188f946e8fe5))
 
 ## [3.4.0-beta.1](https://github.com/Neovici/cosmoz-form/compare/v3.3.0...v3.4.0-beta.1) (2026-06-18)
 
 ### Features
 
-* add new props and migrate to cosmoz-tokens ([#26](https://github.com/Neovici/cosmoz-form/issues/26)) ([db90661](https://github.com/Neovici/cosmoz-form/commit/db90661378252b3e467294eebb3950a41072d6b0))
+- add new props and migrate to cosmoz-tokens ([#26](https://github.com/Neovici/cosmoz-form/issues/26)) ([db90661](https://github.com/Neovici/cosmoz-form/commit/db90661378252b3e467294eebb3950a41072d6b0))
+
+## [3.3.1](https://github.com/Neovici/cosmoz-form/compare/v3.3.0...v3.3.1) (2026-06-24)
+
+### Bug Fixes
+
+- **form-dialog:** prevent cosmoz-dialog-loading flash when no dialog is open (FE-831) ([#34](https://github.com/Neovici/cosmoz-form/issues/34)) ([b22a593](https://github.com/Neovici/cosmoz-form/commit/b22a593f71c7b6133ae86f9a4062fb16c98d67d6))
 
 ## [3.3.0](https://github.com/Neovici/cosmoz-form/compare/v3.2.1...v3.3.0) (2026-06-13)
 
