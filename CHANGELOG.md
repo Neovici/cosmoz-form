@@ -1,3 +1,9 @@
+## [3.4.0-beta.7](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.6...v3.4.0-beta.7) (2026-06-30)
+
+### Bug Fixes
+
+* button align center in items list ([3c7e24d](https://github.com/Neovici/cosmoz-form/commit/3c7e24d6060f7bbd7ebbd8458122fb7556a3067f))
+
 ## [3.4.0-beta.6](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.5...v3.4.0-beta.6) (2026-06-26)
 
 ### Bug Fixes
