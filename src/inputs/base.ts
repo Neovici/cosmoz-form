@@ -13,6 +13,7 @@ type ComputedRenderOpts<T extends object, K extends keyof T, V extends T[K]> = {
 	suffix?: Renderable;
 	value: V;
 	onFocus?: (event: FocusEvent) => void;
+	onPaste?: (event: ClipboardEvent) => void;
 	onChange: (value: V, touched?: boolean) => void;
 };
 
@@ -117,6 +118,7 @@ export const input =
 			suffix: invoke(field.suffix, value, values, field, context),
 			value: invokeValue(field.value?.[0], value, values, field, context) as V,
 			onFocus: field.onFocus?.(onChange, value, values, field),
+			onPaste: field.onPaste?.(onChange, value, values, field),
 			onChange,
 		});
 	};

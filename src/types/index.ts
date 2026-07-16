@@ -31,6 +31,13 @@ export type OnFocusFn<T, F, V> = (
 	field: F,
 ) => (event: FocusEvent) => void;
 
+export type OnPasteFn<T, F, V> = (
+	onChange: (value: V, touched?: boolean) => void,
+	value: V,
+	values: T,
+	field: F,
+) => (event: ClipboardEvent) => void;
+
 export type OnChange<T, K, V> = (
 	update: (
 		update: Partial<T> | ((values: T) => Partial<T>),
@@ -132,6 +139,7 @@ export interface Field<
 	value?: Codec<T, K, V, C>;
 	styles?: Record<string, string>;
 	onFocus?: OnFocusFn<T, Field<T, K, V, C>, V>;
+	onPaste?: OnPasteFn<T, Field<T, K, V, C>, V>;
 	onChange?: OnChange<T, K, V>;
 	rules?: ItemRule<T>[];
 	header?: Invokable<T, Field<T, K, V, C>, V, string, C>;
