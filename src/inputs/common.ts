@@ -38,6 +38,7 @@ export interface Common<
 > extends Omit<InputBaseOpts<T, K, V, C>, 'onChange'> {
 	type?: string;
 	onInput?: (e: InputEvent) => void;
+	onPaste?: (e: ClipboardEvent) => void;
 }
 
 export const common = <
@@ -48,7 +49,7 @@ export const common = <
 >(
 	props: Common<T, K, V, C>,
 ) => {
-	const { value, values, onFocus, onInput, context, ...field } = props;
+	const { value, values, onFocus, onInput, onPaste, context, ...field } = props;
 	const {
 		id,
 		type = 'text',
@@ -94,6 +95,7 @@ export const common = <
 		max=${ifDefined(invoke(max, value, values, field, context))}
 		autocomplete=${ifDefined(autocomplete)}
 		@focus=${onFocus}
+		@paste=${onPaste}
 		@input=${onInput}
 		>${renderContents({ prefix, suffix, warning, description })}</cosmoz-input
 	>`;
@@ -190,6 +192,7 @@ export const textarea = input(
 		warning,
 		disabled,
 		onChange,
+		onPaste,
 		value,
 		maxRows,
 		rows,
@@ -208,6 +211,7 @@ export const textarea = input(
 			.rows=${rows}
 			.maxRows=${maxRows}
 			maxlength=${ifDefined(maxlength)}
+			@paste=${onPaste}
 			@input=${(e: InputEvent) =>
 				onChange!((e.target as HTMLInputElement).value as V)}
 			>${renderContents({ suffix, warning })}</cosmoz-textarea

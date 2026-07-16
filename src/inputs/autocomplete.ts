@@ -55,6 +55,7 @@ export const autocomplete = input(
 		suffix,
 		disabled,
 		onChange,
+		onPaste,
 		options,
 		limit,
 		min,
@@ -112,6 +113,7 @@ export const autocomplete = input(
 			.textual=${textual}
 			.onChange=${(options?: V[]) =>
 				onChange((limit === 1 ? options?.[0] : options) as V)}
+			@paste=${onPaste}
 			?external-search=${externalSearch}
 			>${renderContents({ suffix, warning, description })}</cosmoz-autocomplete
 		>`;
