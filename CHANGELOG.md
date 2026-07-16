@@ -1,5 +1,11 @@
 ## [3.3.1](https://github.com/Neovici/cosmoz-form/compare/v3.3.0...v3.3.1) (2026-06-24)
 
+## 3.4.0
+
+### Minor Changes
+
+- 68f8765: Add `onPaste` prop support to field configs, allowing paste event handlers to be bound directly to individual input elements (`cosmoz-input`, `cosmoz-textarea`, `cosmoz-autocomplete`). The `onPaste` prop follows the same curried-function pattern as `onFocus`, receiving `(onChange, value, values, field)` and returning a `ClipboardEvent` handler.
+
 ## 3.3.2
 
 ### Patch Changes
