@@ -16,6 +16,7 @@ import { Props as AddProps, useValidatedForm$ } from '../use-validated-form$';
 import styles from './style.css';
 interface Props<T extends object> extends DialogProps, AddProps<T> {
 	heading: string;
+	subtitle?: string;
 	description?: Renderable;
 	auto?: boolean;
 	uncancelable?: boolean;
@@ -24,7 +25,13 @@ interface Props<T extends object> extends DialogProps, AddProps<T> {
 }
 
 const FormDialog = <T extends object>(host: Props<T>) => {
-	const { auto, uncancelable, hideCancelButton, saveText = t('OK') } = host,
+	const {
+			description,
+			auto,
+			uncancelable,
+			hideCancelButton,
+			saveText = t('OK'),
+		} = host,
 		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host);
 
 	useEffect(() => {
@@ -38,6 +45,10 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 	return html` <style>
 			${buttonStyles} ${renderStyles(form)}${styles}
 		</style>
+		${when(
+			description,
+			() => html`<div class="description">${description}</div>`,
+		)}
 		<div class="form" part="form">${renderFields(form)}</div>
 		<div class="buttons">
 			${renderFailure$(save$)}
@@ -78,7 +89,7 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
 		.title=${props.heading}
-		.subtitle=${props.description}
+		.subtitle=${props.subtitle}
 		.icon=${props.icon}
 		.description=${props.description}
 		.fields=${props.fields}

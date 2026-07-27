@@ -353,7 +353,11 @@ const FormDialogDemo = () => {
 	const openDialog = () => {
 		setDialog({
 			heading: 'Change and reimport invoice',
-			description: 'Are you sure you want to re-import this invoice?',
+			subtitle: 'Are you sure you want to re-import this invoice?',
+			description: html`<p>
+				Please review the invoice details and make any necessary changes before
+				reimporting. Ensure that all required fields are filled out correctly.
+			</p>`,
 			icon: edit02Icon(),
 			fields: CONTACT_FIELDS,
 			initial: CONTACT_INITIAL,
