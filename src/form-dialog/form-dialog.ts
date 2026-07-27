@@ -88,7 +88,7 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	const dialog = html`<cosmoz-form-dialog
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
-		.title=${props.heading}
+		.heading=${props.heading}
 		.subtitle=${props.subtitle}
 		.icon=${props.icon}
 		.description=${props.description}
