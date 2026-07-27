@@ -1,3 +1,9 @@
+## [3.4.0-beta.8](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.7...v3.4.0-beta.8) (2026-07-27)
+
+### Features
+
+* **form-dialog:** add subtitle prop and description rendering ([b040942](https://github.com/Neovici/cosmoz-form/commit/b04094241d9a834516f8751a0e7ad917bca0ff46))
+
 ## [3.4.0-beta.7](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.6...v3.4.0-beta.7) (2026-06-30)
 
 ### Bug Fixes
