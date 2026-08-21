@@ -3,6 +3,10 @@ import { tagged as css } from '@neovici/cosmoz-utils';
 const styles = css`
 	.description {
 		padding: 0 24px;
+		/* scrollable, so a long description can't push the buttons out of the
+		   dialog's clipped content area */
+		overflow-y: auto;
+		min-height: 0;
 	}
 	.description * {
 		line-height: normal;
@@ -18,6 +22,9 @@ const styles = css`
 	}
 	.input:last-child {
 		margin-bottom: 16px;
+	}
+	.buttons {
+		flex: none;
 	}
 	.save {
 		font-weight: bold;
