@@ -7,6 +7,7 @@ import type {
 } from '@neovici/cosmoz-datepicker';
 import { html } from '@pionjs/pion';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { when } from 'lit-html/directives/when.js';
 import { InputBaseOpts } from '../types';
 import { input } from './base';
 
@@ -30,6 +31,7 @@ export const datepicker = input(
 		disabled,
 		onChange,
 		value,
+		error,
 		mode,
 		locale,
 		minDate,
@@ -54,6 +56,7 @@ export const datepicker = input(
 					}: CustomEvent<{ value: DatepickerValue }>) =>
 						onChange!(detail.value as V)}
 				></cosmoz-datepicker>
+				${when(error, () => html`<div class="failure">${error}</div>`)}
 			</div>
 		`;
 	},
