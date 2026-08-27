@@ -4,6 +4,7 @@ import {
 	FileProps,
 	TextareaProps,
 } from '../inputs';
+import { DatepickerProps } from '../inputs/datepicker';
 import { ReadOnlyNumberProps } from '../inputs/read-only-number';
 import { UseForm } from '../use-form-core';
 import { ItemRule } from '../use-items';
@@ -122,6 +123,7 @@ export interface Field<
 		TextareaProps,
 		AutocompleteProps<T, K, V, C>,
 		FileProps<T, K, V>,
+		DatepickerProps,
 		ReadOnlyNumberProps {
 	id: K;
 	path?: keyof T;
