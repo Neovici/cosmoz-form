@@ -1,5 +1,17 @@
 ## [3.3.1](https://github.com/Neovici/cosmoz-form/compare/v3.3.0...v3.3.1) (2026-06-24)
 
+## 3.5.0
+
+### Minor Changes
+
+- faa9e4f: Add a datepicker input with support for date and range modes, locale, date bounds, and range presets.
+
+### Patch Changes
+
+- a0e3b40: fix(form-dialog): keep the buttons visible when the description is long
+
+  `.description` was an unshrinkable flex item inside `.content { overflow: hidden }`, so a description taller than the dialog pushed the button row past the clipped edge — the dialog could not be confirmed or (with `uncancelable` + `hideCancelButton`) dismissed at all, and the text was not scrollable either.
+
 ## 3.4.0
 
 ### Minor Changes
