@@ -70,6 +70,7 @@
     "@lit-labs/virtualizer": "^2.1.1",
     "@neovici/cosmoz-autocomplete": "^13.7.0-beta.4",
     "@neovici/cosmoz-button": "^1.1.0",
+    "@neovici/cosmoz-datepicker": "^1.0.3",
     "@neovici/cosmoz-dialog": "^5.1.0-beta.3",
     "@neovici/cosmoz-icons": "^1.4.0",
     "@neovici/cosmoz-input": "^6.0.0-beta.5",
@@ -80,7 +81,7 @@
     "@playwright/test": "^1.60.0",
     "@web/test-runner-playwright": "^0.11.1",
     "date-fns": "^4.1.0",
-    "i18next": "^23.16.8",
+    "i18next": "^26.4.2",
     "lit-html": "^3.3.1"
   },
   "devDependencies": {

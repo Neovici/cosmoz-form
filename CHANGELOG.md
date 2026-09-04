@@ -2,25 +2,49 @@
 
 ### Features
 
-* **form-dialog:** add subtitle prop and description rendering ([e239252](https://github.com/Neovici/cosmoz-form/commit/e239252af86fb318c5c1f9c9166ceb95a16dba23))
+- **form-dialog:** add subtitle prop and description rendering ([e239252](https://github.com/Neovici/cosmoz-form/commit/e239252af86fb318c5c1f9c9166ceb95a16dba23))
 
 ## [3.4.0-beta.8](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.7...v3.4.0-beta.8) (2026-07-27)
 
 ### Features
 
-* **form-dialog:** add subtitle prop and description rendering ([b040942](https://github.com/Neovici/cosmoz-form/commit/b04094241d9a834516f8751a0e7ad917bca0ff46))
+- **form-dialog:** add subtitle prop and description rendering ([b040942](https://github.com/Neovici/cosmoz-form/commit/b04094241d9a834516f8751a0e7ad917bca0ff46))
 
 ## [3.4.0-beta.7](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.6...v3.4.0-beta.7) (2026-06-30)
 
 ### Bug Fixes
 
-* button align center in items list ([3c7e24d](https://github.com/Neovici/cosmoz-form/commit/3c7e24d6060f7bbd7ebbd8458122fb7556a3067f))
+- button align center in items list ([3c7e24d](https://github.com/Neovici/cosmoz-form/commit/3c7e24d6060f7bbd7ebbd8458122fb7556a3067f))
 
 ## [3.4.0-beta.6](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.5...v3.4.0-beta.6) (2026-06-26)
 
+## 3.5.0
+
+### Minor Changes
+
+- faa9e4f: Add a datepicker input with support for date and range modes, locale, date bounds, and range presets.
+
+### Patch Changes
+
+- a0e3b40: fix(form-dialog): keep the buttons visible when the description is long
+
+  `.description` was an unshrinkable flex item inside `.content { overflow: hidden }`, so a description taller than the dialog pushed the button row past the clipped edge — the dialog could not be confirmed or (with `uncancelable` + `hideCancelButton`) dismissed at all, and the text was not scrollable either.
+
+## 3.4.0
+
+### Minor Changes
+
+- 68f8765: Add `onPaste` prop support to field configs, allowing paste event handlers to be bound directly to individual input elements (`cosmoz-input`, `cosmoz-textarea`, `cosmoz-autocomplete`). The `onPaste` prop follows the same curried-function pattern as `onFocus`, receiving `(onChange, value, values, field)` and returning a `ClipboardEvent` handler.
+
+## 3.3.2
+
+### Patch Changes
+
+- 280f434: Migrate from semantic-release to changesets
+
 ### Bug Fixes
 
-* **form-dialog:** prevent cosmoz-dialog-loading flash when no dialog is open (FE-831) ([#34](https://github.com/Neovici/cosmoz-form/issues/34)) ([b22a593](https://github.com/Neovici/cosmoz-form/commit/b22a593f71c7b6133ae86f9a4062fb16c98d67d6))
+- **form-dialog:** prevent cosmoz-dialog-loading flash when no dialog is open (FE-831) ([#34](https://github.com/Neovici/cosmoz-form/issues/34)) ([b22a593](https://github.com/Neovici/cosmoz-form/commit/b22a593f71c7b6133ae86f9a4062fb16c98d67d6))
 
 ## [3.4.0-beta.5](https://github.com/Neovici/cosmoz-form/compare/v3.4.0-beta.4...v3.4.0-beta.5) (2026-06-26)
 

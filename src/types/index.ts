@@ -1,9 +1,12 @@
+import type { DatepickerMode } from '@neovici/cosmoz-datepicker';
+
 import {
 	AutocompleteProps,
 	CommonFieldProps,
 	FileProps,
 	TextareaProps,
 } from '../inputs';
+import { DatepickerProps } from '../inputs/datepicker';
 import { ReadOnlyNumberProps } from '../inputs/read-only-number';
 import { UseForm } from '../use-form-core';
 import { ItemRule } from '../use-items';
@@ -30,6 +33,13 @@ export type OnFocusFn<T, F, V> = (
 	values: T,
 	field: F,
 ) => (event: FocusEvent) => void;
+
+export type OnPasteFn<T, F, V> = (
+	onChange: (value: V, touched?: boolean) => void,
+	value: V,
+	values: T,
+	field: F,
+) => (event: ClipboardEvent) => void;
 
 export type OnChange<T, K, V> = (
 	update: (
@@ -113,9 +123,11 @@ export interface Field<
 	extends
 		CommonFieldProps<T, K, V, C>,
 		TextareaProps,
-		AutocompleteProps<T, K, V, C>,
+		Omit<AutocompleteProps<T, K, V, C>, 'mode'>,
 		FileProps<T, K, V>,
+		Omit<DatepickerProps, 'mode'>,
 		ReadOnlyNumberProps {
+	mode?: 'select' | DatepickerMode;
 	id: K;
 	path?: keyof T;
 	label?: Invokable<T, Field<T, K, V, C>, V, string, C>;
@@ -131,6 +143,7 @@ export interface Field<
 	value?: Codec<T, K, V, C>;
 	styles?: Record<string, string>;
 	onFocus?: OnFocusFn<T, Field<T, K, V, C>, V>;
+	onPaste?: OnPasteFn<T, Field<T, K, V, C>, V>;
 	onChange?: OnChange<T, K, V>;
 	rules?: ItemRule<T>[];
 	header?: Invokable<T, Field<T, K, V, C>, V, string, C>;
