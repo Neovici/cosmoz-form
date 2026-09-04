@@ -1,3 +1,31 @@
+## 4.0.0
+
+### Major Changes
+
+- 1e6c96a: Remove the unused `cz-toggle` control and its styles. Retarget dependencies to
+  stable releases: `@neovici/cosmoz-autocomplete` ^14, `@neovici/cosmoz-dialog`
+  ^6, `@neovici/cosmoz-input` ^6, `@pionjs/pion` ^2.13 (pinned override removed).
+  Dropped the legacy semantic-release configuration and tooling in favor of
+  changesets.
+
+### Minor Changes
+
+- 1e6c96a: **autocomplete:** `mode: 'select'` now unwraps the selected value in `onChange`
+  (same as `limit: 1`) and supports the `cell` variant. Inputs accept `variant`
+  (`'cell'`) and `hint` props; required fields render a `*` indicator through
+  `cosmoz-input`.
+- 1e6c96a: **form-dialog:** add a `subtitle` prop, render the dialog heading icon, and
+  render `description` as a dedicated scrollable block so long descriptions no
+  longer push the action buttons out of the dialog. The cancel button is now a
+  `cosmoz-button` (secondary variant).
+
+### Patch Changes
+
+- 1e6c96a: Theme components with `@neovici/cosmoz-tokens`, adopt `cosmoz-button` for the
+  items-list remove button, fix button alignment in the items list, widen the
+  `Field.mode` type to support both autocomplete `select` and datepicker modes,
+  and upgrade `i18next` to ^26.
+
 ## 3.5.0
 
 ### Minor Changes
