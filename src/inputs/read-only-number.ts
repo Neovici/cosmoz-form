@@ -27,14 +27,7 @@ export const readOnlyNumber = <
 	error,
 	context,
 }: InputProps<T, K, V>) => {
-	const {
-		id,
-		suffix,
-		warning,
-		label,
-		format = defaultFormat,
-		noLabelFloat,
-	} = field;
+	const { id, suffix, warning, label, variant, format = defaultFormat } = field;
 	return [
 		html`<style>
 			cosmoz-input[disabled] {
@@ -43,10 +36,10 @@ export const readOnlyNumber = <
 		</style>`,
 		html`<cosmoz-input
 			class="input input-common input-number"
+			variant=${ifDefined(variant)}
 			.label=${label}
 			name="${id}"
 			disabled
-			?no-label-float=${ifDefined(noLabelFloat)}
 			.value=${format(value as number)}
 			?invalid=${!!error}
 			.errorMessage=${error}

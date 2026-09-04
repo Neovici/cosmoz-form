@@ -18,8 +18,8 @@ export interface CommonFieldProps<
 	C extends object = object,
 > {
 	title?: string;
-	noLabelFloat?: boolean;
-	alwaysFloatLabel?: boolean;
+	variant?: 'cell';
+	hint?: string;
 	allowedPattern?: string | RegExp;
 	step?: string;
 	maxlength?: number;
@@ -52,11 +52,10 @@ export const common = <
 	const { value, values, onFocus, onInput, onPaste, context, ...field } = props;
 	const {
 		id,
+		variant,
 		type = 'text',
 		label,
 		placeholder,
-		noLabelFloat,
-		alwaysFloatLabel,
 		error,
 		prefix,
 		suffix,
@@ -64,6 +63,7 @@ export const common = <
 		allowedPattern,
 		step,
 		disabled,
+		required,
 		maxlength,
 		min,
 		max,
@@ -72,15 +72,17 @@ export const common = <
 		autocomplete,
 		title,
 		description,
+		hint,
 	} = field;
 	return html`<cosmoz-input
 		class="input input-common input-${type}"
+		variant=${ifDefined(variant)}
+		hint=${ifDefined(hint)}
 		name=${id}
 		type=${type}
 		?autosize=${autosize}
 		?disabled=${disabled}
-		?no-label-float=${noLabelFloat}
-		?always-float-label=${alwaysFloatLabel}
+		?required=${required}
 		?invalid=${!!error}
 		?no-spinner=${!!noSpinner}
 		.placeholder=${placeholder}
@@ -186,7 +188,6 @@ export const textarea = input(
 		id,
 		label,
 		placeholder,
-		noLabelFloat,
 		error,
 		suffix,
 		warning,
@@ -202,7 +203,6 @@ export const textarea = input(
 			class="input input-textarea"
 			name=${id}
 			?disabled=${disabled}
-			?no-label-float=${noLabelFloat}
 			?invalid=${!!error}
 			.placeholder=${placeholder}
 			.errorMessage=${error}

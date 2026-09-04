@@ -22,12 +22,12 @@ type DepsMap<T, C extends object = object> = Map<
 
 const ensureRuleTracking = <T, C extends object = object>(
 	rule: AsyncItemRule<T, C>,
-	runnersRef: { current: RunnerMap<T, C> },
-	prevDepsRef: { current: DepsMap<T, C> },
+	runners: { current: RunnerMap<T, C> },
+	prevDeps: { current: DepsMap<T, C> },
 ) => {
-	if (runnersRef.current.has(rule)) return;
-	runnersRef.current.set(rule, new Map());
-	prevDepsRef.current.set(rule, new Map());
+	if (runners.current.has(rule)) return;
+	runners.current.set(rule, new Map());
+	prevDeps.current.set(rule, new Map());
 };
 
 /**
@@ -57,10 +57,16 @@ export const useAsyncRules = <T extends object, C extends object = object>(
 	const runnersRef = useRef<RunnerMap<T, C>>(new Map());
 	const prevDepsRef = useRef<DepsMap<T, C>>(new Map());
 
+	// Refs are initialized synchronously, so `.current` is defined for the
+	// lifetime of the hook; pion's Ref typing models lazy initialization.
+	const runners = runnersRef as { current: RunnerMap<T, C> };
+	const prevDeps = prevDepsRef as { current: DepsMap<T, C> };
+	const pending = pendingCount as { current: number };
+
 	// Cleanup on unmount
 	useEffect(
 		() => () => {
-			for (const perItem of runnersRef.current.values()) {
+			for (const perItem of runners.current.values()) {
 				for (const runner of perItem.values()) {
 					runner.cancel();
 				}
@@ -78,27 +84,27 @@ export const useAsyncRules = <T extends object, C extends object = object>(
 		for (const rule of asyncRules) {
 			const [ruleFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
 
-			ensureRuleTracking(rule, runnersRef, prevDepsRef);
+			ensureRuleTracking(rule, runners, prevDeps);
 
 			for (const [idx, item] of items.entries()) {
-				const runnersForRule = runnersRef.current.get(rule)!;
+				const runnersForRule = runners.current.get(rule)!;
 				if (!runnersForRule.has(idx)) {
 					runnersForRule.set(idx, runnerFactory());
 				}
 
 				const deps = depsFn(item, idx, context);
-				const prev = prevDepsRef.current.get(rule)!.get(idx);
+				const prev = prevDeps.current.get(rule)!.get(idx);
 
 				if (prev != null && !changed(deps, prev)) {
 					continue;
 				}
 
-				prevDepsRef.current.get(rule)!.set(idx, deps);
+				prevDeps.current.get(rule)!.set(idx, deps);
 
 				const runner = runnersForRule.get(idx)!;
 
-				pendingCount.current++;
-				if (pendingCount.current === 1) setProcessing(true);
+				pending.current++;
+				if (pending.current === 1) setProcessing(true);
 
 				runner
 					.run(
@@ -114,8 +120,8 @@ export const useAsyncRules = <T extends object, C extends object = object>(
 					})
 					.catch((err) => onError(err, rule, idx))
 					.finally(() => {
-						pendingCount.current--;
-						if (pendingCount.current === 0) setProcessing(false);
+						pending.current--;
+						if (pending.current === 0) setProcessing(false);
 					});
 			}
 		}

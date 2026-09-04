@@ -1,3 +1,5 @@
+import type { DatepickerMode } from '@neovici/cosmoz-datepicker';
+
 import {
 	AutocompleteProps,
 	CommonFieldProps,
@@ -121,17 +123,17 @@ export interface Field<
 	extends
 		CommonFieldProps<T, K, V, C>,
 		TextareaProps,
-		AutocompleteProps<T, K, V, C>,
+		Omit<AutocompleteProps<T, K, V, C>, 'mode'>,
 		FileProps<T, K, V>,
-		DatepickerProps,
+		Omit<DatepickerProps, 'mode'>,
 		ReadOnlyNumberProps {
+	mode?: 'select' | DatepickerMode;
 	id: K;
 	path?: keyof T;
 	label?: Invokable<T, Field<T, K, V, C>, V, string, C>;
 	description?: string;
 	placeholder?: Invokable<T, Field<T, K, V, C>, V, string, C>;
 	validate?: Validate<T, K, V, C>;
-	mandatory?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
 	disabled?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
 	hidden?: Invokable<T, Field<T, K, V, C>, V, boolean, C>;
 	warning?: Invokable<T, Field<T, K, V, C>, V, Renderable, C>;

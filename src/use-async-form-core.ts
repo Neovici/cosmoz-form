@@ -40,10 +40,20 @@ export const useAsyncFormCore = <T extends object, C extends object = object>(
 	const pendingCount = useRef(0);
 	const [processing, setProcessing] = useState(false);
 
+	// Refs are initialized synchronously, so `.current` is defined for the
+	// lifetime of the hook; pion's Ref typing models lazy initialization.
+	const runners = runnersRef as {
+		current: Map<AsyncItemRule<T, C>, AsyncRunner<T, C>>;
+	};
+	const prevDeps = prevDepsRef as {
+		current: Map<AsyncItemRule<T, C>, unknown[]>;
+	};
+	const pending = pendingCount as { current: number };
+
 	// Cleanup: cancel all in-flight rules on unmount
 	useEffect(
 		() => () => {
-			for (const runner of runnersRef.current.values()) runner.cancel();
+			for (const runner of runners.current.values()) runner.cancel();
 		},
 		[],
 	);
@@ -57,24 +67,24 @@ export const useAsyncFormCore = <T extends object, C extends object = object>(
 		for (const rule of asyncRules) {
 			const [ruleFn, depsFn, runnerFactory = makeTakeLatestRunner] = rule;
 
-			if (!runnersRef.current.has(rule)) {
-				runnersRef.current.set(rule, runnerFactory());
+			if (!runners.current.has(rule)) {
+				runners.current.set(rule, runnerFactory());
 			}
 
 			const deps = depsFn(form.values, undefined, context);
-			const prev = prevDepsRef.current.get(rule);
+			const prev = prevDeps.current.get(rule);
 
 			// Skip if deps unchanged (Object.is per element, same as applyRules)
 			if (prev != null && !changed(deps, prev)) {
 				continue;
 			}
 
-			prevDepsRef.current.set(rule, deps);
+			prevDeps.current.set(rule, deps);
 
-			const runner = runnersRef.current.get(rule)!;
+			const runner = runners.current.get(rule)!;
 
-			pendingCount.current++;
-			if (pendingCount.current === 1) setProcessing(true);
+			pending.current++;
+			if (pending.current === 1) setProcessing(true);
 
 			runner
 				.run(
@@ -90,8 +100,8 @@ export const useAsyncFormCore = <T extends object, C extends object = object>(
 				})
 				.catch((err) => onError(err, rule))
 				.finally(() => {
-					pendingCount.current--;
-					if (pendingCount.current === 0) setProcessing(false);
+					pending.current--;
+					if (pending.current === 0) setProcessing(false);
 				});
 		}
 	}, [form.values, form.context]);

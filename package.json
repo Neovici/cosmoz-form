@@ -1,6 +1,6 @@
 {
   "name": "@neovici/cosmoz-form",
-  "version": "3.5.0",
+  "version": "3.4.0-beta.9",
   "description": "A pionjs component",
   "keywords": [
     "web-components",
@@ -50,16 +50,19 @@
   },
   "dependencies": {
     "@lit-labs/virtualizer": "^2.1.1",
-    "@neovici/cosmoz-autocomplete": "^10.10.4 || ^11.0.0 || ^12.0.0 || ^13.0.0",
+    "@neovici/cosmoz-autocomplete": "^14.0.0",
+    "@neovici/cosmoz-button": "^1.1.0",
     "@neovici/cosmoz-datepicker": "^1.0.3",
-    "@neovici/cosmoz-dialog": "^4.0.0 || ^5.0.0",
+    "@neovici/cosmoz-dialog": "^6.0.0",
+    "@neovici/cosmoz-dropdown": "^8.0.0",
     "@neovici/cosmoz-icons": "^1.4.0",
-    "@neovici/cosmoz-input": "^5.5.0",
+    "@neovici/cosmoz-input": "^6.0.0",
     "@neovici/cosmoz-spinner": "^1.0.2",
+    "@neovici/cosmoz-tokens": "^3.4.0",
     "@neovici/cosmoz-utils": "^6.22.0",
-    "@pionjs/pion": "^2.5.2",
+    "@pionjs/pion": "^2.13.0",
     "date-fns": "^4.1.0",
-    "i18next": ">=23.0.0 <27.0.0",
+    "i18next": "^26.4.2",
     "lit-html": "^3.3.1"
   },
   "devDependencies": {
@@ -70,7 +73,7 @@
     "@neovici/testing": "^2.0.0",
     "@open-wc/testing": "^4.0.0",
     "@open-wc/testing-helpers": "^3.0.1",
-    "@playwright/test": "1.60.0",
+    "@playwright/test": "^1.60.0",
     "@storybook/addon-docs": "^10.2.17",
     "@storybook/addon-links": "^10.2.17",
     "@storybook/web-components": "^10.2.17",
@@ -86,6 +89,6 @@
     "storybook": "^10.0.0"
   },
   "overrides": {
-    "conventional-changelog-conventionalcommits": ">= 8.0.0"
+    "@neovici/cosmoz-dropdown": "^8.0.0"
   }
 }

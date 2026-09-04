@@ -24,6 +24,8 @@ export interface AutocompleteProps<
 	C extends object,
 > {
 	options?: Resolvable<unknown[] | false | undefined, [OptionsOpts<T, V, C>]>;
+	mode?: 'select';
+	variant?: 'cell';
 	limit?: number;
 	textProperty?: string;
 	valueProperty?: string;
@@ -34,6 +36,7 @@ export interface AutocompleteProps<
 	preserveOrder?: boolean;
 	itemRenderer?: unknown;
 	chipRenderer?: unknown;
+	required?: boolean;
 	textual?: unknown;
 	externalSearch?: boolean;
 	itemHeight?: number | 'auto';
@@ -47,15 +50,15 @@ interface Info {
 export const autocomplete = input(
 	<T extends object, K extends keyof T, V extends T[K], C extends object>({
 		id,
+		variant,
 		label,
-		noLabelFloat,
-		alwaysFloatLabel,
 		error,
+		required,
 		warning,
 		suffix,
+		mode,
 		disabled,
 		onChange,
-		onPaste,
 		options,
 		limit,
 		min,
@@ -81,13 +84,14 @@ export const autocomplete = input(
 	}: InputBaseOpts<T, K, V, C>) => {
 		return html`<cosmoz-autocomplete
 			class="input input-autocomplete"
+			mode=${ifDefined(mode)}
+			variant=${ifDefined(variant)}
 			?data-warning=${!!warning}
 			name=${id}
 			?disabled=${disabled}
 			?wrap=${wrap}
-			?no-label-float=${noLabelFloat}
-			?always-float-label=${alwaysFloatLabel}
 			?invalid=${!!error}
+			?required=${required}
 			?keep-opened=${!!keepOpened}
 			?keep-query=${!!keepQuery}
 			?show-single=${!!showSingle}
@@ -112,8 +116,9 @@ export const autocomplete = input(
 			.title=${ifDefined(title)}
 			.textual=${textual}
 			.onChange=${(options?: V[]) =>
-				onChange((limit === 1 ? options?.[0] : options) as V)}
-			@paste=${onPaste}
+				onChange(
+					(limit === 1 || mode === 'select' ? options?.[0] : options) as V,
+				)}
 			?external-search=${externalSearch}
 			>${renderContents({ suffix, warning, description })}</cosmoz-autocomplete
 		>`;

@@ -1,7 +1,10 @@
+import {
+	alertCircleIcon,
+	helpCircleIcon,
+} from '@neovici/cosmoz-icons/untitled';
+import { Renderable } from '@pionjs/pion';
 import { html } from 'lit-html';
 import { when } from 'lit-html/directives/when.js';
-import { warningIcon, helpOutlineIcon } from '@neovici/cosmoz-icons';
-import { Renderable } from '../types';
 
 export const renderPrefix = <T>(prefix: T) =>
 	when(prefix, () => html`<span slot="prefix">${prefix}</span>`);
@@ -9,26 +12,26 @@ export const renderPrefix = <T>(prefix: T) =>
 export const renderSuffix = <T>(suffix: T) =>
 	when(suffix, () => html`<span slot="suffix">${suffix}</span>`);
 
-export const renderWarning = <T>(msg?: T, slot = 'suffix') =>
+export const renderWarning = (msg: Renderable, slot = 'suffix') =>
 	when(msg, () =>
-		warningIcon({
+		alertCircleIcon({
 			slot,
-			title: msg,
+			title: msg as string,
 			width: '22',
 			height: '22',
-			styles: 'color: var(--paper-amber-500); vertical-align: middle',
+			styles: 'color: var(--cz-color-text-warning); vertical-align: middle',
 		}),
 	);
 
-export const renderDescription = <T>(description?: T, slot = 'suffix') =>
+export const renderDescription = (description: Renderable, slot = 'suffix') =>
 	when(description, () =>
-		helpOutlineIcon({
+		helpCircleIcon({
 			slot,
-			title: description,
+			title: description as string,
 			width: '22',
 			height: '22',
 			styles:
-				'color: var(--cz-text-color); vertical-align: middle; cursor: help',
+				'color: var(--cz-color-text-primary); vertical-align: middle; cursor: help',
 		}),
 	);
 

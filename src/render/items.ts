@@ -17,9 +17,14 @@ const mkDefaults = <T extends object>(defaults: T) => {
 };
 
 export const renderRemove = (remove: () => void) =>
-	html`<button class="remove" ?disabled=${!remove} @click=${remove}>
-		${xCloseIcon({ width: '20', height: '20' })}
-	</button>`;
+	html`<cosmoz-button
+		variant="destructive"
+		size="sm"
+		?disabled=${!remove}
+		@click=${remove}
+	>
+		${xCloseIcon()}
+	</cosmoz-button>`;
 
 // An empty cell the size of the remove button, used to keep the columns
 // aligned in rows that have no remove button (the header and the add row).

@@ -1,6 +1,6 @@
+import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
-import '@neovici/cosmoz-spinner';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
@@ -14,9 +14,9 @@ import buttonStyles from '../styles/button';
 import { Renderable, Resolvable } from '../types';
 import { Props as AddProps, useValidatedForm$ } from '../use-validated-form$';
 import styles from './style.css';
-
 interface Props<T extends object> extends DialogProps, AddProps<T> {
 	heading: string;
+	subtitle?: string;
 	description?: Renderable;
 	auto?: boolean;
 	uncancelable?: boolean;
@@ -45,7 +45,10 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 	return html` <style>
 			${buttonStyles} ${renderStyles(form)}${styles}
 		</style>
-		${when(description, () => html`<p class="description">${description}</p>`)}
+		${when(
+			description,
+			() => html`<div class="description">${description}</div>`,
+		)}
 		<div class="form" part="form">${renderFields(form)}</div>
 		<div class="buttons">
 			${renderFailure$(save$)}
@@ -53,9 +56,14 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			${when(
 				!hideCancelButton,
 				() =>
-					html`<button class="button" value="cancel" ?disabled=${uncancelable}>
+					html`<cosmoz-button
+						class="button"
+						variant="secondary"
+						value="cancel"
+						?disabled=${uncancelable}
+					>
 						${t('Cancel')}
-					</button>`,
+					</cosmoz-button>`,
 			)}
 		</div>`;
 };
@@ -81,6 +89,8 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
 		.heading=${props.heading}
+		.subtitle=${props.subtitle}
+		.icon=${props.icon}
 		.description=${props.description}
 		.fields=${props.fields}
 		.initial=${props.initial}
