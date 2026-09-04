@@ -1,4 +1,4 @@
-import{d as x,h as c,b as E,u as T,j as $,t as u,k as _,m,p as S,c as R,q as p,n as F,f as v,s as I,v as M,g as L}from"./inline-file-CLxHG3M7.js";import{b as l}from"./iframe-OWiZFb-P.js";import"./preload-helper-PPVm8Dsz.js";const W=(e,o)=>Array.isArray(e)?e:[[e,o]],B=({items:e,setItems:o,initial:i,rules:a,context:t,touched:b})=>{const w=T(void 0);return $(()=>{const r=w.current;w.current=t,r!==void 0&&o(d=>d.map((s,n)=>u(c({oldItem:s,newItem:s,rules:a,index:n,context:t,oldContext:r}),_(s))))},[t]),{items:e,setItems:o,touched:x(()=>_(e)||(b??!1),[e,b]),update:m((r,d)=>o((s=[])=>u(W(r??s.length,d).reduce((n,[y,A])=>[...n.slice(0,y),u(c({oldItem:n[y],newItem:{...n[y],...A},rules:a,index:y,context:t})),...n.slice(y+1)],s))),[a,t]),updateAll:m(r=>o((d=[])=>d.map((s,n)=>{const y=S(r,s);return u(c({oldItem:s,newItem:{...s,...y},rules:a,index:n,context:t}))})),[a,t]),remove:m(r=>o((d=[])=>u([...d.slice(0,r),...d.slice(r+1).map((s,n)=>c({rules:a,newItem:s,oldItem:s,index:n+r,oldIndex:n+r+1,context:t}))])),[a,t]),append:m(r=>o((d=[])=>u(d.concat(r.map((s,n)=>c({rules:a,newItem:s,index:n+d.length,context:t}))))),[a,t]),prepend:m(r=>o((d=[])=>u([...r.map((s,n)=>c({rules:a,newItem:s,index:n,context:t})),...d.map((s,n)=>c({rules:a,newItem:s,oldItem:s,index:n+r.length,oldIndex:n,context:t}))])),[a,t]),reset:m(()=>o(i),[i]),clear:m(()=>o(u([])),[]),load:m((r,d)=>o(r.map((s,n)=>c({newItem:s,index:n,rules:d??a,context:t}))),[a,t])}},Y=({initial:e,rules:o,context:i,touched:a})=>{const t=x(()=>e.map((r,d)=>c({rules:o,newItem:r,index:d,context:i})),[e]),[b,w]=E(t);return B({items:b,setItems:w,initial:t,rules:o,context:i,touched:a})},V=l`
+import{b as r,e as m,d as v,j as h,n as f}from"./iframe-BvAPNyaq.js";import{u as i,n as p,b as n,t as y}from"./inline-file-C34oGQnd.js";import{u as b}from"./use-items-nDLlW876.js";import"./preload-helper-PPVm8Dsz.js";const x=r`
     <style>
         .story-wrap {
             font-family: sans-serif;
@@ -36,17 +36,17 @@ import{d as x,h as c,b as E,u as T,j as $,t as u,k as _,m,p as S,c as R,q as p,n
             background: #c27803;
         }
     </style>
-`,D=[{id:"cost",label:"Cost (€)",input:F,min:0,suffix:(e,o,i,a)=>{const t=a?.budget??1/0;return L(e>t,()=>l`<span class="story-badge story-badge-warn">Over budget!</span>`)}}],P=[{id:"budget",label:"Budget (€)",input:F,min:0}],k=()=>{const e=p({fields:P,initial:{budget:100}}),o=x(()=>({budget:e.values.budget}),[e.values.budget]),i=p({fields:D,initial:{cost:50},context:o}),a=p({fields:D,initial:{cost:120},context:o}),t=p({fields:D,initial:{cost:80},context:o});return l`
-        ${V}
+`,u=[{id:"cost",label:"Cost (€)",input:p,min:0,suffix:(e,o,s,t)=>{const a=t?.budget??1/0;return f(e>a,()=>r`<cosmoz-badge color="warning">Over budget!</cosmoz-badge>`)}}],w=[{id:"budget",label:"Budget (€)",input:p,min:0}],D=()=>{const e=i({fields:w,initial:{budget:100}}),o=v(()=>({budget:e.values.budget}),[e.values.budget]),s=i({fields:u,initial:{cost:50},context:o}),t=i({fields:u,initial:{cost:120},context:o}),a=i({fields:u,initial:{cost:80},context:o});return r`
+        ${x}
         <div class="story-wrap">
             <div class="story-section">
                 <h3>Parent form — set the budget</h3>
-                ${v(e)}
+                ${n(e)}
             </div>
 
             <div class="story-section">
                 <h3>Rows — cost suffix reflects parent budget via context</h3>
-                ${v(i)} ${v(a)} ${v(t)}
+                ${n(s)} ${n(t)} ${n(a)}
             </div>
 
             <p class="story-hint">
@@ -54,7 +54,7 @@ import{d as x,h as c,b as E,u as T,j as $,t as u,k as _,m,p as S,c as R,q as p,n
                 flows from parent to each nested form without prop drilling.
             </p>
         </div>
-    `};customElements.define("story-context-budget",R(k));const g=()=>l`<story-context-budget></story-context-budget>`;g.storyName="Budget context — parent value in row suffix";g.parameters={docs:{source:{language:"typescript",code:`type BudgetCtx = { budget: number };
+    `};customElements.define("story-context-budget",m(D));const d=()=>r`<story-context-budget></story-context-budget>`;d.storyName="Budget context — parent value in row suffix";d.parameters={docs:{source:{language:"typescript",code:`type BudgetCtx = { budget: number };
 type CostRow = { cost: number };
 
 // suffix reads budget from context — shows a badge when cost exceeds it
@@ -89,17 +89,17 @@ const rowForm = useValidatedForm<CostRow, BudgetCtx>({
   fields: costFields,
   initial: { cost: 120 },
   context: ctx,
-});`}}};const z=[{id:"deliveryDate",label:"Delivery date",input:I,placeholder:"YYYY-MM-DD"}],C=[{id:"rowDate",label:"Row date",input:I,placeholder:"YYYY-MM-DD",validate:(e,o,i,a)=>{const t=a?.deliveryDate;return!e||!t?!1:e<t?`Must be on or after delivery date (${t})`:!1},suffix:(e,o,i,a)=>{const t=a?.deliveryDate;return e&&t&&e>=t?l`<span class="story-badge">✓</span>`:void 0}}],N=()=>{const e=p({fields:z,initial:{deliveryDate:"2024-06-01"}}),o=x(()=>({deliveryDate:e.values.deliveryDate}),[e.values.deliveryDate]),i=p({fields:C,initial:{rowDate:"2024-07-01"},context:o,touched:e.touched}),a=p({fields:C,initial:{rowDate:"2024-05-01"},context:o,touched:e.touched});return l`
-        ${V}
+});`}}};const R=[{id:"deliveryDate",label:"Delivery date",input:y,placeholder:"YYYY-MM-DD"}],g=[{id:"rowDate",label:"Row date",input:y,placeholder:"YYYY-MM-DD",validate:(e,o,s,t)=>{const a=t?.deliveryDate;return!e||!a?!1:e<a?`Must be on or after delivery date (${a})`:!1},suffix:(e,o,s,t)=>{const a=t?.deliveryDate;return e&&a&&e>=a?r`<span class="story-badge">✓</span>`:void 0}}],F=()=>{const e=i({fields:R,initial:{deliveryDate:"2024-06-01"}}),o=v(()=>({deliveryDate:e.values.deliveryDate}),[e.values.deliveryDate]),s=i({fields:g,initial:{rowDate:"2024-07-01"},context:o,touched:e.touched}),t=i({fields:g,initial:{rowDate:"2024-05-01"},context:o,touched:e.touched});return r`
+        ${x}
         <div class="story-wrap">
             <div class="story-section">
                 <h3>Parent form — set the delivery date</h3>
-                ${v(e)}
+                ${n(e)}
             </div>
 
             <div class="story-section">
                 <h3>Rows — row date validated against parent delivery date</h3>
-                ${v(i)} ${v(a)}
+                ${n(s)} ${n(t)}
             </div>
 
             <p class="story-hint">
@@ -108,7 +108,7 @@ const rowForm = useValidatedForm<CostRow, BudgetCtx>({
                 needed.
             </p>
         </div>
-    `};customElements.define("story-context-delivery",R(N));const h=()=>l`<story-context-delivery></story-context-delivery>`;h.storyName="Delivery date context — validate rows against parent date";h.parameters={docs:{source:{language:"typescript",code:`type DeliveryCtx = { deliveryDate: string };
+    `};customElements.define("story-context-delivery",m(F));const l=()=>r`<story-context-delivery></story-context-delivery>`;l.storyName="Delivery date context — validate rows against parent date";l.parameters={docs:{source:{language:"typescript",code:`type DeliveryCtx = { deliveryDate: string };
 type RowItem = { rowDate: string };
 
 // validate reads the minimum date from context
@@ -143,26 +143,26 @@ const rowForm = useValidatedForm<RowItem, DeliveryCtx>({
   fields: rowDateFields,
   initial: { rowDate: '2024-05-01' },
   context: ctx,
-});`}}};const O=[{id:"vatRate",label:"VAT rate (%)",input:F,min:0,max:100}],j=[[({price:e},o,i,a,t)=>({totalWithVat:Math.round(e*(1+(t?.vatRate??0)/100)*100)/100}),({price:e},o,i)=>[e,i?.vatRate]]],U=()=>{const e=p({fields:O,initial:{vatRate:20}}),o=x(()=>({vatRate:e.values.vatRate}),[e.values.vatRate]),{items:i}=Y({initial:[{price:100,totalWithVat:0},{price:250,totalWithVat:0},{price:75,totalWithVat:0}],rules:j,context:o});return l`
-        ${V}
+});`}}};const V=[{id:"vatRate",label:"VAT rate (%)",input:p,min:0,max:100}],_=[[({price:e},o,s,t,a)=>({totalWithVat:Math.round(e*(1+(a?.vatRate??0)/100)*100)/100}),({price:e},o,s)=>[e,s?.vatRate]]],C=()=>{const e=i({fields:V,initial:{vatRate:20}}),o=v(()=>({vatRate:e.values.vatRate}),[e.values.vatRate]),{items:s}=b({initial:[{price:100,totalWithVat:0},{price:250,totalWithVat:0},{price:75,totalWithVat:0}],rules:_,context:o});return r`
+        ${x}
         <div class="story-wrap">
             <div class="story-section">
                 <h3>Parent form — set the VAT rate</h3>
-                ${v(e)}
+                ${n(e)}
             </div>
 
             <div class="story-section">
                 <h3>Line items — totals recomputed when VAT rate changes</h3>
-                ${M(i,(a,t)=>t,a=>l`
+                ${h(s,(t,a)=>a,t=>r`
                         <div
                             style="display:flex;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #eee"
                         >
                             <span style="font-size:0.9rem"
-                                >Price: <strong>${a.price.toFixed(2)} €</strong></span
+                                >Price: <strong>${t.price.toFixed(2)} €</strong></span
                             >
                             <span style="font-size:0.9rem"
                                 >Total with VAT:
-                                <strong>${a.totalWithVat.toFixed(2)} €</strong></span
+                                <strong>${t.totalWithVat.toFixed(2)} €</strong></span
                             >
                         </div>
                     `)}
@@ -174,7 +174,7 @@ const rowForm = useValidatedForm<RowItem, DeliveryCtx>({
                 <code>depsFn</code> so they re-run whenever it changes.
             </p>
         </div>
-    `};customElements.define("story-context-vat",R(U));const f=()=>l`<story-context-vat></story-context-vat>`;f.storyName="VAT context — rules recompute when parent rate changes";f.parameters={docs:{source:{language:"typescript",code:`type VatCtx = { vatRate: number };
+    `};customElements.define("story-context-vat",m(C));const c=()=>r`<story-context-vat></story-context-vat>`;c.storyName="VAT context — rules recompute when parent rate changes";c.parameters={docs:{source:{language:"typescript",code:`type VatCtx = { vatRate: number };
 type LineItem = { price: number; totalWithVat: number };
 
 // Rule computes totalWithVat from price × (1 + vatRate%).
@@ -204,4 +204,4 @@ const { items } = useItems<LineItem, VatCtx>({
   initial: lineItems,
   rules: [vatRule],
   context: ctx,
-});`}}};const J={title:"Context Propagation",tags:["autodocs"],parameters:{docs:{canvas:{sourceState:"shown"}}}};g.parameters={...g.parameters,docs:{...g.parameters?.docs,source:{originalSource:"() => html`<story-context-budget></story-context-budget>`",...g.parameters?.docs?.source}}};h.parameters={...h.parameters,docs:{...h.parameters?.docs,source:{originalSource:"() => html`<story-context-delivery></story-context-delivery>`",...h.parameters?.docs?.source}}};f.parameters={...f.parameters,docs:{...f.parameters?.docs,source:{originalSource:"() => html`<story-context-vat></story-context-vat>`",...f.parameters?.docs?.source}}};const K=["BudgetContext","DeliveryValidation","VatRules"];export{g as BudgetContext,h as DeliveryValidation,f as VatRules,K as __namedExportsOrder,J as default};
+});`}}};const A={title:"Context Propagation",tags:["autodocs"],parameters:{docs:{canvas:{sourceState:"shown"}}}};d.parameters={...d.parameters,docs:{...d.parameters?.docs,source:{originalSource:"() => html`<story-context-budget></story-context-budget>`",...d.parameters?.docs?.source}}};l.parameters={...l.parameters,docs:{...l.parameters?.docs,source:{originalSource:"() => html`<story-context-delivery></story-context-delivery>`",...l.parameters?.docs?.source}}};c.parameters={...c.parameters,docs:{...c.parameters?.docs,source:{originalSource:"() => html`<story-context-vat></story-context-vat>`",...c.parameters?.docs?.source}}};const S=["BudgetContext","DeliveryValidation","VatRules"];export{d as BudgetContext,l as DeliveryValidation,c as VatRules,S as __namedExportsOrder,A as default};
