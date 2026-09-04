@@ -82,27 +82,30 @@ const ORDER_FIELDS = [
 ];
 
 const TakeLatestDemo = () => {
-	const statsRef = useRef({ started: 0, cancelled: 0, resolved: 0 });
+	// Refs are initialized synchronously; pion's Ref typing models lazy init.
+	const stats = useRef({ started: 0, cancelled: 0, resolved: 0 }) as {
+		current: { started: number; cancelled: number; resolved: number };
+	};
 	const [, setTick] = useState(0);
 
 	const emailRule: AsyncItemRule<OrderForm> = useMemo(
 		() => [
 			async (current, { update, signal }) => {
 				if (!current.supplier) return { contactEmail: '' };
-				statsRef.current.started++;
+				stats.current.started++;
 				setTick((t) => t + 1);
 				update({ contactEmail: 'loading…' });
 				// Count cancellations the moment the signal fires
 				signal.addEventListener(
 					'abort',
 					() => {
-						statsRef.current.cancelled++;
+						stats.current.cancelled++;
 						setTick((t) => t + 1);
 					},
 					{ once: true },
 				);
 				const email = await fetchContactEmail(signal, current.supplier);
-				statsRef.current.resolved++;
+				stats.current.resolved++;
 				setTick((t) => t + 1);
 				return { contactEmail: email };
 			},
@@ -118,7 +121,7 @@ const TakeLatestDemo = () => {
 		asyncRules: [emailRule],
 	});
 
-	const { started, cancelled, resolved } = statsRef.current;
+	const { started, cancelled, resolved } = stats.current;
 
 	return html`
 		${SHARED_STYLES}
@@ -255,18 +258,20 @@ const QUOTE_FIELDS = [
 ];
 
 const DebounceDemo = () => {
-	const statsRef = useRef({ started: 0, resolved: 0 });
+	const stats = useRef({ started: 0, resolved: 0 }) as {
+		current: { started: number; resolved: number };
+	};
 	const [, setTick] = useState(0);
 
 	const pricingRule: AsyncItemRule<QuoteForm> = useMemo(
 		() => [
 			async (current, { update, signal }) => {
 				if (!current.quantity) return { unitPrice: 0, _pricingLoading: false };
-				statsRef.current.started++;
+				stats.current.started++;
 				setTick((t) => t + 1);
 				update({ _pricingLoading: true });
 				const price = await fetchUnitPrice(signal, current.quantity);
-				statsRef.current.resolved++;
+				stats.current.resolved++;
 				setTick((t) => t + 1);
 				return { unitPrice: price, _pricingLoading: false };
 			},
@@ -282,7 +287,7 @@ const DebounceDemo = () => {
 		asyncRules: [pricingRule],
 	});
 
-	const { started, resolved } = statsRef.current;
+	const { started, resolved } = stats.current;
 	const inFlight = started - resolved;
 
 	return html`

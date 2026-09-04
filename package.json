@@ -35,26 +35,8 @@
     "storybook:build": "storybook build",
     "storybook:deploy": "storybook-to-ghpages",
     "storybook:preview": "npm run storybook:build && http-server -d ./storybook-static/",
-    "prepare": "husky"
-  },
-  "release": {
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/changelog",
-      "@semantic-release/github",
-      "@semantic-release/npm",
-      "@semantic-release/git"
-    ],
-    "branches": [
-      "master",
-      "main",
-      {
-        "name": "beta",
-        "prerelease": true
-      }
-    ],
-    "preset": "conventionalcommits"
+    "prepare": "husky",
+    "changeset": "changeset"
   },
   "publishConfig": {
     "access": "public"
@@ -68,47 +50,45 @@
   },
   "dependencies": {
     "@lit-labs/virtualizer": "^2.1.1",
-    "@neovici/cosmoz-autocomplete": "^13.7.0-beta.4",
+    "@neovici/cosmoz-autocomplete": "^14.0.0",
     "@neovici/cosmoz-button": "^1.1.0",
     "@neovici/cosmoz-datepicker": "^1.0.3",
-    "@neovici/cosmoz-dialog": "^5.1.0-beta.3",
+    "@neovici/cosmoz-dialog": "^6.0.0",
+    "@neovici/cosmoz-dropdown": "^8.0.0",
     "@neovici/cosmoz-icons": "^1.4.0",
-    "@neovici/cosmoz-input": "^6.0.0-beta.5",
+    "@neovici/cosmoz-input": "^6.0.0",
     "@neovici/cosmoz-spinner": "^1.0.2",
     "@neovici/cosmoz-tokens": "^3.4.0",
     "@neovici/cosmoz-utils": "^6.22.0",
-    "@pionjs/pion": "2.10.0",
-    "@playwright/test": "^1.60.0",
-    "@web/test-runner-playwright": "^0.11.1",
+    "@pionjs/pion": "^2.13.0",
     "date-fns": "^4.1.0",
     "i18next": "^26.4.2",
     "lit-html": "^3.3.1"
   },
   "devDependencies": {
+    "@changesets/cli": "^3.0.1",
     "@commitlint/cli": "^20.0.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@neovici/cfg": "^2.13.0",
     "@neovici/testing": "^2.0.0",
     "@open-wc/testing": "^4.0.0",
     "@open-wc/testing-helpers": "^3.0.1",
-    "@semantic-release/changelog": "^6.0.0",
-    "@semantic-release/git": "^10.0.0",
+    "@playwright/test": "^1.60.0",
     "@storybook/addon-docs": "^10.2.17",
     "@storybook/addon-links": "^10.2.17",
     "@storybook/web-components": "^10.2.17",
     "@storybook/web-components-vite": "^10.2.17",
     "@types/mocha": "^10.0.0",
     "@types/node": "^24.0.0",
+    "@web/test-runner-playwright": "^0.11.1",
     "esbuild": "^0.27.0",
     "http-server": "^14.1.1",
     "husky": "^9.0.11",
     "lint-staged": "^15.4.3",
-    "semantic-release": "^25.0.0",
     "sinon": "^19.0.0",
     "storybook": "^10.0.0"
   },
   "overrides": {
-    "@pionjs/pion": "2.10.0",
-    "conventional-changelog-conventionalcommits": ">= 8.0.0"
+    "@neovici/cosmoz-dropdown": "^8.0.0"
   }
 }
