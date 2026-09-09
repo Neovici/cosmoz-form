@@ -391,6 +391,63 @@ export const FormDialog = () =>
 	html`<story-add-form-dialog></story-add-form-dialog>`;
 FormDialog.storyName = 'Form Dialog';
 
+// ── Story: Form Dialog with a long save failure (renderFailure$) ─────────────
+
+const ROW_ERRORS = [
+	'Row 1078: Store profile \'Sheeeesh\' is not valid. Expected one of: Nära, Supermarket, Kvantum, Maxi.',
+	'Row 1078: Default order package size \'huge\' is not valid. Expected one of: Small, Medium, Large, MaxiSpecial.',
+	'Row 1079: Store profile \'Sheeeesh\' is not valid. Expected one of: Nära, Supermarket, Kvantum, Maxi.',
+	'Row 1080: Store profile \'Sheeeesh\' is not valid. Expected one of: Nära, Supermarket, Kvantum, Maxi.',
+];
+
+const FormDialogFailureDemo = () => {
+	const [dialog, setDialog] = useState<Dialog<{ file: File[] }> | undefined>(
+		undefined,
+	);
+
+	const openDialog = () => {
+		setDialog({
+			heading: 'Load new recipient list',
+			fields: [
+				{
+					id: 'file',
+					label: 'File',
+					accept: '.xlsx',
+					input: file,
+				},
+			],
+			initial: { file: [] as File[] },
+			saveText: 'OK',
+			onSave: async () => {
+				// simulate a backend rejecting the upload with a long, multi-row error
+				throw new Error(ROW_ERRORS.join(' '));
+			},
+			onClose: () => setDialog(undefined),
+		});
+	};
+
+	return html`
+		<div class="story-stack">
+			<h3 class="story-section-title">Form Dialog — long save failure</h3>
+			<p class="story-label">
+				The save always rejects with a long multi-row error. The failure renders
+				as a capped, scrollable block above the buttons; buttons stay put.
+			</p>
+			<button @click=${openDialog}>Open dialog</button>
+			${dialog ? formDialog(dialog) : nothing}
+		</div>
+	`;
+};
+
+customElements.define(
+	'story-add-form-dialog-failure',
+	component(FormDialogFailureDemo),
+);
+
+export const FormDialogFailure = () =>
+	html`<story-add-form-dialog-failure></story-add-form-dialog-failure>`;
+FormDialogFailure.storyName = 'Form Dialog — Save Failure';
+
 // ── Story: Items list (renderItems) ──────────────────────────────────────────
 
 type LineItem = {

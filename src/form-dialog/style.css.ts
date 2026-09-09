@@ -17,8 +17,11 @@ const styles = css`
 
 	.failure {
 		color: var(--cz-color-text-error);
-		align-self: center;
-		flex: 1;
+		margin: calc(var(--cz-spacing) * 2) calc(var(--cz-spacing) * 6);
+		white-space: pre-wrap;
+		word-break: break-word;
+		max-height: 40vh;
+		overflow-y: auto;
 	}
 `;
 
