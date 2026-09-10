@@ -20,6 +20,7 @@ import {
 	toggle,
 	useValidatedForm,
 	useValidatedItems,
+	type Failure,
 	type Fields,
 	type ItemRule,
 } from '../src/index.js';
@@ -394,10 +395,9 @@ FormDialog.storyName = 'Form Dialog';
 // ── Story: Form Dialog with a long save failure (renderFailure$) ─────────────
 
 const ROW_ERRORS = [
-	'Row 1078: Store profile \'Sheeeesh\' is not valid. Expected one of: Nära, Supermarket, Kvantum, Maxi.',
-	'Row 1078: Default order package size \'huge\' is not valid. Expected one of: Small, Medium, Large, MaxiSpecial.',
-	'Row 1079: Store profile \'Sheeeesh\' is not valid. Expected one of: Nära, Supermarket, Kvantum, Maxi.',
-	'Row 1080: Store profile \'Sheeeesh\' is not valid. Expected one of: Nära, Supermarket, Kvantum, Maxi.',
+	'Row 1078: Category \'Sheeeesh\' is not valid.\nExpected one of: Electronics, Clothing, Food, Books, Toys.\nPackage size \'huge\' is not valid. Expected one of: S, M, L, XL.',
+	'Row 1079: Category \'Sheeeesh\' is not valid. Expected one of: Electronics, Clothing, Food, Books, Toys.',
+	'Row 1080: Category \'Sheeeesh\' is not valid. Expected one of: Electronics, Clothing, Food, Books, Toys.',
 ];
 
 const FormDialogFailureDemo = () => {
@@ -405,9 +405,9 @@ const FormDialogFailureDemo = () => {
 		undefined,
 	);
 
-	const openDialog = () => {
+	const openDialog = (rich: boolean) => {
 		setDialog({
-			heading: 'Load new recipient list',
+			heading: 'Import products',
 			fields: [
 				{
 					id: 'file',
@@ -420,7 +420,16 @@ const FormDialogFailureDemo = () => {
 			saveText: 'OK',
 			onSave: async () => {
 				// simulate a backend rejecting the upload with a long, multi-row error
-				throw new Error(ROW_ERRORS.join(' '));
+				const message = ROW_ERRORS.join(' ');
+				if (!rich) throw new Error(message);
+
+				// rich failure: short `message` (toasts/logging) + structured `content`
+				const err = new Error('The file contains 3 errors') as Failure;
+				err.content = html`
+					<div><b>${err.message}</b></div>
+					${ROW_ERRORS.map((row) => html`<div>${row}</div>`)}
+				`;
+				throw err;
 			},
 			onClose: () => setDialog(undefined),
 		});
@@ -431,9 +440,11 @@ const FormDialogFailureDemo = () => {
 			<h3 class="story-section-title">Form Dialog — long save failure</h3>
 			<p class="story-label">
 				The save always rejects with a long multi-row error. The failure renders
-				as a capped, scrollable block above the buttons; buttons stay put.
+				as a capped, scrollable block above the buttons; buttons stay put. The
+				rich variant shows a structured failure (short message + content).
 			</p>
-			<button @click=${openDialog}>Open dialog</button>
+			<button @click=${() => openDialog(false)}>Plain failure</button>
+			<button @click=${() => openDialog(true)}>Rich failure</button>
 			${dialog ? formDialog(dialog) : nothing}
 		</div>
 	`;

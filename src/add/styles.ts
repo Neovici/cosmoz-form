@@ -12,7 +12,11 @@ export const renderAddStyles = () => css`
 		font-size: var(--cz-text-xs);
 		line-height: var(--cz-text-xs-line-height);
 		margin: calc(var(--cz-spacing) * 2) 0;
+		padding: calc(var(--cz-spacing) * 3);
 		color: var(--cz-color-text-error);
+		background: var(--cz-color-bg-error);
+		border: 1px solid var(--cz-color-border-error-subtle);
+		border-radius: var(--cz-radius-lg);
 		white-space: pre-wrap;
 		word-break: break-word;
 		max-height: 40vh;

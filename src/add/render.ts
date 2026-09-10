@@ -11,20 +11,35 @@ export const nothing$ = () => nothing;
 export const then$ = <P, R>(p$?: PromiseLike<P>, fn?: () => R) =>
 	Promise.resolve(p$).then(fn, fn);
 
+/**
+ * A save failure. `message` is the plain-text summary (toasts, logging);
+ * `content`, when present, is rendered in the failure block instead —
+ * allowing rich markup (e.g. a structured list of row errors).
+ */
+export interface Failure {
+	message: string;
+	content?: unknown;
+}
+
+const failureHtml = (e: Failure) => e.content ?? e.message;
+
 interface RenderAddFields<T extends object> extends UseValidatedForm<T> {
-	error?: Error | { message: string };
+	error?: Error | ({ message: string } & Partial<Failure>);
 }
 export const renderAddFields = <T extends object>({
 	error,
 	...thru
 }: RenderAddFields<T>) => [
 	renderFields(thru),
-	when(error, (err) => html`<div class="failure">${err.message}</div>`),
+	when(error, (err) => html`<div class="failure">${failureHtml(err)}</div>`),
 ];
 
 export const renderFailure$ = <T>(save$?: PromiseLike<T>) =>
 	until(
-		save$?.then(nothing$, (e) => html`<div class="failure">${e.message}</div>`),
+		save$?.then(
+			nothing$,
+			(e: Failure) => html`<div class="failure">${failureHtml(e)}</div>`,
+		),
 		nothing,
 	);
 
