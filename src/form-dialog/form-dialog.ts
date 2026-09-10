@@ -50,8 +50,8 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			() => html`<div class="description">${description}</div>`,
 		)}
 		<div class="form" part="form">${renderFields(form)}</div>
+		${renderFailure$(save$)}
 		<div class="buttons">
-			${renderFailure$(save$)}
 			${renderButton$({ save$, onSave, disabled, title: saveText, progress })}
 			${when(
 				!hideCancelButton,
