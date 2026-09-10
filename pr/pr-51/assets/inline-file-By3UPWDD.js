@@ -1,4 +1,4 @@
-import{o as $,n as T,w as Mt,b as w,q as Z,e as tt,A as vt,r as Nt,k as W,s as dn,p as E,g as gt,y as he,x as Qn,c as S,z as Gn,i as A,j as ct,t as te,m as ve,f as Y,d as N,B as un,C as fn,D as hn,E as mn,F as Re,G as ye,u as Un,h as Kn,l as Jn,H as Zn,a as Bt}from"./iframe-BNiX3hLf.js";const to={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},eo=t=>typeof t=="string"&&to.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=eo(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},no=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>w`
+import{o as $,n as T,w as Mt,b as w,q as Z,e as tt,A as vt,r as Nt,k as W,s as dn,p as E,g as gt,y as he,x as Qn,c as S,z as Gn,i as A,j as ct,t as te,m as ve,f as Y,d as N,B as un,C as fn,D as hn,E as mn,F as Re,G as ye,u as Un,h as Kn,l as Jn,H as Zn,a as Bt}from"./iframe-CCpZ0Tnk.js";const to={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},eo=t=>typeof t=="string"&&to.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=eo(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},no=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>w`
   <svg
     slot=${$(t)}
     class=${`alert-circle-icon ${n??""}`}
@@ -816,8 +816,8 @@ import{o as $,n as T,w as Mt,b as w,q as Z,e as tt,A as vt,r as Nt,k as W,s as d
 		background: var(--cz-color-bg-error);
 		border: 1px solid var(--cz-color-border-error-subtle);
 		border-radius: var(--cz-radius-lg);
-		/* 12px gutters + 12px padding: card text aligns with the 24px content line */
-		margin: calc(var(--cz-spacing) * 2) calc(var(--cz-spacing) * 3);
+		/* spans the dialog body's content box; text inset by its own padding */
+		margin: calc(var(--cz-spacing) * 2) 0;
 		padding: calc(var(--cz-spacing) * 3);
 		white-space: pre-wrap;
 		word-break: break-word;
