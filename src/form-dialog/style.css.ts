@@ -20,7 +20,8 @@ const styles = css`
 		background: var(--cz-color-bg-error);
 		border: 1px solid var(--cz-color-border-error-subtle);
 		border-radius: var(--cz-radius-lg);
-		margin: calc(var(--cz-spacing) * 2) calc(var(--cz-spacing) * 6);
+		/* 12px gutters + 12px padding: card text aligns with the 24px content line */
+		margin: calc(var(--cz-spacing) * 2) calc(var(--cz-spacing) * 3);
 		padding: calc(var(--cz-spacing) * 3);
 		white-space: pre-wrap;
 		word-break: break-word;

@@ -14,7 +14,9 @@ export const then$ = <P, R>(p$?: PromiseLike<P>, fn?: () => R) =>
 /**
  * A save failure. `message` is the plain-text summary (toasts, logging);
  * `content`, when present, is rendered in the failure block instead —
- * allowing rich markup (e.g. a structured list of row errors).
+ * allowing rich markup (e.g. a structured list of row errors). The failure
+ * block renders with `white-space: pre-wrap`, so keep templates free of
+ * indentation whitespace.
  */
 export interface Failure {
 	message: string;

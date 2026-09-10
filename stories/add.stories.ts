@@ -423,12 +423,12 @@ const FormDialogFailureDemo = () => {
 				const message = ROW_ERRORS.join(' ');
 				if (!rich) throw new Error(message);
 
-				// rich failure: short `message` (toasts/logging) + structured `content`
+				// rich failure: short `message` (toasts/logging) + structured `content`;
+				// keep the template free of indentation whitespace — the failure
+				// block renders with pre-wrap
 				const err = new Error('The file contains 3 errors') as Failure;
-				err.content = html`
-					<div><b>${err.message}</b></div>
-					${ROW_ERRORS.map((row) => html`<div>${row}</div>`)}
-				`;
+				err.content = html`<div><b>${err.message}</b></div>
+					${ROW_ERRORS.map((row) => html`<div>${row}</div>`)}`;
 				throw err;
 			},
 			onClose: () => setDialog(undefined),
