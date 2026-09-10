@@ -1,4 +1,4 @@
-import{o as p,n as S,w as oe,b as s,t as V,v as se,a as O,i as k,x as ie,m as re,l as A,c as q,u as ne,d as P,e as v,f as T,A as z}from"./iframe-BaagaCgW.js";import{s as le,r as de,a as ce,b as ue,i as N,c as me,d as pe,e as ge,v as ye,E as U,f as ve,u as C,g as u,t as y,n as g,h as fe,j as x,k as he,l as G,m as be}from"./inline-file-BcYqET04.js";import{a as I}from"./autocomplete-BHABUHVY.js";import{u as $e}from"./use-items-IwHMv3PE.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:a,width:o="24",height:i="24",styles:r}={})=>s`
+import{o as p,n as S,w as oe,b as s,t as V,v as se,a as O,i as k,x as ie,m as re,l as A,c as q,u as ne,d as P,e as v,f as T,A as z}from"./iframe-BNiX3hLf.js";import{s as le,r as de,a as ce,b as ue,i as N,c as me,d as pe,e as ge,v as ye,E as U,f as ve,u as C,g as u,t as y,n as g,h as fe,j as x,k as he,l as G,m as be}from"./inline-file-BhRA5y4h.js";import{a as I}from"./autocomplete-BTLOuqAX.js";import{u as $e}from"./use-items--ccEPv3A.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:a,width:o="24",height:i="24",styles:r}={})=>s`
   <svg
     slot=${p(e)}
     class=${`edit-02-icon ${a??""}`}
@@ -186,10 +186,8 @@ import{o as p,n as S,w as oe,b as s,t as V,v as se,a as O,i as k,x as ie,m as re
         </div>
     `};customElements.define("story-add-form-dialog",v(Ke));const b=()=>s`<story-add-form-dialog></story-add-form-dialog>`;b.storyName="Form Dialog";const W=[`Row 1078: Category 'Sheeeesh' is not valid.
 Expected one of: Electronics, Clothing, Food, Books, Toys.
-Package size 'huge' is not valid. Expected one of: S, M, L, XL.`,"Row 1079: Category 'Sheeeesh' is not valid. Expected one of: Electronics, Clothing, Food, Books, Toys.","Row 1080: Category 'Sheeeesh' is not valid. Expected one of: Electronics, Clothing, Food, Books, Toys."],Ve=()=>{const[e,t]=T(void 0),a=o=>{t({heading:"Import products",fields:[{id:"file",label:"File",accept:".xlsx",input:J}],initial:{file:[]},saveText:"OK",onSave:async()=>{const i=W.join(" ");if(!o)throw new Error(i);const r=new Error("The file contains 3 errors");throw r.content=s`
-                    <div><b>${r.message}</b></div>
-                    ${W.map(l=>s`<div>${l}</div>`)}
-                `,r},onClose:()=>t(void 0)})};return s`
+Package size 'huge' is not valid. Expected one of: S, M, L, XL.`,"Row 1079: Category 'Sheeeesh' is not valid. Expected one of: Electronics, Clothing, Food, Books, Toys.","Row 1080: Category 'Sheeeesh' is not valid. Expected one of: Electronics, Clothing, Food, Books, Toys."],Ve=()=>{const[e,t]=T(void 0),a=o=>{t({heading:"Import products",fields:[{id:"file",label:"File",accept:".xlsx",input:J}],initial:{file:[]},saveText:"OK",onSave:async()=>{const i=W.join(" ");if(!o)throw new Error(i);const r=new Error("The file contains 3 errors");throw r.content=s`<div><b>${r.message}</b></div>
+                    ${W.map(l=>s`<div>${l}</div>`)}`,r},onClose:()=>t(void 0)})};return s`
         <div class="story-stack">
             <h3 class="story-section-title">Form Dialog — long save failure</h3>
             <p class="story-label">
