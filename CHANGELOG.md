@@ -1,3 +1,9 @@
+## 4.2.0
+
+### Minor Changes
+
+- d159ab9: Pass the `compact` field prop through to `cosmoz-input` and `cosmoz-autocomplete`, and pass `hint` through to `cosmoz-autocomplete`.
+
 ## 4.1.0
 
 ### Minor Changes
