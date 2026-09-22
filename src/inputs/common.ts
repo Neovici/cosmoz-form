@@ -18,7 +18,7 @@ export interface CommonFieldProps<
 	C extends object = object,
 > {
 	title?: string;
-	variant?: 'default' | 'cell' | 'inline';
+	variant?: 'cell';
 	compact?: boolean;
 	hint?: string;
 	allowedPattern?: string | RegExp;
@@ -176,7 +176,6 @@ export const color = input(
 );
 
 export interface TextareaProps {
-	compact?: boolean;
 	rows?: number;
 	maxRows?: number;
 	maxlength?: number;
@@ -190,8 +189,6 @@ export const textarea = input(
 		C extends object = object,
 	>({
 		id,
-		compact,
-		hint,
 		label,
 		placeholder,
 		error,
@@ -208,8 +205,6 @@ export const textarea = input(
 		html`<cosmoz-textarea
 			class="input input-textarea"
 			name=${id}
-			?compact=${compact}
-			hint=${ifDefined(hint)}
 			?disabled=${disabled}
 			?invalid=${!!error}
 			.placeholder=${placeholder}
