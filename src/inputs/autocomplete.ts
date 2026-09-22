@@ -25,7 +25,8 @@ export interface AutocompleteProps<
 > {
 	options?: Resolvable<unknown[] | false | undefined, [OptionsOpts<T, V, C>]>;
 	mode?: 'select';
-	variant?: 'cell';
+	variant?: 'default' | 'cell' | 'inline';
+	hint?: string;
 	limit?: number;
 	textProperty?: string;
 	valueProperty?: string;
@@ -51,6 +52,7 @@ export const autocomplete = input(
 	<T extends object, K extends keyof T, V extends T[K], C extends object>({
 		id,
 		variant,
+		hint,
 		label,
 		error,
 		required,
@@ -86,6 +88,7 @@ export const autocomplete = input(
 			class="input input-autocomplete"
 			mode=${ifDefined(mode)}
 			variant=${ifDefined(variant)}
+			hint=${ifDefined(hint)}
 			?data-warning=${!!warning}
 			name=${id}
 			?disabled=${disabled}
