@@ -225,6 +225,18 @@ const ORDER_FIELDS_CELL: Fields<Order> = [
 	{ id: 'period', label: 'Period', input: dateRange, variant: 'cell' },
 ];
 
+const ORDER_FIELDS_COMPACT: Fields<Order> = [
+	{ id: 'description', label: 'Description', input: text, compact: true },
+	{ id: 'quantity', label: 'Quantity', input: number, min: 1, compact: true },
+	{
+		id: 'unitPrice',
+		label: 'Unit price (€)',
+		input: number,
+		min: 0,
+		compact: true,
+	},
+];
+
 const ORDER_RULES: ItemRule<Order>[] = [
 	[
 		(current) => ({
@@ -245,6 +257,13 @@ const DateRangeDemo = () => {
 	const formCell = useValidatedForm({
 		initial: INITIAL_ORDER,
 		fields: ORDER_FIELDS_CELL,
+		rules: ORDER_RULES,
+		touched: true,
+	});
+
+	const formCompact = useValidatedForm({
+		initial: INITIAL_ORDER,
+		fields: ORDER_FIELDS_COMPACT,
 		rules: ORDER_RULES,
 		touched: true,
 	});
@@ -278,6 +297,11 @@ const DateRangeDemo = () => {
 				<code>variant: 'cell'</code>.
 			</p>
 			<div class="table-grid">${renderAddFields(formCell)}</div>
+			<h3 class="story-section-title">Order form — compact fields</h3>
+			<p class="story-label">
+				Same editable fields rendered with <code>compact: true</code>.
+			</p>
+			${renderAddFields(formCompact)}
 		</div>
 	`;
 };

@@ -19,6 +19,7 @@ export interface CommonFieldProps<
 > {
 	title?: string;
 	variant?: 'cell';
+	compact?: boolean;
 	hint?: string;
 	allowedPattern?: string | RegExp;
 	step?: string;
@@ -53,6 +54,7 @@ export const common = <
 	const {
 		id,
 		variant,
+		compact,
 		type = 'text',
 		label,
 		placeholder,
@@ -77,6 +79,7 @@ export const common = <
 	return html`<cosmoz-input
 		class="input input-common input-${type}"
 		variant=${ifDefined(variant)}
+		?compact=${compact}
 		hint=${ifDefined(hint)}
 		name=${id}
 		type=${type}
