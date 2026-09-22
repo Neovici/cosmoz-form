@@ -1,4 +1,4 @@
-import{o as e,l as E,h as F,b as G}from"./iframe-CbzvMNJT.js";import{i as I,e as J}from"./inline-file-CIYhDiSw.js";const N=I(({id:m,variant:s,hint:c,label:u,error:a,required:d,warning:o,suffix:h,mode:i,disabled:f,onChange:g,options:r,limit:n,min:y,textProperty:b,valueProperty:x,value:$,values:l,itemRenderer:k,chipRenderer:q,keepOpened:v,keepQuery:w,placeholder:z,wrap:C,showSingle:P,preserveOrder:R,title:H,textual:M,description:j,externalSearch:A,itemHeight:B,context:p,...D})=>G`<cosmoz-autocomplete
+import{o as e,l as E,h as F,b as G}from"./iframe-D4l-EhgF.js";import{i as I,e as J}from"./inline-file-CwhkYTSH.js";const N=I(({id:m,variant:s,hint:c,label:u,error:a,required:d,warning:o,suffix:h,mode:i,disabled:f,onChange:g,options:r,limit:n,min:y,textProperty:b,valueProperty:x,value:$,values:l,itemRenderer:k,chipRenderer:q,keepOpened:v,keepQuery:w,placeholder:z,wrap:C,showSingle:P,preserveOrder:R,title:H,textual:M,description:j,externalSearch:A,itemHeight:B,context:p,...D})=>G`<cosmoz-autocomplete
 			class="input input-autocomplete"
 			mode=${e(i)}
 			variant=${e(s)}
