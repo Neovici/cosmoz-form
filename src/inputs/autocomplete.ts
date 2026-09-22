@@ -27,6 +27,7 @@ export interface AutocompleteProps<
 	mode?: 'select';
 	variant?: 'cell';
 	compact?: boolean;
+	hint?: string;
 	limit?: number;
 	textProperty?: string;
 	valueProperty?: string;
@@ -53,6 +54,7 @@ export const autocomplete = input(
 		id,
 		variant,
 		compact,
+		hint,
 		label,
 		error,
 		required,
@@ -89,6 +91,7 @@ export const autocomplete = input(
 			mode=${ifDefined(mode)}
 			variant=${ifDefined(variant)}
 			?compact=${compact}
+			hint=${ifDefined(hint)}
 			?data-warning=${!!warning}
 			name=${id}
 			?disabled=${disabled}
