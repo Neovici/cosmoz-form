@@ -134,6 +134,76 @@ customElements.define('story-add-fields', component(AddFieldsDemo));
 export const BasicFields = () => html`<story-add-fields></story-add-fields>`;
 BasicFields.storyName = 'Fields';
 
+// ── Story: Input props ───────────────────────────────────────────────────────
+
+type InputPropsProduct = {
+	code: string;
+	category: string;
+	details: string;
+};
+
+const INPUT_PROPS_INITIAL: InputPropsProduct = {
+	code: '',
+	category: '',
+	details: '',
+};
+
+const INPUT_PROPS_FIELDS: Fields<InputPropsProduct> = [
+	{
+		id: 'code',
+		label: 'Compact code',
+		placeholder: 'Compact input',
+		input: text,
+		compact: true,
+	},
+	{
+		id: 'category',
+		label: 'Inline category',
+		hint: 'Hints now pass through autocomplete fields.',
+		input: autocomplete,
+		options: CATEGORIES,
+		mode: 'select',
+		variant: 'inline',
+	},
+	{
+		id: 'details',
+		label: 'Compact details',
+		placeholder: 'Compact textarea',
+		hint: 'This hint is passed to cosmoz-textarea.',
+		input: textarea,
+		compact: true,
+		rows: 2,
+	},
+];
+
+const InputPropsDemo = () => {
+	const form = useValidatedForm({
+		initial: INPUT_PROPS_INITIAL,
+		fields: INPUT_PROPS_FIELDS,
+	});
+
+	return html`
+		<style>
+			${renderAddStyles()}
+		</style>
+		<div class="story-stack">
+			<h3 class="story-section-title">Input props</h3>
+			<p class="story-label">
+				Shows newer cosmoz-input/autocomplete props exposed by field configs:
+				<code>compact</code>, <code>hint</code>, and
+				<code>variant: 'inline'</code>.
+			</p>
+			${renderAddFields(form)}
+		</div>
+	`;
+};
+
+customElements.define('story-add-input-props', component(InputPropsDemo));
+
+export const InputProps = () =>
+	html`<story-add-input-props></story-add-input-props>`;
+InputProps.storyName = 'Input props';
+
 // ── Story: With save button ──────────────────────────────────────────────────
 
 const fakeSave = () =>
