@@ -1,7 +1,7 @@
 import { invoke } from '@neovici/cosmoz-utils/function';
 import { invokeValue } from '../helpers';
 import { Field, InputProps, Renderable, Validate } from '../types';
-import { required } from '../validation';
+import { REQUIRED_WHEN, required } from '../validation';
 
 type ComputedRenderOpts<T extends object, K extends keyof T, V extends T[K]> = {
 	values: T;
@@ -49,19 +49,23 @@ const defaultOnChange = <T extends object, K extends keyof T, V extends T[K]>(
 	update({ [id]: value } as Partial<T>);
 };
 
+type Condition<T, V> = (value: V, values: T) => boolean;
+
 const isRequired = <
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
 	C extends object = object,
 >(
-	validate?: Validate<T, K, V, C>,
-) => {
-	if (Array.isArray(validate)) {
-		return validate.some((v) => v === required);
-	}
-	return validate === required;
-};
+	validate: Validate<T, K, V, C> | undefined,
+	value: V,
+	values: T,
+) =>
+	[validate ?? []].flat().some((rule) => {
+		if (rule === required) return true;
+		const when = (rule as { [REQUIRED_WHEN]?: Condition<T, V> })[REQUIRED_WHEN];
+		return values != null && !!when?.(value, values);
+	});
 
 export const input =
 	<
@@ -98,7 +102,7 @@ export const input =
 			...thru,
 			context,
 			values,
-			required: isRequired(field.validate),
+			required: isRequired(field.validate, value, values),
 			label: invoke(field.label, value, values, field, context) as string,
 			placeholder: invoke(field.placeholder, value, values, field, context),
 			disabled: invoke(field.disabled, value, values, field, context),
