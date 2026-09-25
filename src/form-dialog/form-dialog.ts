@@ -2,7 +2,7 @@ import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
-import { useEffect } from '@pionjs/pion';
+import { component, useEffect, useState } from '@pionjs/pion';
 import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
@@ -22,6 +22,7 @@ interface Props<T extends object> extends DialogProps, AddProps<T> {
 	uncancelable?: boolean;
 	hideCancelButton?: boolean;
 	saveText?: string;
+	save$?: PromiseLike<unknown>;
 }
 
 const FormDialog = <T extends object>(host: Props<T>) => {
@@ -32,7 +33,13 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			hideCancelButton,
 			saveText = t('OK'),
 		} = host,
-		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host);
+		{
+			onSave,
+			disabled,
+			save$ = host.save$,
+			progress,
+			...form
+		} = useValidatedForm$(host);
 
 	useEffect(() => {
 		if (!auto) {
@@ -85,6 +92,11 @@ export interface Dialog<T extends object> extends Props<T> {
 
 export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	if (!props) return nothing;
+	if (props.auto) {
+		return html`<cosmoz-form-dialog-auto
+			.dialog=${props}
+		></cosmoz-form-dialog-auto>`;
+	}
 	const dialog = html`<cosmoz-form-dialog
 		name=${ifDefined(props.name)}
 		?allow-empty=${props.allowEmpty}
@@ -101,9 +113,33 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		.uncancelable=${props.uncancelable}
 		.hideCancelButton=${props.hideCancelButton}
 		.saveText=${props.saveText}
+		.save$=${props.save$}
 	></cosmoz-form-dialog>`;
 	return dialog;
 };
+
+// Saves without showing anything; the dialog only opens to show a failure.
+const AutoFormDialog = ({ dialog }: { dialog: Dialog<object> }) => {
+	const [failed$, setFailed$] = useState<PromiseLike<unknown>>();
+
+	// Once per element: parents re-render with a new dialog object, which
+	// must not trigger another save.
+	useEffect(() => {
+		const save$ = Promise.resolve(
+			dialog.onSave?.(dialog.initial, dialog.initial),
+		);
+		save$.catch(() => setFailed$(save$));
+	}, []);
+
+	return failed$
+		? formDialog({ ...dialog, auto: false, save$: failed$ })
+		: nothing;
+};
+
+customElements.define(
+	'cosmoz-form-dialog-auto',
+	component(AutoFormDialog, { useShadowDOM: false }),
+);
 
 export const formDialog$ = <T extends object>(
 	maybeProps$: Resolvable<Dialog<T>> | undefined,
