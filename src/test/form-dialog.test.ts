@@ -100,4 +100,23 @@ suite('cosmoz-form-dialog failure rendering', () => {
 			'Row 1078: Category \'Sheeeesh\' is not valid.',
 		);
 	});
+
+	test('error prop renders until the user saves again', async () => {
+		const el = (await fixture(html`
+			<cosmoz-form-dialog
+				heading="Test"
+				.fields=${[]}
+				.initial=${{}}
+				.error=${{ message: 'Earlier failure' }}
+				.onSave=${() => Promise.resolve()}
+			></cosmoz-form-dialog>
+		`)) as HTMLElement;
+		const root = el.shadowRoot!;
+		assert.include(
+			root.querySelector('.failure')?.textContent ?? '',
+			'Earlier failure',
+		);
+		root.querySelector<HTMLElement>('.buttons .save')!.click();
+		await waitUntil(() => root.querySelector('.failure') == null);
+	});
 });
