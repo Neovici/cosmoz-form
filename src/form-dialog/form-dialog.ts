@@ -1,6 +1,7 @@
 import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
+import { usePromise } from '@neovici/cosmoz-utils/hooks/use-promise';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
@@ -12,6 +13,7 @@ import { renderButton$, renderFailure$ } from '../add/render';
 import { renderFields, renderStyles } from '../render';
 import buttonStyles from '../styles/button';
 import { Renderable, Resolvable } from '../types';
+import { useFieldTouch } from '../use-field-touch';
 import { Props as AddProps, useValidatedForm$ } from '../use-validated-form$';
 import styles from './style.css';
 interface Props<T extends object> extends DialogProps, AddProps<T> {
@@ -32,14 +34,53 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			hideCancelButton,
 			saveText = t('OK'),
 		} = host,
-		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host);
+		{
+			onSave: save,
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			disabled: _,
+			save$,
+			progress,
+			...form
+		} = useValidatedForm$(host),
+		touch = useFieldTouch(form),
+		[, , saveState] = usePromise(save$),
+		empty = form.values == null || form.values === host.initial,
+		// Save stays enabled so that trying to save can explain what is missing.
+		// Only an empty form that may not be empty, with nothing to explain, can't be saved.
+		disabled =
+			form.fields.length > 0 && empty && !host.allowEmpty && !form.invalid,
+		onSave = () => {
+			if (touch.submit((host as unknown as HTMLElement).shadowRoot)) save();
+		},
+		onKeyDown = (e: KeyboardEvent) => {
+			const target = e.composedPath()[0];
+			if (
+				e.key !== 'Enter' ||
+				e.defaultPrevented ||
+				e.isComposing ||
+				e.shiftKey ||
+				e.ctrlKey ||
+				e.altKey ||
+				e.metaKey ||
+				!(target instanceof HTMLInputElement) ||
+				['checkbox', 'radio', 'file', 'button', 'submit'].includes(
+					target.type,
+				) ||
+				disabled ||
+				(save$ && saveState === 'pending')
+			) {
+				return;
+			}
+			e.preventDefault();
+			onSave();
+		};
 
 	useEffect(() => {
 		if (!auto) {
 			return;
 		}
 
-		onSave();
+		save();
 	}, [auto]);
 
 	return html` <style>
@@ -49,7 +90,15 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			description,
 			() => html`<div class="description">${description}</div>`,
 		)}
-		<div class="form" part="form">${renderFields(form)}</div>
+		<div
+			class="form"
+			part="form"
+			@focusin=${touch.onFocusIn}
+			@focusout=${touch.onFocusOut}
+			@keydown=${onKeyDown}
+		>
+			${renderFields({ ...form, touchedFields: touch.touchedFields })}
+		</div>
 		${renderFailure$(save$)}
 		<div class="buttons">
 			${renderButton$({ save$, onSave, disabled, title: saveText, progress })}

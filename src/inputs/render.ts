@@ -35,6 +35,15 @@ export const renderDescription = (description: Renderable, slot = 'suffix') =>
 		}),
 	);
 
+/**
+ * The text of the help and warning icons, for cosmoz-input's `description`: the
+ * icons only have a `title`, which assistive technology doesn't reliably read.
+ */
+export const readable = (...texts: Renderable[]) =>
+	texts
+		.filter((t): t is string => typeof t === 'string' && t !== '')
+		.join('. ') || undefined;
+
 export const renderContents = ({
 	prefix,
 	suffix,
