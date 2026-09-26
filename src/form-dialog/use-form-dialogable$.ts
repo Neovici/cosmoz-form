@@ -1,36 +1,48 @@
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useCallback, useState } from '@pionjs/pion';
-import { useOpened } from '../hooks/use-opened';
+import { useSlot } from '../hooks/use-slot';
 import { type Resolvable } from '../types';
 import { type Dialog } from './form-dialog';
 import { type Dialogable, wrapDialogable } from './use-form-dialogable';
+import { useHeadlessSave } from './use-headless-save';
 
-type DialogableSlot = { value: () => Promise<Dialog<object>> };
+type Dialog$ = () => Promise<Dialog<object> | undefined>;
 
 export const useFormDialogable$ = () => {
-	const { opened: maybeSlot, onOpen, onClose } = useOpened<DialogableSlot>();
+	const { value: dialog, show, claim, release } = useSlot<Dialog$>();
 	const [rtkn, setRtkn] = useState<symbol>();
-
-	const slot = typeof maybeSlot === 'boolean' ? undefined : maybeSlot;
+	const { saving, save } = useHeadlessSave();
 
 	return {
-		dialog: slot?.value,
+		dialog,
 		rtkn,
 		setRtkn,
 		open: useCallback(
-			<T extends object>(resolvable: Resolvable<Dialogable<T>>) =>
-				onOpen({
-					value: () =>
-						invoke$(resolvable).then(
-							(dialogable: Dialogable<T>) =>
-								wrapDialogable(
-									dialogable,
-									onClose,
-									setRtkn,
-								) as unknown as Dialog<object>,
-						),
-				}),
-			[onClose, setRtkn],
+			<T extends object>(resolvable: Resolvable<Dialogable<T>>) => {
+				const token = {};
+				let loading = false;
+				const dialog$ = invoke$(resolvable).then(
+					(dialogable: Dialogable<T>) => {
+						const dialog = wrapDialogable(
+							dialogable,
+							() => release(token),
+							setRtkn,
+						) as unknown as Dialog<object>;
+						if (!dialogable.headless) {
+							if (!loading) show(token, () => dialog$);
+							return dialog;
+						}
+						release(token);
+						save(dialog, (failed) =>
+							claim(token, () => Promise.resolve(failed)),
+						);
+					},
+				);
+				// The spinner may only take an empty slot, and not while a headless
+				// save runs: this open may be a duplicate that is about to be dropped.
+				if (!saving.current) loading = claim(token, () => dialog$);
+			},
+			[show, claim, release, setRtkn, save, saving],
 		),
 	};
 };
