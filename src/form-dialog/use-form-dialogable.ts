@@ -1,5 +1,5 @@
 import { useCallback, useState } from '@pionjs/pion';
-import { useOpened } from '../hooks/use-opened';
+import { useSlot } from '../hooks/use-slot';
 import { Progress } from '../use-validated-form$';
 import type { Dialog } from './form-dialog';
 import { useHeadlessSave } from './use-headless-save';
@@ -31,29 +31,25 @@ export const wrapDialogable = <T extends object>(
 });
 
 export const useFormDialogable = () => {
-	const {
-		opened: maybeDialog,
-		onOpen,
-		onClose,
-	} = useOpened<Dialogable<object>>();
+	const { value: dialog, show, claim, release } = useSlot<Dialogable<object>>();
 	const [rtkn, setRtkn] = useState();
-	const saveHeadless = useHeadlessSave();
-	const dialog = typeof maybeDialog === 'boolean' ? undefined : maybeDialog;
+	const { save } = useHeadlessSave();
 	return {
 		dialog,
 		rtkn,
 		setRtkn,
 		open: useCallback(
 			<T extends object>(dialogable: Dialogable<T>) => {
+				const token = {};
 				const dialog = wrapDialogable(
 					dialogable,
-					onClose,
+					() => release(token),
 					setRtkn,
 				) as unknown as Dialogable<object>;
-				if (!dialogable.headless) return onOpen(dialog);
-				saveHeadless(dialog, onOpen);
+				if (!dialogable.headless) return show(token, dialog);
+				save(dialog, (failed) => claim(token, failed));
 			},
-			[onOpen, onClose, setRtkn, saveHeadless],
+			[show, claim, release, setRtkn, save],
 		),
 	};
 };

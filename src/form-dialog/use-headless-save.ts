@@ -4,7 +4,7 @@ import type { Dialog } from './form-dialog';
 
 export const useHeadlessSave = () => {
 	const saving = useRef(false);
-	return useCallback(
+	const save = useCallback(
 		<T extends object>(
 			dialog: Dialog<T>,
 			onFailure: (failed: Dialog<T>) => void,
@@ -20,4 +20,5 @@ export const useHeadlessSave = () => {
 		},
 		[],
 	);
+	return { saving, save };
 };
