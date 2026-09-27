@@ -49,6 +49,7 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 		// Only an empty form that may not be empty, with nothing to explain, can't be saved.
 		disabled =
 			form.fields.length > 0 && empty && !host.allowEmpty && !form.invalid,
+		confirmOnly = form.fields.length === 0,
 		onSave = () => {
 			if (touch.submit((host as unknown as HTMLElement).shadowRoot)) save();
 		},
@@ -74,6 +75,10 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			e.preventDefault();
 			onSave();
 		};
+
+	useEffect(() => {
+		(host as unknown as HTMLElement).toggleAttribute('alert', confirmOnly);
+	}, [confirmOnly]);
 
 	useEffect(() => {
 		if (!auto) {
@@ -110,6 +115,7 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 						variant="secondary"
 						value="cancel"
 						?disabled=${uncancelable}
+						?autofocus=${confirmOnly}
 					>
 						${t('Cancel')}
 					</cosmoz-button>`,
