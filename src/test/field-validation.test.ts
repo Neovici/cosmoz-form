@@ -45,6 +45,7 @@ const open = async ({
 		></cosmoz-form-dialog>
 	`)) as HTMLElement;
 	const root = el.shadowRoot!;
+	await waitUntil(() => root.querySelector('dialog')?.open);
 	await waitUntil(() => root.querySelector('cosmoz-input[name="name"]'));
 	const field = (name: string) =>
 		root.querySelector<HTMLElement & { invalid?: boolean }>(
