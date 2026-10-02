@@ -12,13 +12,15 @@ const platforms = [
 	{ platform: '', userAgent: '', cancelFirst: false },
 ];
 
-for (const { platform, userAgent, cancelFirst } of platforms) {
-	suite(`cosmoz-form-dialog actions for ${platform}/${userAgent}`, () => {
-		teardown(() => restore());
+suite('cosmoz-form-dialog action order', () => {
+	teardown(() => restore());
 
-		test('renders in OS order', async () => {
-			stub(navigator, 'platform').value(platform);
-			stub(navigator, 'userAgent').value(userAgent);
+	test('renders actions in OS order', async () => {
+		const platformStub = stub(navigator, 'platform');
+		const userAgentStub = stub(navigator, 'userAgent');
+		for (const { platform, userAgent, cancelFirst } of platforms) {
+			platformStub.value(platform);
+			userAgentStub.value(userAgent);
 			const form = await fixture<HTMLElement>(
 				html`${formDialog({
 					heading: 'Confirm',
@@ -32,12 +34,8 @@ for (const { platform, userAgent, cancelFirst } of platforms) {
 			);
 			assert.lengthOf(buttons, 2);
 			assert.equal(buttons[0].getAttribute('value') === 'cancel', cancelFirst);
-		});
+		}
 	});
-}
-
-suite('cosmoz-form-dialog action order', () => {
-	teardown(() => restore());
 
 	test('keeps a hidden cancel button hidden on macOS', async () => {
 		stub(navigator, 'platform').value('MacIntel');
