@@ -20,12 +20,21 @@ export const exists = <V>(value: V): value is NonNullable<V> => !missing(value);
 
 export const required = <T>(value: T) => missing(value) && t('Required');
 
-export const requiredWhen =
-	<T extends object, K extends keyof T, V extends T[K]>(
-		condition: (value: V, values: T) => boolean,
-	): Rule<T, K, V> =>
-	(value: V, values?: T) =>
-		values != null && condition(value, values) ? required(value) : false;
+/** Marks a `requiredWhen` rule with its condition, for the required asterisk. */
+export const REQUIRED_WHEN: unique symbol = Symbol('requiredWhen');
+
+export const requiredWhen = <
+	T extends object,
+	K extends keyof T,
+	V extends T[K],
+>(
+	condition: (value: V, values: T) => boolean,
+): Rule<T, K, V> =>
+	Object.assign(
+		(value: V, values?: T) =>
+			values != null && condition(value, values) ? required(value) : false,
+		{ [REQUIRED_WHEN]: condition },
+	);
 
 export const requireEither =
 	<T extends object, K extends keyof T, V extends T[K], P extends keyof T>(

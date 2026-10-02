@@ -3,6 +3,7 @@ export * from './helpers';
 export * from './inputs';
 export * from './render';
 export * from './touch';
+export * from './use-field-touch';
 export * from './use-form';
 export * from './use-items';
 export * from './use-items-filter';

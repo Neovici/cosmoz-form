@@ -9,7 +9,7 @@ import { html } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import type { Field, InputBaseOpts, Invokable } from '../types';
 import { input } from './base';
-import { renderContents } from './render';
+import { readable, renderContents } from './render';
 
 export interface CommonFieldProps<
 	T extends object,
@@ -95,6 +95,7 @@ export const common = <
 		.label=${label}
 		.value=${value}
 		title=${ifDefined((error ?? title) || undefined)}
+		.description=${readable(description, warning)}
 		maxlength=${ifDefined(maxlength)}
 		min=${ifDefined(invoke(min, value, values, field, context))}
 		max=${ifDefined(invoke(max, value, values, field, context))}
@@ -213,6 +214,7 @@ export const textarea = input(
 			.value=${value}
 			.rows=${rows}
 			.maxRows=${maxRows}
+			.description=${readable(warning)}
 			maxlength=${ifDefined(maxlength)}
 			@paste=${onPaste}
 			@input=${(e: InputEvent) =>
