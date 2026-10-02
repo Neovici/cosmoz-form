@@ -42,6 +42,30 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 		onSave();
 	}, [auto]);
 
+	// Follow the host OS while keeping DOM, tab and visual order aligned.
+	const cancelFirst = /Mac|iPhone|iPad|iPod/iu.test(
+		navigator.platform + ' ' + navigator.userAgent,
+	);
+	const confirmButton = renderButton$({
+		save$,
+		onSave,
+		disabled,
+		title: saveText,
+		progress,
+	});
+	const cancelButton = when(
+		!hideCancelButton,
+		() =>
+			html`<cosmoz-button
+				class="button"
+				variant="secondary"
+				value="cancel"
+				?disabled=${uncancelable}
+			>
+				${t('Cancel')}
+			</cosmoz-button>`,
+	);
+
 	return html` <style>
 			${buttonStyles} ${renderStyles(form)}${styles}
 		</style>
@@ -52,19 +76,9 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 		<div class="form" part="form">${renderFields(form)}</div>
 		${renderFailure$(save$)}
 		<div class="buttons">
-			${renderButton$({ save$, onSave, disabled, title: saveText, progress })}
-			${when(
-				!hideCancelButton,
-				() =>
-					html`<cosmoz-button
-						class="button"
-						variant="secondary"
-						value="cancel"
-						?disabled=${uncancelable}
-					>
-						${t('Cancel')}
-					</cosmoz-button>`,
-			)}
+			${cancelFirst
+				? [cancelButton, confirmButton]
+				: [confirmButton, cancelButton]}
 		</div>`;
 };
 
