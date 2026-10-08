@@ -105,12 +105,24 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	return dialog;
 };
 
+// until() shows the placeholder for every new promise, so a host re-render
+// must get the same promise back or the open dialog is replaced by a new one.
+const rendered = new WeakMap<object, Promise<Renderable>>();
+const render$ = <T extends object>(props$: Resolvable<Dialog<T>>) => {
+	let result = rendered.get(props$);
+	if (!result) {
+		result = invoke$(props$).then(formDialog, () => nothing);
+		rendered.set(props$, result);
+	}
+	return result;
+};
+
 export const formDialog$ = <T extends object>(
 	maybeProps$: Resolvable<Dialog<T>> | undefined,
 ) =>
 	when(maybeProps$, (props$) =>
 		until(
-			invoke$(props$).then(formDialog, () => nothing),
+			render$(props$),
 			html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`,
 		),
 	);

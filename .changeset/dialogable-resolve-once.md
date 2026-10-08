@@ -2,4 +2,4 @@
 '@neovici/cosmoz-form': patch
 ---
 
-`useFormDialogable$` resolves the opened dialogable once. Before, every render of the host ran the dialogable again, so a re-render while the dialog was open rebuilt the form from its initial values and dropped what the user had entered.
+An open form dialog survives a re-render of its host. `formDialog$` gave `until` a new promise on every render, which showed the loading placeholder and then a new `cosmoz-form-dialog` with a fresh form, and `useFormDialogable$` ran the dialogable again each time. Entered values, rows and selections were lost, and a focused autocomplete was removed mid-typing.
