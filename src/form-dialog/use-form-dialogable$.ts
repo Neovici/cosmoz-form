@@ -18,18 +18,22 @@ export const useFormDialogable$ = () => {
 		rtkn,
 		setRtkn,
 		open: useCallback(
-			<T extends object>(resolvable: Resolvable<Dialogable<T>>) =>
+			<T extends object>(resolvable: Resolvable<Dialogable<T>>) => {
+				// Resolved once: the host renders formDialog$(dialog) on every update,
+				// and a new dialogable each time would reset the open form.
+				let dialog$: Promise<Dialog<object>> | undefined;
 				onOpen({
 					value: () =>
-						invoke$(resolvable).then(
+						(dialog$ ??= invoke$(resolvable).then(
 							(dialogable: Dialogable<T>) =>
 								wrapDialogable(
 									dialogable,
 									onClose,
 									setRtkn,
 								) as unknown as Dialog<object>,
-						),
-				}),
+						)),
+				});
+			},
 			[onClose, setRtkn],
 		),
 	};

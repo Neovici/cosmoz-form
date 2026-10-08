@@ -121,4 +121,34 @@ suite('useFormDialogable$', () => {
 		await resolved.onSave!({}, {});
 		assert.isTrue(typeof result.current.rtkn === 'symbol');
 	});
+
+	test('dialog() resolves the dialogable once', async () => {
+		const { result, nextUpdate } = await fixture();
+		let calls = 0;
+		result.current.open(() => {
+			calls++;
+			return makeDialogable();
+		});
+		await nextUpdate();
+
+		const first = result.current.dialog!();
+		assert.strictEqual(result.current.dialog!(), first);
+		await first;
+		assert.strictEqual(result.current.dialog!(), first);
+		assert.equal(calls, 1);
+	});
+
+	test('reopening resolves the new dialogable', async () => {
+		const { result, nextUpdate } = await fixture();
+		result.current.open(() => makeDialogable({ heading: 'First' }));
+		await nextUpdate();
+		const first = await result.current.dialog!();
+
+		result.current.open(() => makeDialogable({ heading: 'Second' }));
+		await nextUpdate();
+		const second = await result.current.dialog!();
+
+		assert.equal(first.heading, 'First');
+		assert.equal(second.heading, 'Second');
+	});
 });
