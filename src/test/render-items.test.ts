@@ -121,15 +121,6 @@ suite('renderItems', () => {
 			return { row, draw, addRow };
 		};
 
-		test('a re-render keeps the add row element', async () => {
-			const { draw, addRow } = await setup();
-			const before = addRow();
-
-			await draw();
-
-			assert.strictEqual(addRow(), before);
-		});
-
 		test('the add row becomes the new item and a fresh add row follows', async () => {
 			const { row, draw, addRow } = await setup();
 			const typedIn = addRow();

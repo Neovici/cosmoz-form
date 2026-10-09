@@ -16,17 +16,6 @@ const mkDefaults = <T extends object>(defaults: T) => {
 	return Object.assign(newly, { [key]: newly });
 };
 
-// The add row keeps its key across renders until it becomes an item, so a
-// re-render does not recreate it mid-typing. Needs a stable `defaults` object.
-const addRows = new WeakMap<object, object>();
-const addRow = <T extends object>(defaults: T, items: T[]): T => {
-	const row = addRows.get(defaults) as T | undefined;
-	if (row && !items.some((item) => (item as Item)[key] === row)) return row;
-	const next = mkDefaults(defaults);
-	addRows.set(defaults, next);
-	return next;
-};
-
 export const renderRemove = (remove: () => void) =>
 	html`<cosmoz-button
 		class="remove"
@@ -134,7 +123,7 @@ export const renderItems = <T extends object, C extends object = object>({
 			items: [
 				{ [key]: 0 } as unknown as T,
 				...items,
-				...(defaults ? [addRow(defaults, items)] : []),
+				...(defaults ? [mkDefaults(defaults)] : []),
 			],
 			keyFunction,
 			renderItem: (item: T, index: number) => {
