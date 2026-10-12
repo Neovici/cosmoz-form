@@ -1,3 +1,9 @@
+## 4.2.1
+
+### Patch Changes
+
+- 8732a5a: Items: the remove button is a tertiary trash icon, the add row lines its columns up with the other rows, and autocomplete cells no longer make a row taller than its text inputs.
+
 ## 4.2.0
 
 ### Minor Changes
