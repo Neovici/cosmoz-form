@@ -44,12 +44,17 @@ export const styles = css`
 		margin-inline: var(--cz-spacing);
 		align-items: center;
 	}
-	/* Empty stand-in matching the remove button's footprint, so rows without a
-	   remove button (the header row and the add row) keep their columns aligned
-	   with the removable rows. */
-	.remove-placeholder {
+	/* The autocomplete's own input keeps the margin for its error otherwise,
+	   which makes autocomplete rows taller than the rest. */
+	.item > cosmoz-autocomplete::part(input) {
+		margin-bottom: 0;
+	}
+	.remove {
 		flex: none;
-		width: 36px;
-		margin: 0 8px;
+		align-self: center;
+	}
+	.remove-placeholder {
+		visibility: hidden;
+		block-size: 0;
 	}
 `;
