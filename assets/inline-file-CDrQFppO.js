@@ -1,4 +1,4 @@
-import{o as $,n as T,w as Mt,b as w,q as Z,e as tt,A as vt,r as Nt,k as W,s as dn,p as E,g as gt,y as he,x as Qn,c as S,z as Gn,i as F,j as ct,t as te,m as ve,f as Y,d as N,B as un,C as fn,D as hn,E as mn,F as Re,G as ye,u as Un,h as Kn,l as Jn,H as Zn,a as Bt}from"./iframe-CzDgk6Uv.js";const to={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},eo=t=>typeof t=="string"&&to.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=eo(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},no=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>w`
+import{o as $,n as T,w as Mt,b as w,q as Z,e as tt,A as vt,r as Nt,k as W,s as dn,p as E,g as gt,x as he,y as Qn,c as S,z as Gn,i as F,j as ct,t as te,m as ve,f as Y,d as N,B as un,C as fn,D as hn,E as mn,F as Re,G as ye,u as Un,h as Kn,l as Jn,H as Zn,a as Bt}from"./iframe-CGFhAZSi.js";const to={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},eo=t=>typeof t=="string"&&to.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=eo(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},no=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>w`
   <svg
     slot=${$(t)}
     class=${`alert-circle-icon ${n??""}`}
@@ -697,13 +697,18 @@ import{o as $,n as T,w as Mt,b as w,q as Z,e as tt,A as vt,r as Nt,k as W,s as d
 		margin-inline: var(--cz-spacing);
 		align-items: center;
 	}
-	/* Empty stand-in matching the remove button's footprint, so rows without a
-	   remove button (the header row and the add row) keep their columns aligned
-	   with the removable rows. */
-	.remove-placeholder {
+	/* The autocomplete's own input keeps the margin for its error otherwise,
+	   which makes autocomplete rows taller than the rest. */
+	.item > cosmoz-autocomplete::part(input) {
+		margin-bottom: 0;
+	}
+	.remove {
 		flex: none;
-		width: 36px;
-		margin: 0 8px;
+		align-self: center;
+	}
+	.remove-placeholder {
+		visibility: hidden;
+		block-size: 0;
 	}
 `,jr=()=>vt,Hr=(t,e)=>Promise.resolve(t).then(e,e),Mn=t=>t.content??t.message,Ji=({error:t,...e})=>[kn(e),T(t,n=>w`<div class="failure">${Mn(n)}</div>`)],Vr=t=>ve(t?.then(jr,e=>w`<div class="failure">${Mn(e)}</div>`),vt),_r=({save$:t,progress:e,...n})=>{const o=({onSave:r,onClick:a=r,title:i,disabled:s,progress:c,content:l=vt,slot:d})=>w` <cosmoz-button
 			class="button save"
