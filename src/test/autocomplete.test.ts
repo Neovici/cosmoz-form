@@ -21,14 +21,16 @@ const renderInput = async (field: Record<string, unknown>) => {
 };
 
 suite('autocomplete', () => {
-	test('renders noResult in the no-result slot', async () => {
-		const el = await renderInput({ noResult: 'Not a valid e-mail' });
+	test('renders content inside the autocomplete', async () => {
+		const el = await renderInput({
+			content: html`<span slot="no-result">Not a valid e-mail</span>`,
+		});
 		const slotted = el.querySelector('[slot="no-result"]');
 		assert.ok(slotted);
 		assert.equal(slotted.textContent, 'Not a valid e-mail');
 	});
 
-	test('keeps the default message without noResult', async () => {
+	test('renders no extra content by default', async () => {
 		const el = await renderInput({});
 		assert.notOk(el.querySelector('[slot="no-result"]'));
 	});

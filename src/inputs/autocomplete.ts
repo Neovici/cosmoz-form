@@ -6,7 +6,7 @@ import { when } from 'lit-html/directives/when.js';
 
 import '@neovici/cosmoz-autocomplete';
 
-import { InputBaseOpts, Resolvable } from '../types';
+import { InputBaseOpts, Renderable, Resolvable } from '../types';
 import { input } from './base';
 import { renderContents } from './render';
 
@@ -43,30 +43,14 @@ export interface AutocompleteProps<
 	textual?: unknown;
 	externalSearch?: boolean;
 	itemHeight?: number | 'auto';
-	/** Message shown instead of "No results found" when the query matches no options. */
-	noResult?: unknown;
+	/** Extra content rendered inside `cosmoz-autocomplete`, e.g. `<span slot="no-result">`. */
+	content?: Renderable;
 }
 
 interface Info {
 	active: boolean;
 	query: string;
 }
-
-// slotted content is not styled by cosmoz-autocomplete, so match its default message
-const noResultStyle = [
-	'font-size: var(--cz-text-sm)',
-	'line-height: var(--cz-text-sm-line-height)',
-	'font-weight: var(--cz-font-weight-regular)',
-	'padding: 0 calc(var(--cz-spacing) * 3)',
-	'color: var(--cz-color-text-secondary)',
-].join(';');
-
-const renderNoResult = (noResult: unknown) =>
-	when(
-		noResult,
-		() =>
-			html`<span slot="no-result" style=${noResultStyle}>${noResult}</span>`,
-	);
 
 export const autocomplete = input(
 	<T extends object, K extends keyof T, V extends T[K], C extends object>({
@@ -102,7 +86,7 @@ export const autocomplete = input(
 		description,
 		externalSearch,
 		itemHeight,
-		noResult,
+		content,
 		context,
 		...thru
 	}: InputBaseOpts<T, K, V, C>) => {
@@ -146,7 +130,10 @@ export const autocomplete = input(
 					(limit === 1 || mode === 'select' ? options?.[0] : options) as V,
 				)}
 			?external-search=${externalSearch}
-			>${[renderContents({ suffix, warning, description }), when(content, () => content)]}</cosmoz-autocomplete
+			>${[
+				renderContents({ suffix, warning, description }),
+				when(content, () => content),
+			]}</cosmoz-autocomplete
 		>`;
 	},
 );
