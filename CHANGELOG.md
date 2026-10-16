@@ -1,3 +1,9 @@
+## 4.3.0
+
+### Minor Changes
+
+- 97bcc8c: `autocomplete` inputs accept a `content` field prop, rendered inside `cosmoz-autocomplete`. Use it to fill its slots, e.g. `<span slot="no-result">` to replace "No results found".
+
 ## 4.2.1
 
 ### Patch Changes
