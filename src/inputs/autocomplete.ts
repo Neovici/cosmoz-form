@@ -44,6 +44,7 @@ export interface AutocompleteProps<
 	externalSearch?: boolean;
 	itemHeight?: number | 'auto';
 	/** Extra content rendered inside `cosmoz-autocomplete`, e.g. `<span slot="no-result">`. */
+	// TODO: should be applied to all other inputs (if applicable)
 	content?: Renderable;
 }
 
