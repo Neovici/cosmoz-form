@@ -146,9 +146,7 @@ export const autocomplete = input(
 					(limit === 1 || mode === 'select' ? options?.[0] : options) as V,
 				)}
 			?external-search=${externalSearch}
-			>${renderContents({ suffix, warning, description })}${renderNoResult(
-				noResult,
-			)}</cosmoz-autocomplete
+			>${[renderContents({ suffix, warning, description }), when(content, () => content)]}</cosmoz-autocomplete
 		>`;
 	},
 );
