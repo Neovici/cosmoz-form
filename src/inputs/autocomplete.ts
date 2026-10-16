@@ -2,6 +2,7 @@ import { html } from 'lit-html';
 import { guard } from 'lit-html/directives/guard.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { live } from 'lit-html/directives/live.js';
+import { when } from 'lit-html/directives/when.js';
 
 import '@neovici/cosmoz-autocomplete';
 
@@ -42,12 +43,30 @@ export interface AutocompleteProps<
 	textual?: unknown;
 	externalSearch?: boolean;
 	itemHeight?: number | 'auto';
+	/** Message shown instead of "No results found" when the query matches no options. */
+	noResult?: unknown;
 }
 
 interface Info {
 	active: boolean;
 	query: string;
 }
+
+// slotted content is not styled by cosmoz-autocomplete, so match its default message
+const noResultStyle = [
+	'font-size: var(--cz-text-sm)',
+	'line-height: var(--cz-text-sm-line-height)',
+	'font-weight: var(--cz-font-weight-regular)',
+	'padding: 0 calc(var(--cz-spacing) * 3)',
+	'color: var(--cz-color-text-secondary)',
+].join(';');
+
+const renderNoResult = (noResult: unknown) =>
+	when(
+		noResult,
+		() =>
+			html`<span slot="no-result" style=${noResultStyle}>${noResult}</span>`,
+	);
 
 export const autocomplete = input(
 	<T extends object, K extends keyof T, V extends T[K], C extends object>({
@@ -83,6 +102,7 @@ export const autocomplete = input(
 		description,
 		externalSearch,
 		itemHeight,
+		noResult,
 		context,
 		...thru
 	}: InputBaseOpts<T, K, V, C>) => {
@@ -126,7 +146,9 @@ export const autocomplete = input(
 					(limit === 1 || mode === 'select' ? options?.[0] : options) as V,
 				)}
 			?external-search=${externalSearch}
-			>${renderContents({ suffix, warning, description })}</cosmoz-autocomplete
+			>${renderContents({ suffix, warning, description })}${renderNoResult(
+				noResult,
+			)}</cosmoz-autocomplete
 		>`;
 	},
 );
