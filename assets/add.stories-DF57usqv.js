@@ -1,4 +1,4 @@
-import{o as u,n as v,w as K,b as i,t as Q,v as se,a as O,i as T,m as re,l as N,c as U,u as ne,d as P,e as f,f as x,A as L}from"./iframe-eXuHf6V4.js";import{s as le,r as de,a as ce,b as ue,i as _,c as me,d as pe,e as ge,v as ye,E as B,f as ve,u as w,g as m,t as y,n as g,h as fe,j as E,k as he,l as G,m as be}from"./inline-file-DoOvQw2R.js";import{a as I}from"./autocomplete-BzGa_k09.js";import{u as $e}from"./use-items-C28TXtoF.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:a,width:o="24",height:s="24",styles:r}={})=>i`
+import{o as u,n as v,w as K,b as i,t as Q,v as se,a as O,i as T,m as re,l as N,c as U,u as ne,d as P,e as f,f as x,A as L}from"./iframe-BRgdBjYC.js";import{s as le,r as de,a as ce,b as ue,i as _,c as me,d as pe,e as ge,v as ye,E as B,f as ve,u as w,g as m,t as y,n as g,h as fe,j as E,k as he,l as G,m as be}from"./inline-file-BmKPz3v-.js";import{a as I}from"./autocomplete-hjB8iSGQ.js";import{u as $e}from"./use-items-CTeAfL9p.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:a,width:o="24",height:s="24",styles:r}={})=>i`
   <svg
     slot=${u(e)}
     class=${`edit-02-icon ${a??""}`}
