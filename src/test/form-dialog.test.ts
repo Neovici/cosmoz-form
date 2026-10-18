@@ -54,6 +54,26 @@ suite('cosmoz-form-dialog failure rendering', () => {
 		assert.equal(calls, 1);
 	});
 
+	test('reopening the same resolver refreshes the dialog after closing', async () => {
+		const container = await fixture<HTMLElement>(html`<div></div>`);
+		let calls = 0;
+		const resolve = () =>
+			Promise.resolve({
+				heading: `Opening ${++calls}`,
+				fields: [],
+				initial: {},
+			});
+		render(formDialog$(resolve), container);
+		await waitUntil(() => container.querySelector('cosmoz-form-dialog'));
+		const first = container.querySelector('cosmoz-form-dialog');
+		render(formDialog$(undefined), container);
+		assert.isNull(container.querySelector('cosmoz-form-dialog'));
+		render(formDialog$(resolve), container);
+		await waitUntil(() => container.querySelector('cosmoz-form-dialog'));
+		assert.notStrictEqual(container.querySelector('cosmoz-form-dialog'), first);
+		assert.equal(calls, 2);
+	});
+
 	test('failure renders above the footer, not inside the buttons row', async () => {
 		const { root } = await openFailingDialog(() =>
 			Promise.reject(new Error('Short failure')),

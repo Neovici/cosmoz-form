@@ -5,6 +5,7 @@ import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
+import { guard } from 'lit-html/directives/guard.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { keyed } from 'lit-html/directives/keyed.js';
 import { until } from 'lit-html/directives/until.js';
@@ -115,16 +116,14 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	return keyed(props.key, dialog);
 };
 
-const renderedDialogs = new WeakMap<object, Promise<Renderable>>();
-
 export const formDialog$ = <T extends object>(
 	maybeProps$: Resolvable<Dialog<T> | undefined> | undefined,
-) => {
-	if (!maybeProps$) return nothing;
-	let rendered = renderedDialogs.get(maybeProps$);
-	if (!rendered) {
-		rendered = invoke$(maybeProps$).then(formDialog, () => nothing);
-		renderedDialogs.set(maybeProps$, rendered);
-	}
-	return until(rendered, html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`);
-};
+) =>
+	guard([maybeProps$], () =>
+		maybeProps$
+			? until(
+					invoke$(maybeProps$).then(formDialog, () => nothing),
+					html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`,
+				)
+			: nothing,
+	);
