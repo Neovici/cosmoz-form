@@ -10,7 +10,8 @@ A headless save never replaces or closes a dialog it didn't open. A save's close
 
 `useFormDialogable$().open()` now resolves the dialogable once instead of on every render. It shows the loading dialog only when no other dialog is open and no headless save is running.
 
-Known limitation: there is only one dialog slot, so some failures are never shown.
+Failures wait for an occupied dialog to close, then open for retry or cancellation. Opening another dialog preserves a pending failure. Different named headless saves can run independently; repeated saves with the same name are deduplicated, including delayed resolvers that overlap a completed save. Unnamed headless saves share a deduplication key.
 
-- A headless save that fails while another dialog is open is dropped without being shown.
-- While a headless save is running, further headless saves are ignored.
+Both hooks expose `pending` and return a promise from headless opens, allowing consumers to display progress. Async opens include resolver time in that promise and pending state. Synchronous save exceptions are handled like rejected promises. Normal async dialogs retain the most recently opened request even when an older resolver finishes later.
+
+Each opened dialog has a render key, so queued recovery dialogs start with their own values and errors. The key stays stable while the same dialog is edited or retried.

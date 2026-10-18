@@ -1,24 +1,36 @@
-import { useCallback, useRef } from '@pionjs/pion';
+import { useCallback, useMemo, useRef, useState } from '@pionjs/pion';
 import type { Failure } from '../add/render';
 import type { Dialog } from './form-dialog';
 
 export const useHeadlessSave = () => {
 	const saving = useRef(false);
+	const active = useMemo(
+		() => new Map<string | undefined, Promise<void>>(),
+		[],
+	);
+	const [pending, setPending] = useState(false);
 	const save = useCallback(
 		<T extends object>(
 			dialog: Dialog<T>,
 			onFailure: (failed: Dialog<T>) => void,
 		) => {
-			// Nothing is rendered while saving, so a repeated click must not save twice.
-			if (saving.current) return;
+			const existing = active.get(dialog.name);
+			if (existing) return existing;
 			saving.current = true;
-			Promise.resolve(dialog.onSave?.(dialog.initial, dialog.initial))
+			setPending(true);
+			const request = Promise.resolve()
+				.then(() => dialog.onSave?.(dialog.initial, dialog.initial))
+				.then(() => undefined)
 				.then(undefined, (error: Failure) => onFailure({ ...dialog, error }))
 				.finally(() => {
-					saving.current = false;
+					active.delete(dialog.name);
+					saving.current = active.size > 0;
+					setPending(saving.current);
 				});
+			active.set(dialog.name, request);
+			return request;
 		},
-		[],
+		[active],
 	);
-	return { saving, save };
+	return { saving, pending, save };
 };

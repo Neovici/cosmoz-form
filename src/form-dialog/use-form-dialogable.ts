@@ -16,26 +16,28 @@ export const wrapDialogable = <T extends object>(
 	setRtkn: (s: symbol) => void,
 ): Dialog<T> => ({
 	...dialogable,
+	key: {},
 	onClose,
 	onSave: (values: T, initial: T, setProgress?: (p: Progress) => void) =>
-		Promise.resolve(dialogable.onSave?.(values, initial, setProgress)).then(
-			() => {
+		Promise.resolve()
+			.then(() => dialogable.onSave?.(values, initial, setProgress))
+			.then(() => {
 				if (!dialogable.preventRefresh) {
 					setRtkn(Symbol('rtkn'));
 				}
 				if (!dialogable.preventClose) {
 					onClose();
 				}
-			},
-		),
+			}),
 });
 
 export const useFormDialogable = () => {
-	const { value: dialog, show, claim, release } = useSlot<Dialogable<object>>();
+	const { value: dialog, show, defer, release } = useSlot<Dialogable<object>>();
 	const [rtkn, setRtkn] = useState();
-	const { save } = useHeadlessSave();
+	const { save, pending } = useHeadlessSave();
 	return {
 		dialog,
+		pending,
 		rtkn,
 		setRtkn,
 		open: useCallback(
@@ -47,9 +49,9 @@ export const useFormDialogable = () => {
 					setRtkn,
 				) as unknown as Dialogable<object>;
 				if (!dialogable.headless) return show(token, dialog);
-				save(dialog, (failed) => claim(token, failed));
+				return save(dialog, (failed) => defer(token, failed));
 			},
-			[show, claim, release, setRtkn, save],
+			[show, defer, release, setRtkn, save],
 		),
 	};
 };

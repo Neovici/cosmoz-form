@@ -6,6 +6,7 @@ import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { keyed } from 'lit-html/directives/keyed.js';
 import { until } from 'lit-html/directives/until.js';
 import { when } from 'lit-html/directives/when.js';
 import {
@@ -88,6 +89,7 @@ customElements.define(
 
 export interface Dialog<T extends object> extends Props<T> {
 	name?: string;
+	key?: object;
 }
 
 export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
@@ -110,7 +112,7 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		.saveText=${props.saveText}
 		.error=${props.error}
 	></cosmoz-form-dialog>`;
-	return dialog;
+	return keyed(props.key, dialog);
 };
 
 export const formDialog$ = <T extends object>(

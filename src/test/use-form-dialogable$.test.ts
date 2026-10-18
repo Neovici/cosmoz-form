@@ -235,9 +235,7 @@ suite('useFormDialogable$', () => {
 		);
 	});
 
-	// Known limitation until failures get a place of their own: with one dialog
-	// slot, a headless failure has nowhere to show while another dialog is open.
-	test('a headless failure is dropped while another dialog is open', async () => {
+	test('a headless failure waits until another dialog is closed', async () => {
 		const { result } = await fixture();
 		let fail: (e: Error) => void;
 		result.current.open(
@@ -254,5 +252,102 @@ suite('useFormDialogable$', () => {
 		const open = (await result.current.dialog!())!;
 		assert.equal(open.heading, 'Open');
 		assert.isUndefined(open.error);
+		open.onClose!();
+		await waitUntil(() => result.current.dialog);
+		assert.equal((await result.current.dialog!())!.error?.message, 'Lost');
+	});
+
+	test('a slow older resolver cannot replace a newer dialog', async () => {
+		const { result } = await fixture();
+		result.current.open(makeDialogable());
+		await waitUntil(() => result.current.dialog);
+		let older!: (dialog: Dialogable<object>) => void;
+		let newer!: (dialog: Dialogable<object>) => void;
+		const oldOpen = result.current.open(
+			new Promise<Dialogable<object>>((resolve) => (older = resolve)),
+		);
+		const newOpen = result.current.open(
+			new Promise<Dialogable<object>>((resolve) => (newer = resolve)),
+		);
+		newer(makeDialogable({ heading: 'Newer' }));
+		await newOpen;
+		older(makeDialogable({ heading: 'Older' }));
+		await oldOpen;
+		assert.equal((await result.current.dialog!())!.heading, 'Newer');
+	});
+
+	test('a delayed duplicate resolver cannot save after the first save finishes', async () => {
+		const { result } = await fixture();
+		let saves = 0;
+		let resolveSecond!: (dialog: Dialogable<object>) => void;
+		const dialog = makeDialogable({
+			name: 'approve:invoice',
+			headless: true,
+			onSave: () => {
+				saves++;
+				return Promise.resolve();
+			},
+		});
+		const first = result.current.open(dialog);
+		const second = result.current.open(
+			new Promise<Dialogable<object>>((resolve) => (resolveSecond = resolve)),
+		);
+		await first;
+		resolveSecond(dialog);
+		await second;
+		assert.equal(saves, 1);
+		await result.current.open(dialog);
+		assert.equal(saves, 2);
+	});
+
+	test('a synchronous save error opens recovery and releases pending state', async () => {
+		const { result } = await fixture();
+		await result.current.open(
+			makeDialogable({
+				headless: true,
+				onSave: () => {
+					throw new Error('Sync failure');
+				},
+			}),
+		);
+		await waitUntil(() => !result.current.pending);
+		const failed = (await result.current.dialog!())!;
+		assert.equal(failed.error?.message, 'Sync failure');
+		failed.onClose!();
+		let saved = false;
+		await result.current.open(
+			makeDialogable({
+				headless: true,
+				onSave: () => {
+					saved = true;
+					return Promise.resolve();
+				},
+			}),
+		);
+		assert.isTrue(saved);
+	});
+
+	test('different named headless saves run and retain both failures', async () => {
+		const { result } = await fixture();
+		const first = result.current.open(
+			makeDialogable({
+				name: 'first',
+				headless: true,
+				onSave: () => Promise.reject(new Error('First')),
+			}),
+		);
+		const second = result.current.open(
+			makeDialogable({
+				name: 'second',
+				headless: true,
+				onSave: () => Promise.reject(new Error('Second')),
+			}),
+		);
+		await Promise.all([first, second]);
+		const failed = (await result.current.dialog!())!;
+		assert.equal(failed.error?.message, 'First');
+		failed.onClose!();
+		await waitUntil(() => result.current.dialog);
+		assert.equal((await result.current.dialog!())!.error?.message, 'Second');
 	});
 });
