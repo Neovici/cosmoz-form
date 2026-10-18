@@ -115,12 +115,16 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 	return keyed(props.key, dialog);
 };
 
+const renderedDialogs = new WeakMap<object, Promise<Renderable>>();
+
 export const formDialog$ = <T extends object>(
 	maybeProps$: Resolvable<Dialog<T> | undefined> | undefined,
-) =>
-	when(maybeProps$, (props$) =>
-		until(
-			invoke$(props$).then(formDialog, () => nothing),
-			html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`,
-		),
-	);
+) => {
+	if (!maybeProps$) return nothing;
+	let rendered = renderedDialogs.get(maybeProps$);
+	if (!rendered) {
+		rendered = invoke$(maybeProps$).then(formDialog, () => nothing);
+		renderedDialogs.set(maybeProps$, rendered);
+	}
+	return until(rendered, html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`);
+};

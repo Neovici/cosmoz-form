@@ -15,3 +15,5 @@ Failures wait for an occupied dialog to close, then open for retry or cancellati
 Both hooks expose `pending` and return a promise from headless opens, allowing consumers to display progress. Async opens include resolver time in that promise and pending state. Synchronous save exceptions are handled like rejected promises. Normal async dialogs retain the most recently opened request even when an older resolver finishes later.
 
 Each opened dialog has a render key, so queued recovery dialogs start with their own values and errors. The key stays stable while the same dialog is edited or retried.
+
+Async dialog rendering retains its resolved template across host updates, preserving typed input when another headless operation finishes in the background.
