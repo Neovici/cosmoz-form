@@ -2,6 +2,9 @@ import { useCallback, useMemo, useRef, useState } from '@pionjs/pion';
 import type { Failure } from '../add/render';
 import type { Dialog } from './form-dialog';
 
+/** Reject a headless save with this error to cancel without refresh or recovery. */
+export class SaveCancelled extends Error {}
+
 export const useHeadlessSave = () => {
 	const saving = useRef(false);
 	const active = useMemo(
@@ -21,7 +24,11 @@ export const useHeadlessSave = () => {
 			const request = Promise.resolve()
 				.then(() => dialog.onSave?.(dialog.initial, dialog.initial))
 				.then(() => undefined)
-				.then(undefined, (error: Failure) => onFailure({ ...dialog, error }))
+				.then(undefined, (error: Failure) => {
+					if (!(error instanceof SaveCancelled)) {
+						onFailure({ ...dialog, error });
+					}
+				})
 				.finally(() => {
 					active.delete(dialog.name);
 					saving.current = active.size > 0;

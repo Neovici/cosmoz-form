@@ -3,6 +3,7 @@ import { assert, fixture, html, waitUntil } from '@open-wc/testing';
 import { component } from '@pionjs/pion';
 import { formDialog } from '../form-dialog/form-dialog';
 import { useFormDialogable } from '../form-dialog/use-form-dialogable';
+import { SaveCancelled } from '../form-dialog/use-headless-save';
 
 type Host = HTMLElement & { api: ReturnType<typeof useFormDialogable> };
 customElements.define(
@@ -15,6 +16,21 @@ customElements.define(
 );
 
 suite('useFormDialogable headless recovery', () => {
+	test('a cancelled headless save releases pending without refresh or recovery', async () => {
+		const { result } = await renderHook(() => useFormDialogable());
+		const before = result.current.rtkn;
+		await result.current.open({
+			heading: 'Cancelled',
+			fields: [],
+			initial: {},
+			headless: true,
+			onSave: () => Promise.reject(new SaveCancelled()),
+		});
+		await waitUntil(() => !result.current.pending);
+		assert.isUndefined(result.current.dialog);
+		assert.strictEqual(result.current.rtkn, before);
+	});
+
 	test('a synchronous exception is retained behind an open dialog and releases the save lock', async () => {
 		const { result } = await renderHook(() => useFormDialogable());
 		result.current.open({ heading: 'Other', initial: {}, fields: [] });

@@ -17,3 +17,5 @@ Both hooks expose `pending` and return a promise from headless opens, allowing c
 Each opened dialog has a render key, so queued recovery dialogs start with their own values and errors. The key stays stable while the same dialog is edited or retried.
 
 Async dialog rendering retains its resolved template across host updates, preserving typed input when another headless operation finishes in the background.
+
+Export `SaveCancelled` for intentional headless-save cancellation. It releases pending state without refreshing, closing unrelated dialogs, or opening error recovery.

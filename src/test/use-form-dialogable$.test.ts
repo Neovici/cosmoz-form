@@ -2,6 +2,7 @@ import { renderHook } from '@neovici/testing';
 import { assert, waitUntil } from '@open-wc/testing';
 import { type Dialogable } from '../form-dialog/use-form-dialogable';
 import { useFormDialogable$ } from '../form-dialog/use-form-dialogable$';
+import { SaveCancelled } from '../form-dialog/use-headless-save';
 
 const makeDialogable = (
 	overrides?: Partial<Dialogable<object>>,
@@ -15,6 +16,21 @@ const makeDialogable = (
 
 suite('useFormDialogable$', () => {
 	const fixture = () => renderHook(() => useFormDialogable$());
+
+	test('a cancelled headless save releases pending without refresh or recovery', async () => {
+		const { result } = await renderHook(() => useFormDialogable$());
+		const before = result.current.rtkn;
+		await result.current.open({
+			heading: 'Cancelled',
+			fields: [],
+			initial: {},
+			headless: true,
+			onSave: () => Promise.reject(new SaveCancelled()),
+		});
+		await waitUntil(() => !result.current.pending);
+		assert.isUndefined(result.current.dialog);
+		assert.strictEqual(result.current.rtkn, before);
+	});
 
 	test('dialog is undefined initially', async () => {
 		const { result } = await fixture();
