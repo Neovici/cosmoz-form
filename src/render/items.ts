@@ -1,5 +1,5 @@
 import { virtualize } from '@lit-labs/virtualizer/virtualize.js';
-import { xCloseIcon } from '@neovici/cosmoz-icons/untitled';
+import { trash01Icon } from '@neovici/cosmoz-icons/untitled';
 import { tagged as css } from '@neovici/cosmoz-utils';
 import { invoke, noop } from '@neovici/cosmoz-utils/function';
 import { TemplateResult, html } from 'lit-html';
@@ -18,18 +18,27 @@ const mkDefaults = <T extends object>(defaults: T) => {
 
 export const renderRemove = (remove: () => void) =>
 	html`<cosmoz-button
-		variant="destructive"
+		class="remove"
+		variant="tertiary"
 		size="sm"
 		?disabled=${!remove}
 		@click=${remove}
 	>
-		${xCloseIcon()}
+		${trash01Icon()}
 	</cosmoz-button>`;
 
-// An empty cell the size of the remove button, used to keep the columns
-// aligned in rows that have no remove button (the header and the add row).
+// An invisible remove button keeps the columns of rows without one (the header
+// and the add row) aligned with the removable rows.
 export const renderRemovePlaceholder = () =>
-	html`<span class="remove-placeholder" aria-hidden="true"></span>`;
+	html`<cosmoz-button
+		class="remove remove-placeholder"
+		variant="tertiary"
+		size="sm"
+		aria-hidden="true"
+		inert
+	>
+		${trash01Icon()}
+	</cosmoz-button>`;
 
 interface RenderOpts<T extends Item, C extends object = object> {
 	fields: Fields<T, C>;
