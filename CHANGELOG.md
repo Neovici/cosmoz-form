@@ -1,3 +1,9 @@
+## 4.4.0
+
+### Minor Changes
+
+- a3dd426: Order dialog actions according to the operating system: Cancel before OK on macOS and iOS, and OK before Cancel on Windows. Keep keyboard and visual order aligned.
+
 ## 4.3.0
 
 ### Minor Changes
