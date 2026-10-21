@@ -3,6 +3,7 @@ import { repeat } from 'lit-html/directives/repeat.js';
 import { invoke } from '../helpers';
 import { text } from '../inputs/common';
 import { Field, Fields, Renderable } from '../types';
+import type { TouchedFields } from '../use-field-touch';
 import { UseValidatedForm } from '../use-validated-form-core';
 import { ERROR } from '../validation';
 
@@ -24,7 +25,18 @@ interface RenderField<
 	C extends object = object,
 > extends UseValidatedForm<T, C> {
 	field: ValidatedField<T, K, V, C>;
+	/** From `useFieldTouch`: show errors per field instead of form-wide. */
+	touchedFields?: TouchedFields;
 }
+
+const isTouched = (
+	id: PropertyKey,
+	touched: boolean,
+	touchedFields?: TouchedFields,
+) =>
+	touchedFields === undefined
+		? touched
+		: touchedFields === true || touchedFields.has(id);
 
 export const renderField = <
 	T extends ValidatedValue<K>,
@@ -34,10 +46,13 @@ export const renderField = <
 >({
 	field,
 	values,
+	touchedFields,
 	...thru
 }: RenderField<T, K, V, C>) => {
 	const error =
-		(thru.touched && (values?.[ERROR]?.[field.id] ?? field.error)) ?? false;
+		(isTouched(field.id, thru.touched, touchedFields) &&
+			(values?.[ERROR]?.[field.id] ?? field.error)) ??
+		false;
 	const value = values?.[field.path ?? field.id] as V;
 
 	return (field.input ?? text)({
@@ -52,7 +67,7 @@ export const renderField = <
 export const renderFields = <T extends object, C extends object = object>({
 	fields,
 	...thru
-}: UseValidatedForm<T, C>): Renderable =>
+}: UseValidatedForm<T, C> & { touchedFields?: TouchedFields }): Renderable =>
 	repeat(
 		fields ?? [],
 		({ id }) => id,
