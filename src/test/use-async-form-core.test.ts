@@ -114,6 +114,19 @@ suite('useAsyncFormCore', () => {
 		);
 	});
 
+	test('async patches keep a form the user already touched', async () => {
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			useAsyncFormCore(form, [cityFromName]);
+			return form;
+		});
+		await waitUntil(() => result.current.values.city === 'Alice-city');
+
+		result.current.onChange({ name: 'Bob' });
+		await waitUntil(() => result.current.values.city === 'Bob-city');
+		assert.isTrue(touched(result.current.values));
+	});
+
 	test('async patches do not set form.touched', async () => {
 		const { result } = await renderHook(() => {
 			const form = useForm<TestForm>({ name: 'Alice', city: '' });
