@@ -1,3 +1,10 @@
+## 4.4.1
+
+### Patch Changes
+
+- 0b526d7: `afterStartDate` returns a `Rule`, so it can be listed in a field's `validate` without a cast. It also passes when the form values are not given.
+- d0cb43a: `onChange(patch, false)` no longer clears the touched flag of a form the user already touched. Async rule patches use it, so a lookup that finished after the user's first edit hid every validation error until the next edit.
+
 ## 4.4.0
 
 ### Minor Changes
