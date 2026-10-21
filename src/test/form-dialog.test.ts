@@ -1,7 +1,6 @@
-import { assert, fixture, waitUntil } from '@open-wc/testing';
-import { html } from 'lit-html';
-
-import '../form-dialog/form-dialog.js';
+import { assert, fixture, nextFrame, waitUntil } from '@open-wc/testing';
+import { html, render } from 'lit-html';
+import { formDialog$ } from '../form-dialog/form-dialog';
 
 // design tokens the alert-card chrome relies on; applied via inline style on
 // the host so they inherit into its shadow root (the app loads them globally)
@@ -34,6 +33,47 @@ const openFailingDialog = async (
 };
 
 suite('cosmoz-form-dialog failure rendering', () => {
+	test('host rerenders preserve the open async dialog and resolve it once', async () => {
+		const container = await fixture<HTMLElement>(html`<div></div>`);
+		let calls = 0;
+		const resolve = () => {
+			calls++;
+			return Promise.resolve({
+				heading: 'Stable dialog',
+				fields: [],
+				initial: {},
+			});
+		};
+		render(formDialog$(resolve), container);
+		await waitUntil(() => container.querySelector('cosmoz-form-dialog'));
+		const dialog = container.querySelector('cosmoz-form-dialog');
+		render(formDialog$(resolve), container);
+		await nextFrame();
+		assert.strictEqual(container.querySelector('cosmoz-form-dialog'), dialog);
+		assert.isNull(container.querySelector('cosmoz-dialog-loading'));
+		assert.equal(calls, 1);
+	});
+
+	test('reopening the same resolver refreshes the dialog after closing', async () => {
+		const container = await fixture<HTMLElement>(html`<div></div>`);
+		let calls = 0;
+		const resolve = () =>
+			Promise.resolve({
+				heading: `Opening ${++calls}`,
+				fields: [],
+				initial: {},
+			});
+		render(formDialog$(resolve), container);
+		await waitUntil(() => container.querySelector('cosmoz-form-dialog'));
+		const first = container.querySelector('cosmoz-form-dialog');
+		render(formDialog$(undefined), container);
+		assert.isNull(container.querySelector('cosmoz-form-dialog'));
+		render(formDialog$(resolve), container);
+		await waitUntil(() => container.querySelector('cosmoz-form-dialog'));
+		assert.notStrictEqual(container.querySelector('cosmoz-form-dialog'), first);
+		assert.equal(calls, 2);
+	});
+
 	test('failure renders above the footer, not inside the buttons row', async () => {
 		const { root } = await openFailingDialog(() =>
 			Promise.reject(new Error('Short failure')),
@@ -99,5 +139,24 @@ suite('cosmoz-form-dialog failure rendering', () => {
 			failure.querySelector('[name="row-1"]')?.textContent ?? '',
 			'Row 1078: Category \'Sheeeesh\' is not valid.',
 		);
+	});
+
+	test('error prop renders until the user saves again', async () => {
+		const el = (await fixture(html`
+			<cosmoz-form-dialog
+				heading="Test"
+				.fields=${[]}
+				.initial=${{}}
+				.error=${{ message: 'Earlier failure' }}
+				.onSave=${() => Promise.resolve()}
+			></cosmoz-form-dialog>
+		`)) as HTMLElement;
+		const root = el.shadowRoot!;
+		assert.include(
+			root.querySelector('.failure')?.textContent ?? '',
+			'Earlier failure',
+		);
+		root.querySelector<HTMLElement>('.buttons .save')!.click();
+		await waitUntil(() => root.querySelector('.failure') == null);
 	});
 });

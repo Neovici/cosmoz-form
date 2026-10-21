@@ -2,10 +2,11 @@ import { html } from 'lit-html';
 import { guard } from 'lit-html/directives/guard.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
 import { live } from 'lit-html/directives/live.js';
+import { when } from 'lit-html/directives/when.js';
 
 import '@neovici/cosmoz-autocomplete';
 
-import { InputBaseOpts, Resolvable } from '../types';
+import { InputBaseOpts, Renderable, Resolvable } from '../types';
 import { input } from './base';
 import { renderContents } from './render';
 
@@ -42,6 +43,9 @@ export interface AutocompleteProps<
 	textual?: unknown;
 	externalSearch?: boolean;
 	itemHeight?: number | 'auto';
+	/** Extra content rendered inside `cosmoz-autocomplete`, e.g. `<span slot="no-result">`. */
+	// TODO: should be applied to all other inputs (if applicable)
+	content?: Renderable;
 }
 
 interface Info {
@@ -83,6 +87,7 @@ export const autocomplete = input(
 		description,
 		externalSearch,
 		itemHeight,
+		content,
 		context,
 		...thru
 	}: InputBaseOpts<T, K, V, C>) => {
@@ -126,7 +131,10 @@ export const autocomplete = input(
 					(limit === 1 || mode === 'select' ? options?.[0] : options) as V,
 				)}
 			?external-search=${externalSearch}
-			>${renderContents({ suffix, warning, description })}</cosmoz-autocomplete
+			>${[
+				renderContents({ suffix, warning, description }),
+				when(content, () => content),
+			]}</cosmoz-autocomplete
 		>`;
 	},
 );

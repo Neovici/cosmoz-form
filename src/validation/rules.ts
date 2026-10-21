@@ -147,10 +147,13 @@ export const hint = <K extends PropertyKey>(field: K) => ({
 });
 
 export const afterStartDate =
-	<K extends PropertyKey>(startDateField: K, eq?: boolean) =>
-	<V, O extends Record<K, any>>(value: V, values: O) => {
+	<T extends object, K extends keyof T, V extends T[K]>(
+		startDateField: keyof T,
+		eq?: boolean,
+	): Rule<T, K, V> =>
+	(value: V, values?: T) => {
 		const end = ensureDate(value);
-		const start = ensureDate(values[startDateField]);
+		const start = ensureDate(values?.[startDateField]);
 		if (!(end && start)) return false;
 		const endTime = end.getTime();
 		const startTime = start.getTime();
