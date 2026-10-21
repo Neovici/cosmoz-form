@@ -23,7 +23,8 @@ export interface Failure {
 	content?: unknown;
 }
 
-const failureHtml = (e: Failure) => e.content ?? e.message;
+export const renderFailure = (e: Failure) =>
+	html`<div class="failure">${e.content ?? e.message}</div>`;
 
 interface RenderAddFields<T extends object> extends UseValidatedForm<T> {
 	error?: Error | ({ message: string } & Partial<Failure>);
@@ -31,19 +32,10 @@ interface RenderAddFields<T extends object> extends UseValidatedForm<T> {
 export const renderAddFields = <T extends object>({
 	error,
 	...thru
-}: RenderAddFields<T>) => [
-	renderFields(thru),
-	when(error, (err) => html`<div class="failure">${failureHtml(err)}</div>`),
-];
+}: RenderAddFields<T>) => [renderFields(thru), when(error, renderFailure)];
 
 export const renderFailure$ = <T>(save$?: PromiseLike<T>) =>
-	until(
-		save$?.then(
-			nothing$,
-			(e: Failure) => html`<div class="failure">${failureHtml(e)}</div>`,
-		),
-		nothing,
-	);
+	until(save$?.then(nothing$, renderFailure), nothing);
 
 interface Button {
 	slot?: string;

@@ -2,6 +2,7 @@ import { renderHook } from '@neovici/testing';
 import { assert, waitUntil } from '@open-wc/testing';
 import { type Dialogable } from '../form-dialog/use-form-dialogable';
 import { useFormDialogable$ } from '../form-dialog/use-form-dialogable$';
+import { SaveCancelled } from '../form-dialog/use-headless-save';
 
 const makeDialogable = (
 	overrides?: Partial<Dialogable<object>>,
@@ -15,6 +16,21 @@ const makeDialogable = (
 
 suite('useFormDialogable$', () => {
 	const fixture = () => renderHook(() => useFormDialogable$());
+
+	test('a cancelled headless save releases pending without refresh or recovery', async () => {
+		const { result } = await renderHook(() => useFormDialogable$());
+		const before = result.current.rtkn;
+		await result.current.open({
+			heading: 'Cancelled',
+			fields: [],
+			initial: {},
+			headless: true,
+			onSave: () => Promise.reject(new SaveCancelled()),
+		});
+		await waitUntil(() => !result.current.pending);
+		assert.isUndefined(result.current.dialog);
+		assert.strictEqual(result.current.rtkn, before);
+	});
 
 	test('dialog is undefined initially', async () => {
 		const { result } = await fixture();
@@ -51,7 +67,7 @@ suite('useFormDialogable$', () => {
 		const { result, nextUpdate } = await fixture();
 		result.current.open(makeDialogable());
 		await nextUpdate();
-		const resolved = await result.current.dialog!();
+		const resolved = (await result.current.dialog!())!;
 		assert.equal(resolved.heading, 'Test');
 		assert.isFunction(resolved.onClose);
 		assert.isFunction(resolved.onSave);
@@ -69,7 +85,7 @@ suite('useFormDialogable$', () => {
 			}),
 		);
 		await nextUpdate();
-		const resolved = await result.current.dialog!();
+		const resolved = (await result.current.dialog!())!;
 		await resolved.onSave!({}, {});
 		assert.isTrue(saved);
 		await waitUntil(() => result.current.dialog === undefined);
@@ -79,7 +95,7 @@ suite('useFormDialogable$', () => {
 		const { result, nextUpdate } = await fixture();
 		result.current.open(makeDialogable({ preventClose: true }));
 		await nextUpdate();
-		const resolved = await result.current.dialog!();
+		const resolved = (await result.current.dialog!())!;
 		await resolved.onSave!({}, {});
 		assert.isFunction(result.current.dialog);
 	});
@@ -88,7 +104,7 @@ suite('useFormDialogable$', () => {
 		const { result, nextUpdate } = await fixture();
 		result.current.open(makeDialogable({ preventRefresh: true }));
 		await nextUpdate();
-		const resolved = await result.current.dialog!();
+		const resolved = (await result.current.dialog!())!;
 		const initialRtkn = result.current.rtkn;
 		await resolved.onSave!({}, {});
 		assert.equal(result.current.rtkn, initialRtkn);
@@ -100,7 +116,7 @@ suite('useFormDialogable$', () => {
 			Promise.resolve(makeDialogable({ heading: 'Async Test' })),
 		);
 		await nextUpdate();
-		const resolved = await result.current.dialog!();
+		const resolved = (await result.current.dialog!())!;
 		assert.equal(resolved.heading, 'Async Test');
 	});
 
@@ -108,7 +124,7 @@ suite('useFormDialogable$', () => {
 		const { result, nextUpdate } = await fixture();
 		result.current.open(() => makeDialogable({ heading: 'Lazy Test' }));
 		await nextUpdate();
-		const resolved = await result.current.dialog!();
+		const resolved = (await result.current.dialog!())!;
 		assert.equal(resolved.heading, 'Lazy Test');
 	});
 
@@ -116,7 +132,7 @@ suite('useFormDialogable$', () => {
 		const { result, nextUpdate } = await fixture();
 		result.current.open(makeDialogable());
 		await nextUpdate();
-		const resolved = await result.current.dialog!();
+		const resolved = (await result.current.dialog!())!;
 		assert.isUndefined(result.current.rtkn);
 		await resolved.onSave!({}, {});
 		assert.isTrue(typeof result.current.rtkn === 'symbol');
@@ -148,7 +164,236 @@ suite('useFormDialogable$', () => {
 		await nextUpdate();
 		const second = await result.current.dialog!();
 
-		assert.equal(first.heading, 'First');
-		assert.equal(second.heading, 'Second');
+		assert.equal(first!.heading, 'First');
+		assert.equal(second!.heading, 'Second');
+	});
+
+	test('open() with a headless Dialogable saves without opening', async () => {
+		const { result } = await fixture();
+		const saved: object[] = [];
+		const initial = { a: 1 };
+		result.current.open(
+			makeDialogable({
+				headless: true,
+				initial,
+				onSave: (values) => {
+					saved.push(values);
+					return Promise.resolve();
+				},
+			}),
+		);
+		await waitUntil(() => typeof result.current.rtkn === 'symbol');
+		assert.deepEqual(saved, [initial]);
+		assert.isUndefined(result.current.dialog);
+	});
+
+	test('a failed headless save opens the dialog with the error', async () => {
+		const { result } = await fixture();
+		const error = new Error('Nope');
+		result.current.open(
+			makeDialogable({ headless: true, onSave: () => Promise.reject(error) }),
+		);
+		await waitUntil(() => result.current.dialog);
+		const resolved = (await result.current.dialog!())!;
+		assert.equal(resolved.error, error);
+		assert.isFunction(resolved.onSave);
+	});
+
+	test('open() ignores a headless Dialogable while one is saving', async () => {
+		const { result } = await fixture();
+		let saves = 0;
+		let finish: () => void;
+		const dialogable = makeDialogable({
+			headless: true,
+			onSave: () => {
+				saves++;
+				return new Promise<void>((resolve) => (finish = resolve));
+			},
+		});
+		result.current.open(dialogable);
+		await waitUntil(() => saves === 1);
+		result.current.open(dialogable);
+		await new Promise((resolve) => setTimeout(resolve, 20));
+		assert.equal(saves, 1);
+		finish!();
+		await waitUntil(() => typeof result.current.rtkn === 'symbol');
+	});
+
+	test('a headless save finishing does not close a dialog opened meanwhile', async () => {
+		const { result } = await fixture();
+		let finish: () => void;
+		result.current.open(
+			makeDialogable({
+				headless: true,
+				onSave: () => new Promise<void>((resolve) => (finish = resolve)),
+			}),
+		);
+		await waitUntil(() => finish);
+		result.current.open(makeDialogable({ heading: 'Other' }));
+		await waitUntil(() => result.current.dialog);
+		finish!();
+		await waitUntil(() => typeof result.current.rtkn === 'symbol');
+		assert.equal((await result.current.dialog!())!.heading, 'Other');
+	});
+
+	test('a headless dialogable does not replace an open dialog', async () => {
+		const { result } = await fixture();
+		let saved = false;
+		result.current.open(makeDialogable({ heading: 'Open' }));
+		await waitUntil(() => result.current.dialog);
+		result.current.open(
+			Promise.resolve(
+				makeDialogable({
+					headless: true,
+					onSave: () => {
+						saved = true;
+						return Promise.resolve();
+					},
+				}),
+			),
+		);
+		await waitUntil(() => saved);
+		assert.equal((await result.current.dialog!())!.heading, 'Open');
+	});
+
+	test('a dropped headless trigger does not close the error dialog', async () => {
+		const { result } = await fixture();
+		let fail: (e: Error) => void;
+		let resolveSecond: (d: Dialogable<object>) => void;
+		result.current.open(
+			makeDialogable({
+				headless: true,
+				onSave: () => new Promise<void>((_, reject) => (fail = reject)),
+			}),
+		);
+		await waitUntil(() => fail);
+		result.current.open(
+			new Promise<Dialogable<object>>((resolve) => (resolveSecond = resolve)),
+		);
+		assert.isUndefined(result.current.dialog);
+		fail!(new Error('First failed'));
+		await waitUntil(() => result.current.dialog);
+		resolveSecond!(makeDialogable({ headless: true }));
+		await new Promise((resolve) => setTimeout(resolve, 20));
+		assert.equal(
+			(await result.current.dialog!())!.error?.message,
+			'First failed',
+		);
+	});
+
+	test('a headless failure waits until another dialog is closed', async () => {
+		const { result } = await fixture();
+		let fail: (e: Error) => void;
+		result.current.open(
+			makeDialogable({
+				headless: true,
+				onSave: () => new Promise<void>((_, reject) => (fail = reject)),
+			}),
+		);
+		await waitUntil(() => fail);
+		result.current.open(makeDialogable({ heading: 'Open' }));
+		await waitUntil(() => result.current.dialog);
+		fail!(new Error('Lost'));
+		await new Promise((resolve) => setTimeout(resolve, 20));
+		const open = (await result.current.dialog!())!;
+		assert.equal(open.heading, 'Open');
+		assert.isUndefined(open.error);
+		open.onClose!();
+		await waitUntil(() => result.current.dialog);
+		assert.equal((await result.current.dialog!())!.error?.message, 'Lost');
+	});
+
+	test('a slow older resolver cannot replace a newer dialog', async () => {
+		const { result } = await fixture();
+		result.current.open(makeDialogable());
+		await waitUntil(() => result.current.dialog);
+		let older!: (dialog: Dialogable<object>) => void;
+		let newer!: (dialog: Dialogable<object>) => void;
+		const oldOpen = result.current.open(
+			new Promise<Dialogable<object>>((resolve) => (older = resolve)),
+		);
+		const newOpen = result.current.open(
+			new Promise<Dialogable<object>>((resolve) => (newer = resolve)),
+		);
+		newer(makeDialogable({ heading: 'Newer' }));
+		await newOpen;
+		older(makeDialogable({ heading: 'Older' }));
+		await oldOpen;
+		assert.equal((await result.current.dialog!())!.heading, 'Newer');
+	});
+
+	test('a delayed duplicate resolver cannot save after the first save finishes', async () => {
+		const { result } = await fixture();
+		let saves = 0;
+		let resolveSecond!: (dialog: Dialogable<object>) => void;
+		const dialog = makeDialogable({
+			name: 'approve:invoice',
+			headless: true,
+			onSave: () => {
+				saves++;
+				return Promise.resolve();
+			},
+		});
+		const first = result.current.open(dialog);
+		const second = result.current.open(
+			new Promise<Dialogable<object>>((resolve) => (resolveSecond = resolve)),
+		);
+		await first;
+		resolveSecond(dialog);
+		await second;
+		assert.equal(saves, 1);
+		await result.current.open(dialog);
+		assert.equal(saves, 2);
+	});
+
+	test('a synchronous save error opens recovery and releases pending state', async () => {
+		const { result } = await fixture();
+		await result.current.open(
+			makeDialogable({
+				headless: true,
+				onSave: () => {
+					throw new Error('Sync failure');
+				},
+			}),
+		);
+		await waitUntil(() => !result.current.pending);
+		const failed = (await result.current.dialog!())!;
+		assert.equal(failed.error?.message, 'Sync failure');
+		failed.onClose!();
+		let saved = false;
+		await result.current.open(
+			makeDialogable({
+				headless: true,
+				onSave: () => {
+					saved = true;
+					return Promise.resolve();
+				},
+			}),
+		);
+		assert.isTrue(saved);
+	});
+
+	test('different named headless saves run and retain both failures', async () => {
+		const { result } = await fixture();
+		const first = result.current.open(
+			makeDialogable({
+				name: 'first',
+				headless: true,
+				onSave: () => Promise.reject(new Error('First')),
+			}),
+		);
+		const second = result.current.open(
+			makeDialogable({
+				name: 'second',
+				headless: true,
+				onSave: () => Promise.reject(new Error('Second')),
+			}),
+		);
+		await Promise.all([first, second]);
+		const failed = (await result.current.dialog!())!;
+		assert.equal(failed.error?.message, 'First');
+		failed.onClose!();
+		await waitUntil(() => result.current.dialog);
+		assert.equal((await result.current.dialog!())!.error?.message, 'Second');
 	});
 });

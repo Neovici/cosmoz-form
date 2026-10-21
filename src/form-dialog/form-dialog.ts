@@ -5,10 +5,17 @@ import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
+import { guard } from 'lit-html/directives/guard.js';
 import { ifDefined } from 'lit-html/directives/if-defined.js';
+import { keyed } from 'lit-html/directives/keyed.js';
 import { until } from 'lit-html/directives/until.js';
 import { when } from 'lit-html/directives/when.js';
-import { renderButton$, renderFailure$ } from '../add/render';
+import {
+	Failure,
+	renderButton$,
+	renderFailure,
+	renderFailure$,
+} from '../add/render';
 import { renderFields, renderStyles } from '../render';
 import buttonStyles from '../styles/button';
 import { Renderable, Resolvable } from '../types';
@@ -22,6 +29,7 @@ interface Props<T extends object> extends DialogProps, AddProps<T> {
 	uncancelable?: boolean;
 	hideCancelButton?: boolean;
 	saveText?: string;
+	error?: Failure;
 }
 
 const FormDialog = <T extends object>(host: Props<T>) => {
@@ -31,6 +39,7 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			uncancelable,
 			hideCancelButton,
 			saveText = t('OK'),
+			error,
 		} = host,
 		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host);
 
@@ -42,6 +51,30 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 		onSave();
 	}, [auto]);
 
+	// Follow the host OS while keeping DOM, tab and visual order aligned.
+	const cancelFirst = /Mac|iPhone|iPad|iPod/iu.test(
+		navigator.platform + ' ' + navigator.userAgent,
+	);
+	const confirmButton = renderButton$({
+		save$,
+		onSave,
+		disabled,
+		title: saveText,
+		progress,
+	});
+	const cancelButton = when(
+		!hideCancelButton,
+		() =>
+			html`<cosmoz-button
+				class="button"
+				variant="secondary"
+				value="cancel"
+				?disabled=${uncancelable}
+			>
+				${t('Cancel')}
+			</cosmoz-button>`,
+	);
+
 	return html` <style>
 			${buttonStyles} ${renderStyles(form)}${styles}
 		</style>
@@ -50,21 +83,11 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			() => html`<div class="description">${description}</div>`,
 		)}
 		<div class="form" part="form">${renderFields(form)}</div>
-		${renderFailure$(save$)}
+		${save$ ? renderFailure$(save$) : when(error, renderFailure)}
 		<div class="buttons">
-			${renderButton$({ save$, onSave, disabled, title: saveText, progress })}
-			${when(
-				!hideCancelButton,
-				() =>
-					html`<cosmoz-button
-						class="button"
-						variant="secondary"
-						value="cancel"
-						?disabled=${uncancelable}
-					>
-						${t('Cancel')}
-					</cosmoz-button>`,
-			)}
+			${cancelFirst
+				? [cancelButton, confirmButton]
+				: [confirmButton, cancelButton]}
 		</div>`;
 };
 
@@ -81,6 +104,7 @@ customElements.define(
 
 export interface Dialog<T extends object> extends Props<T> {
 	name?: string;
+	key?: object;
 }
 
 export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
@@ -101,28 +125,19 @@ export const formDialog = <T extends object>(props?: Dialog<T>): Renderable => {
 		.uncancelable=${props.uncancelable}
 		.hideCancelButton=${props.hideCancelButton}
 		.saveText=${props.saveText}
+		.error=${props.error}
 	></cosmoz-form-dialog>`;
-	return dialog;
-};
-
-// until() shows the placeholder for every new promise, so a host re-render
-// must get the same promise back or the open dialog is replaced by a new one.
-const rendered = new WeakMap<object, Promise<Renderable>>();
-const render$ = <T extends object>(props$: Resolvable<Dialog<T>>) => {
-	let result = rendered.get(props$);
-	if (!result) {
-		result = invoke$(props$).then(formDialog, () => nothing);
-		rendered.set(props$, result);
-	}
-	return result;
+	return keyed(props.key, dialog);
 };
 
 export const formDialog$ = <T extends object>(
-	maybeProps$: Resolvable<Dialog<T>> | undefined,
+	maybeProps$: Resolvable<Dialog<T> | undefined> | undefined,
 ) =>
-	when(maybeProps$, (props$) =>
-		until(
-			render$(props$),
-			html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`,
-		),
+	guard([maybeProps$], () =>
+		maybeProps$
+			? until(
+					invoke$(maybeProps$).then(formDialog, () => nothing),
+					html`<cosmoz-dialog-loading></cosmoz-dialog-loading>`,
+				)
+			: nothing,
 	);
