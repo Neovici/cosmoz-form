@@ -79,7 +79,7 @@ export const useFormCore = <T extends object, C extends object = object>(
 			[rules, setState, context],
 		),
 		onChange: useCallback(
-			(update, touched = true) =>
+			(update, markTouched = true) =>
 				setState(([initial, values]) => [
 					initial,
 					touch(
@@ -92,7 +92,7 @@ export const useFormCore = <T extends object, C extends object = object>(
 							rules,
 							context,
 						}),
-						touched,
+						markTouched || touched(values),
 					),
 				]),
 			[rules, setState, context],
