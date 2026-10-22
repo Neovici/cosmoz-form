@@ -189,6 +189,7 @@ export const textarea = input(
 		C extends object = object,
 	>({
 		id,
+		compact,
 		label,
 		placeholder,
 		error,
@@ -205,6 +206,7 @@ export const textarea = input(
 		html`<cosmoz-textarea
 			class="input input-textarea"
 			name=${id}
+			.compact=${compact}
 			?disabled=${disabled}
 			?invalid=${!!error}
 			.placeholder=${placeholder}
