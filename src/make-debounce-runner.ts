@@ -19,6 +19,8 @@ export const makeDebounceRunner = <T, C extends object = object>(
 	return {
 		run: (fn, values, onIntermediate, opts) =>
 			new Promise<Partial<T> | null>((resolve, reject) => {
+				ac?.abort();
+				ac = null;
 				if (pending !== null) {
 					// Debounced-away call resolves null (same as cancelled in takeLatest)
 					pending.resolve(null);
@@ -43,20 +45,28 @@ export const makeDebounceRunner = <T, C extends object = object>(
 					} = pending!;
 					pending = null;
 					timer = null;
-					ac = new AbortController();
+					const controller = new AbortController();
+					ac = controller;
 					const asyncOpts = {
-						update: onIntermediate,
-						signal: ac.signal,
+						update: (patch: Partial<T>) => {
+							if (!controller.signal.aborted) onIntermediate(patch);
+						},
+						signal: controller.signal,
 						index,
 						context,
 					};
 					try {
-						res(await f(v, asyncOpts));
+						const result = await f(v, asyncOpts);
+						res(controller.signal.aborted ? null : result);
 					} catch (e) {
-						if (e instanceof DOMException && e.name === 'AbortError') res(null);
-						else rej(e);
+						if (
+							controller.signal.aborted ||
+							(e instanceof DOMException && e.name === 'AbortError')
+						) {
+							res(null);
+						} else rej(e);
 					} finally {
-						ac = null;
+						if (ac === controller) ac = null;
 					}
 				}, ms);
 			}),
