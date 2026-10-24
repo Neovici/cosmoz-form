@@ -93,6 +93,83 @@ suite('makeDebounceRunner', () => {
 		assert.equal(bodySpy.callCount, 1);
 	});
 
+	test('a new run aborts in-flight work before its own debounce fires', async () => {
+		let signal!: AbortSignal;
+		const first = runner.run(
+			async (_, opts) => {
+				signal = opts.signal;
+				await delay(signal, 5000);
+				return { name: 'first' };
+			},
+			{},
+			noop,
+		);
+		await clock.tickAsync(50);
+		const second = runner.run(returns({ name: 'second' }), {}, noop);
+		assert.isTrue(signal.aborted);
+		await clock.tickAsync(50);
+		assert.isNull(await first);
+		assert.deepEqual(await second, { name: 'second' });
+	});
+
+	test('suppresses stale patches and results even when the rule ignores abort', async () => {
+		const patches = spy();
+		let finish!: () => void;
+		const first = runner.run(
+			async (_, { update }) => {
+				await new Promise<void>((resolve) => {
+					finish = resolve;
+				});
+				update({ name: 'stale intermediate' });
+				return { name: 'stale final' };
+			},
+			{},
+			patches,
+		);
+		await clock.tickAsync(50);
+		const second = runner.run(returns({ name: 'second' }), {}, noop);
+		await clock.tickAsync(50);
+		assert.deepEqual(await second, { name: 'second' });
+		finish();
+		assert.isNull(await first);
+		assert.isFalse(patches.called);
+	});
+
+	test('a superseded completion cannot remove the current cancellation controller', async () => {
+		let finishFirst!: () => void;
+		let finishSecond!: () => void;
+		let secondSignal!: AbortSignal;
+		const first = runner.run(
+			async () => {
+				await new Promise<void>((resolve) => {
+					finishFirst = resolve;
+				});
+				return { name: 'first' };
+			},
+			{},
+			noop,
+		);
+		await clock.tickAsync(50);
+		const second = runner.run(
+			async (_, { signal }) => {
+				secondSignal = signal;
+				await new Promise<void>((resolve) => {
+					finishSecond = resolve;
+				});
+				return { name: 'second' };
+			},
+			{},
+			noop,
+		);
+		await clock.tickAsync(50);
+		finishFirst();
+		assert.isNull(await first);
+		runner.cancel();
+		assert.isTrue(secondSignal.aborted);
+		finishSecond();
+		assert.isNull(await second);
+	});
+
 	test('cancel() before timer fires resolves pending run() as null', async () => {
 		const promise = runner.run(returns({ x: 1 }), {}, noop);
 		runner.cancel();
@@ -120,16 +197,11 @@ suite('makeDebounceRunner', () => {
 			throw new Error('network error');
 		};
 
-		const promise = runner.run(boom, {}, noop);
+		const failure = runner.run(boom, {}, noop).catch((error: unknown) => error);
 		await clock.tickAsync(50);
-
-		try {
-			await promise;
-			assert.fail('should have thrown');
-		} catch (e) {
-			assert.instanceOf(e, Error);
-			assert.equal((e as Error).message, 'network error');
-		}
+		const error = await failure;
+		assert.instanceOf(error, Error);
+		assert.equal((error as Error).message, 'network error');
 	});
 
 	test('opts.update calls onIntermediate during fn execution', async () => {
