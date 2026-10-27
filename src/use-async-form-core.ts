@@ -20,6 +20,18 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  * Intermediate patches (from opts.update(...)) go through onChange like any other
  * patch — sync rules cascade on top of them, which is expected.
  *
+ * Error handling precedence when a rule rejects:
+ *   1. the rule's own `onError` (4th tuple member) — a returned partial patch is
+ *      applied like any async result (no touch), and hook-level handling is skipped;
+ *   2. hook-level `opts.onError` — a returned partial patch is applied the same way;
+ *   3. otherwise the default handler logs to console.error.
+ * `opts.onError` is always invoked as fallback when the rule handler returns void.
+ *
+ * Note: the default runner (`makeTakeLatestRunner`) converts cancellations
+ * (DOMException 'AbortError' from `delay(signal, ...)`/`fetch`) to `null`, which
+ * never reaches the error path. Rules should rethrow signal errors, not swallow
+ * them, so cancellation stays silent.
+ *
  * Usage:
  *   const form = useValidatedForm({ fields, initial, rules, context });
  *   const { processing } = useAsyncFormCore(form, asyncRules);
@@ -27,9 +39,32 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
 export const useAsyncFormCore = <T extends object, C extends object = object>(
 	form: UseForm<T, C>,
 	asyncRules: readonly AsyncItemRule<T, C>[] | undefined,
-	opts?: { onError?: (err: unknown, rule: AsyncItemRule<T, C>) => void },
+	opts?: {
+		/**
+		 * Hook-level error fallback. Called whenever a rule rejects and the
+		 * rule's own `onError` returned void/undefined. Returning a partial
+		 * patch recovers the error (applied via onChange, no touch); returning
+		 * void/undefined falls back to the default console.error handler.
+		 */
+		onError?: (err: unknown, rule: AsyncItemRule<T, C>) => Partial<T> | void;
+	},
 ): UseForm<T, C> & { processing: boolean } => {
-	const onError = opts?.onError ?? DEFAULT_ON_ERROR;
+	const onError = opts?.onError;
+
+	// Error precedence: rule's own onError (patch) → hook opts.onError (patch) → log
+	const handleRuleError = (err: unknown, rule: AsyncItemRule<T, C>) => {
+		const rulePatch = rule[3]?.(err) as Partial<T> | undefined;
+		if (rulePatch !== undefined) {
+			form.onChange(rulePatch, false); // error patch: no touch
+			return;
+		}
+		const hookPatch = onError?.(err, rule) as Partial<T> | undefined;
+		if (hookPatch !== undefined) {
+			form.onChange(hookPatch, false); // error patch: no touch
+			return;
+		}
+		DEFAULT_ON_ERROR(err);
+	};
 
 	// Refs persist across renders without triggering re-renders
 	const runnersRef = useRef(new Map<AsyncItemRule<T, C>, AsyncRunner<T, C>>());
@@ -98,7 +133,7 @@ export const useAsyncFormCore = <T extends object, C extends object = object>(
 						form.onChange(result, false); // final: no touch
 					}
 				})
-				.catch((err) => onError(err, rule))
+				.catch((err) => handleRuleError(err, rule))
 				.finally(() => {
 					pending.current--;
 					if (pending.current === 0) setProcessing(false);

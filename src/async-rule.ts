@@ -79,7 +79,8 @@ export type AsyncRunner<T, C extends object = object> = {
 };
 
 /**
- * Tuple describing a single async rule for use with `useAsyncRules`.
+ * Tuple describing a single async rule for use with `useAsyncRules`
+ * or `useAsyncFormCore`.
  *
  * @template T - the form/item value type
  * @template C - the context type
@@ -88,6 +89,14 @@ export type AsyncItemRule<T, C extends object = object> = readonly [
 	ruleFn: AsyncRule<T, C>,
 	depsFn: (current: T, index?: number, context?: C) => unknown[],
 	runner?: () => AsyncRunner<T, C>,
+	/**
+	 * Optional per-rule error handler (local recovery).
+	 * Return a partial patch to recover locally — it is applied exactly like an
+	 * async result (form.onChange(patch, false), no touch).
+	 * Return `void`/`undefined` (or omit the handler) to fall back to the
+	 * hook-level `opts.onError` of `useAsyncFormCore`.
+	 */
+	onError?: (err: unknown) => Partial<T> | void,
 ];
 
 /**
