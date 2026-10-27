@@ -1,4 +1,5 @@
 import { useState } from '@pionjs/pion';
+import { invoke } from './helpers';
 import { untouch } from './touch';
 import { useFormCore } from './use-form-core';
 // eslint-disable-next-line no-duplicate-imports
@@ -13,11 +14,11 @@ export const processInitial = <T extends object, C extends object = object>(
 	untouch(applyRules({ oldItem: undefined, newItem: initial, rules, context }));
 
 export const useForm = <T extends object>(
-	initial: T,
+	initial: T | (() => T),
 	rules?: readonly ItemRule<T>[],
 ): UseForm<T> => {
 	const [state, setState] = useState<FormValues<T>>(() => {
-		const ini = processInitial(initial, rules);
+		const ini = processInitial(invoke(initial), rules);
 		return [ini, ini];
 	});
 

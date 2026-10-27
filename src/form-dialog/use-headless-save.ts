@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from '@pionjs/pion';
 import type { Failure } from '../add/render';
+import { invoke } from '../helpers';
 import type { Dialog } from './form-dialog';
 
 /** Reject a headless save with this error to cancel without refresh or recovery. */
@@ -19,10 +20,11 @@ export const useHeadlessSave = () => {
 		) => {
 			const existing = active.get(dialog.name);
 			if (existing) return existing;
+			const initial = invoke(dialog.initial);
 			saving.current = true;
 			setPending(true);
 			const request = Promise.resolve()
-				.then(() => dialog.onSave?.(dialog.initial, dialog.initial))
+				.then(() => dialog.onSave?.(initial, initial))
 				.then(() => undefined)
 				.then(undefined, (error: Failure) => {
 					if (!(error instanceof SaveCancelled)) {
