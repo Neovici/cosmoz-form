@@ -1,6 +1,7 @@
-import { useCallback, useState } from '@pionjs/pion';
+import { useCallback, useMemo, useState } from '@pionjs/pion';
 import { ItemRule } from '.';
 import type { AsyncItemRule } from './async-rule';
+import { invoke } from './helpers';
 import type { Fields } from './types';
 import { useAsyncFormCore } from './use-async-form-core';
 import { UseValidatedForm, useValidatedForm } from './use-validated-form';
@@ -10,7 +11,7 @@ export type Progress = [ProgressValue, ProgressValue];
 
 export interface Props<T extends object, C extends object = object> {
 	fields: Fields<T, C>;
-	initial: T;
+	initial: T | (() => T);
 	rules?: ItemRule<T, C>[];
 	asyncRules?: readonly AsyncItemRule<T, C>[];
 	context?: C;
@@ -42,12 +43,13 @@ function useValidatedForm$<T extends object, C extends object = object>({
 	onSave,
 	allowEmpty,
 }: Props<T, C>): UseValidatedForm$<T, C> {
-	const form = useValidatedForm({ fields, initial, rules, context });
+	const ini = useMemo(() => invoke(initial), [initial]);
+	const form = useValidatedForm({ fields, initial: ini, rules, context });
 	const { processing } = useAsyncFormCore(form, asyncRules);
 	const { values, invalid } = form;
 	const [save$, setSave$] = useState<PromiseLike<unknown>>();
 	const [progress, setProgress] = useState<Progress>();
-	const empty = values == null || values === initial;
+	const empty = values == null || values === ini;
 	const disabled =
 		form.fields?.length > 0 && !(empty && allowEmpty) && (empty || invalid);
 
@@ -55,8 +57,8 @@ function useValidatedForm$<T extends object, C extends object = object>({
 		...form,
 		save$,
 		onSave: useCallback(
-			() => setSave$(onSave?.(values!, initial, setProgress)),
-			[onSave, values, initial],
+			() => setSave$(onSave?.(values!, ini, setProgress)),
+			[onSave, values, ini],
 		),
 		disabled,
 		processing,
