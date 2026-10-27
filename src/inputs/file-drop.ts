@@ -1,7 +1,7 @@
+import { invoke } from '@neovici/cosmoz-utils/function';
 import { html } from 'lit-html';
 import { until } from 'lit-html/directives/until.js';
 import { when } from 'lit-html/directives/when.js';
-import { invoke } from '../helpers';
 import { InputBaseOpts } from '../types';
 import { input } from './base';
 
