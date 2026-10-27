@@ -1,6 +1,6 @@
 import { renderHook } from '@neovici/testing';
 import { assert, waitUntil } from '@open-wc/testing';
-import { spy } from 'sinon';
+import { spy, stub } from 'sinon';
 
 import { delay, type AsyncItemRule } from '../async-rule';
 import { makeDebounceRunner } from '../make-debounce-runner';
@@ -23,6 +23,17 @@ suite('useAsyncFormCore', () => {
 	const cityFromName: AsyncItemRule<TestForm> = [
 		async (current) => ({ city: current.name + '-city' }),
 		({ name }) => [name],
+	];
+	// Rule that always throws — per-rule onError decides recovery or fallback
+	const boomWith = (
+		onError?: (err: unknown) => Partial<TestForm> | void,
+	): AsyncItemRule<TestForm> => [
+		async () => {
+			throw new Error('rule boom');
+		},
+		({ name }) => [name],
+		undefined,
+		onError,
 	];
 
 	test('rule runs on initialization (prev deps are null → runs)', async () => {
@@ -157,6 +168,102 @@ suite('useAsyncFormCore', () => {
 		assert.instanceOf(onError.args[0][0], Error);
 		assert.equal((onError.args[0][0] as Error).message, 'rule boom');
 		assert.equal(onError.args[0][1], boom);
+	});
+
+	test('rule onError returns a patch → applied (no touch), hook onError skipped', async () => {
+		const received: unknown[] = [];
+		const hookOnError = spy();
+		const ruleOnError = (err: unknown) => {
+			received.push(err);
+			return { city: 'recovered' };
+		};
+		// Built before renderHook → stable identity across re-renders (harness
+		// convention: inline rule objects would be re-created and re-run by the
+		// deps effect on every values change, looping with the recovered patch).
+		const recoverRule = boomWith(ruleOnError);
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			useAsyncFormCore(form, [recoverRule], { onError: hookOnError });
+			return form;
+		});
+
+		await waitUntil(() => result.current.values.city === 'recovered');
+		assert.equal((received[0] as Error).message, 'rule boom');
+		assert.isFalse(hookOnError.called, 'hook onError not called');
+		assert.isFalse(touched(result.current.values));
+	});
+
+	test('rule onError returns void → hook opts.onError patch applied', async () => {
+		const ruleOnError = spy();
+		const hookOnError = spy(() => ({ city: 'hook-recovered' }));
+		const rule = boomWith(ruleOnError);
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			useAsyncFormCore(form, [rule], { onError: hookOnError });
+			return form;
+		});
+
+		await waitUntil(() => result.current.values.city === 'hook-recovered');
+		assert.equal(ruleOnError.callCount, 1, 'rule onError ran first');
+		assert.isFalse(touched(result.current.values));
+	});
+
+	test('rule onError void + hook onError void → default console.error path', async () => {
+		const ruleOnError = spy();
+		const hookOnError = spy();
+		const rule = boomWith(ruleOnError);
+		const consoleError = stub(console, 'error');
+		try {
+			await renderHook(() => {
+				const form = useForm<TestForm>({ name: 'Alice', city: '' });
+				useAsyncFormCore(form, [rule], { onError: hookOnError });
+				return form;
+			});
+
+			await waitUntil(
+				() => consoleError.called,
+				'console.error should be called',
+			);
+			assert.equal(consoleError.args[0][0], '[cosmoz-form] async rule error:');
+			assert.instanceOf(consoleError.args[0][1], Error);
+		} finally {
+			consoleError.restore();
+		}
+		assert.equal(ruleOnError.callCount, 1);
+		assert.equal(hookOnError.callCount, 1, 'hook onError still invoked');
+	});
+
+	test('pending/processing bookkeeping still settles after errors', async () => {
+		const boomAfter = (ms: number, tag: string): AsyncItemRule<TestForm> => [
+			async (_current, { signal }) => {
+				await delay(signal, ms);
+				throw new Error('boom');
+			},
+			() => ['once'],
+			undefined,
+			() => ({ city: tag }),
+		];
+		// Both rules built before renderHook → stable identity
+		const ruleA = boomAfter(60, 'a-patch');
+		const ruleB = boomAfter(140, 'b-patch');
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			return useAsyncFormCore(form, [ruleA, ruleB]);
+		});
+
+		await waitUntil(() => result.current.processing === true);
+		await tick(80); // first error applied, second rule still in flight
+		assert.isTrue(result.current.processing);
+		assert.equal(result.current.values.city, 'a-patch');
+		await waitUntil(() => result.current.processing === false, undefined, {
+			timeout: 2000,
+		});
+		assert.isFalse(result.current.processing);
+		assert.equal(result.current.values.city, 'b-patch');
+		assert.isFalse(touched(result.current.values));
 	});
 
 	test('uses runner factory from the rule — debounce semantics observed', async () => {
