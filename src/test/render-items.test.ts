@@ -1,4 +1,4 @@
-import { assert, fixture, html, waitUntil } from '@open-wc/testing';
+import { assert, expect, fixture, html, waitUntil } from '@open-wc/testing';
 import { render } from 'lit-html';
 import { autocomplete } from '../inputs';
 import { renderItems, renderItemsStyles } from '../render/items';
@@ -27,7 +27,7 @@ const fields = [
 	{ id: 'c', header: 'C', input: autocomplete, options: ['x', 'y'] },
 ] as Fields<Item>;
 
-const renderList = async () => {
+const renderList = async (opts: Record<string, unknown> = {}) => {
 	const host = await fixture<HTMLDivElement>(
 		html`<div style="width: 600px"></div>`,
 	);
@@ -43,6 +43,7 @@ const renderList = async () => {
 				remove: () => undefined,
 				defaults: {},
 				scroller: false,
+				...opts,
 			} as unknown as Parameters<typeof renderItems>[0])}`,
 		root,
 	);
@@ -161,6 +162,31 @@ suite('renderItems', () => {
 		});
 	});
 
+	suite('remove button', () => {
+		test('the remove button is named "Remove" by default', async () => {
+			const root = await renderList();
+			await expect(root.host).shadowDom.to.equalSnapshot({
+				ignoreAttributes: ['style'],
+			});
+		});
+
+		test('a string removeLabel becomes the button name', async () => {
+			const root = await renderList({ removeLabel: 'Delete line' });
+			await expect(root.host).shadowDom.to.equalSnapshot({
+				ignoreAttributes: ['style'],
+			});
+		});
+
+		test('a function removeLabel builds the name from the row values', async () => {
+			const root = await renderList({
+				removeLabel: (values: Item) => `Remove ${values?.a}`,
+			});
+			await expect(root.host).shadowDom.to.equalSnapshot({
+				ignoreAttributes: ['style'],
+			});
+		});
+	});
+
 	suite('add row', () => {
 		const setup = async () => {
 			const host = await fixture<HTMLDivElement>(
@@ -191,11 +217,11 @@ suite('renderItems', () => {
 				root.querySelector(`.item[data-index="${index}"]`)!;
 			const addRow = () => row(items.length);
 			await draw();
-			return { row, draw, addRow };
+			return { root, row, draw, addRow };
 		};
 
 		test('the add row becomes the new item and a fresh add row follows', async () => {
-			const { row, draw, addRow } = await setup();
+			const { root, row, draw, addRow } = await setup();
 			const typedIn = addRow();
 			const input = typedIn
 				.querySelector('[name="a"]')!
@@ -207,6 +233,9 @@ suite('renderItems', () => {
 
 			await draw();
 
+			await expect(root.host).shadowDom.to.equalSnapshot({
+				ignoreAttributes: ['style'],
+			});
 			assert.strictEqual(row(0), typedIn);
 			assert.notStrictEqual(addRow(), typedIn);
 		});
