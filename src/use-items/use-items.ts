@@ -1,6 +1,5 @@
 import { invoke } from '@neovici/cosmoz-utils/function';
 import {
-	StateUpdater,
 	useCallback,
 	useEffect,
 	useMemo,
@@ -27,9 +26,20 @@ const changes = <T>(
 	return [[indexOrChanges as number, update]];
 };
 
+/**
+ * Items setter, usable with a controlled update store; `opts.userInitiated`
+ * distinguishes user edits from programmatic writes (e.g. re-applying rules
+ * after a context change), so controlled consumers can avoid wrongly marking
+ * the form as touched.
+ */
+export type SetItems<T> = (
+	update: T[] | ((items: T[]) => T[]),
+	opts?: { userInitiated?: boolean },
+) => void;
+
 export type UseItemsCore<T extends object> = {
 	items: T[];
-	setItems: StateUpdater<T[]>;
+	setItems: SetItems<T>;
 	touched: boolean;
 	update: (
 		indexOrChanges: number | readonly [number, Partial<T>][],
@@ -53,7 +63,7 @@ export const useItemsCore = <T extends object, C extends object = object>({
 	touched: externalTouched,
 }: Props<T, C> & {
 	items: T[];
-	setItems: StateUpdater<T[]>;
+	setItems: SetItems<T>;
 }): UseItemsCore<T> => {
 	// Re-apply rules when context changes, passing oldContext so depsFn comparisons
 	// correctly detect the change (new context vs old context for the same item).
@@ -62,20 +72,23 @@ export const useItemsCore = <T extends object, C extends object = object>({
 		const oldContext = prevContextRef.current;
 		prevContextRef.current = context;
 		if (oldContext === undefined) return; // skip mount
-		setItems((currentItems) =>
-			currentItems.map((oldItem, index) =>
-				touch(
-					applyRules({
-						oldItem,
-						newItem: oldItem,
-						rules,
-						index,
-						context,
-						oldContext,
-					}),
-					touched(oldItem),
+		// Re-applying rules is not a user edit; don't touch in controlled setups.
+		setItems(
+			(currentItems) =>
+				currentItems.map((oldItem, index) =>
+					touch(
+						applyRules({
+							oldItem,
+							newItem: oldItem,
+							rules,
+							index,
+							context,
+							oldContext,
+						}),
+						touched(oldItem),
+					),
 				),
-			),
+			{ userInitiated: false },
 		);
 	}, [context]);
 
@@ -91,111 +104,124 @@ export const useItemsCore = <T extends object, C extends object = object>({
 				indexOrChanges: number | readonly [number, Partial<T>][],
 				update: Partial<T>,
 			) =>
-				setItems((items = []) =>
-					touch(
-						changes(indexOrChanges ?? items.length, update).reduce(
-							(acc, [index, update]) => [
-								...acc.slice(0, index),
-								touch(
-									applyRules({
-										oldItem: acc[index],
-										newItem: { ...acc[index], ...update },
-										rules,
-										index,
-										context,
-									}),
-								),
-								...acc.slice(index + 1),
-							],
-							items,
+				setItems(
+					(items = []) =>
+						touch(
+							changes(indexOrChanges ?? items.length, update).reduce(
+								(acc, [index, update]) => [
+									...acc.slice(0, index),
+									touch(
+										applyRules({
+											oldItem: acc[index],
+											newItem: { ...acc[index], ...update },
+											rules,
+											index,
+											context,
+										}),
+									),
+									...acc.slice(index + 1),
+								],
+								items,
+							),
 						),
-					),
+					{ userInitiated: true },
 				),
 			[rules, context],
 		),
 		updateAll: useCallback(
 			(updateOrFn: Partial<T> | ((i: T) => Partial<T>)) =>
-				setItems((items = []) =>
-					items.map((oldItem, index) => {
-						const newItem = invoke(updateOrFn, oldItem);
-						return touch(
-							applyRules({
-								oldItem,
-								newItem: { ...oldItem, ...newItem },
-								rules,
-								index,
-								context,
-							}),
-						);
-					}),
+				setItems(
+					(items = []) =>
+						items.map((oldItem, index) => {
+							const newItem = invoke(updateOrFn, oldItem);
+							return touch(
+								applyRules({
+									oldItem,
+									newItem: { ...oldItem, ...newItem },
+									rules,
+									index,
+									context,
+								}),
+							);
+						}),
+					{ userInitiated: true },
 				),
 			[rules, context],
 		),
 		remove: useCallback(
 			(rindex: number) =>
-				setItems((items = []) =>
-					touch([
-						...items.slice(0, rindex),
-						...items.slice(rindex + 1).map((item, index) =>
-							applyRules({
-								rules,
-								newItem: item,
-								oldItem: item,
-								index: index + rindex,
-								oldIndex: index + rindex + 1,
-								context,
-							}),
-						),
-					]),
+				setItems(
+					(items = []) =>
+						touch([
+							...items.slice(0, rindex),
+							...items.slice(rindex + 1).map((item, index) =>
+								applyRules({
+									rules,
+									newItem: item,
+									oldItem: item,
+									index: index + rindex,
+									oldIndex: index + rindex + 1,
+									context,
+								}),
+							),
+						]),
+					{ userInitiated: true },
 				),
 			[rules, context],
 		),
 		append: useCallback(
 			(appendedItems: T[]) =>
-				setItems((items = []) =>
-					touch(
-						items.concat(
-							appendedItems.map((item, index) =>
-								applyRules({
-									rules,
-									newItem: item,
-									index: index + items.length,
-									context,
-								}),
+				setItems(
+					(items = []) =>
+						touch(
+							items.concat(
+								appendedItems.map((item, index) =>
+									applyRules({
+										rules,
+										newItem: item,
+										index: index + items.length,
+										context,
+									}),
+								),
 							),
 						),
-					),
+					{ userInitiated: true },
 				),
 			[rules, context],
 		),
 		prepend: useCallback(
 			(prependedItems: T[]) =>
-				setItems((items = []) =>
-					touch([
-						...prependedItems.map((item, index) =>
-							applyRules({
-								rules,
-								newItem: item,
-								index,
-								context,
-							}),
-						),
-						...items.map((item, index) =>
-							applyRules({
-								rules,
-								newItem: item,
-								oldItem: item,
-								index: index + prependedItems.length,
-								oldIndex: index,
-								context,
-							}),
-						),
-					]),
+				setItems(
+					(items = []) =>
+						touch([
+							...prependedItems.map((item, index) =>
+								applyRules({
+									rules,
+									newItem: item,
+									index,
+									context,
+								}),
+							),
+							...items.map((item, index) =>
+								applyRules({
+									rules,
+									newItem: item,
+									oldItem: item,
+									index: index + prependedItems.length,
+									oldIndex: index,
+									context,
+								}),
+							),
+						]),
+					{ userInitiated: true },
 				),
 			[rules, context],
 		),
-		reset: useCallback(() => setItems(initial), [initial]),
-		clear: useCallback(() => setItems(touch([])), []),
+		reset: useCallback(
+			() => setItems(initial, { userInitiated: true }),
+			[initial],
+		),
+		clear: useCallback(() => setItems(touch([]), { userInitiated: true }), []),
 		load: useCallback(
 			(items: T[], rulesOverride?: ItemRule<T>[]) =>
 				setItems(
@@ -207,6 +233,7 @@ export const useItemsCore = <T extends object, C extends object = object>({
 							context,
 						}),
 					),
+					{ userInitiated: true },
 				),
 			[rules, context],
 		),
@@ -218,7 +245,7 @@ export const useItems = <T extends object, C extends object = object>({
 	rules,
 	context,
 	touched,
-}: Props<T, C>) => {
+}: Props<T, C>): UseItemsCore<T> => {
 	const _initial = useMemo(
 			() =>
 				initial.map((newItem, index) =>

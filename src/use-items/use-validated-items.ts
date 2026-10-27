@@ -14,6 +14,20 @@ interface Props<T extends ValidatedItem, C extends object = object> {
 	touched?: boolean;
 }
 
+/**
+ * Item rule that computes row level errors ([ERROR]) from a set of fields.
+ * Shared by useValidatedItems and useValidatedItemsCore.
+ */
+export const errorRule = <T extends object, C extends object = object>(
+	fields: Fields<T, C>,
+	context?: C,
+): ItemRule<T> => [
+	(item: T) =>
+		({ [ERROR]: validateFields(fields, item, context) }) as Partial<
+			T & ValidatedItem
+		>,
+];
+
 export interface UseValidatedItems<T extends object> extends UseItemsCore<
 	T & ValidatedItem
 > {
@@ -29,12 +43,7 @@ export const useValidatedItems = <T extends object, C extends object = object>({
 }: Props<T, C>): UseValidatedItems<T> => {
 	const meta = useMeta({ fields }),
 		validation: ItemRule<T> = useMemo(
-			() => [
-				(item: T) =>
-					({ [ERROR]: validateFields(meta.fields, item, context) }) as Partial<
-						T & ValidatedItem
-					>,
-			],
+			() => errorRule<T, C>(meta.fields, context),
 			[meta, context],
 		),
 		{ items, ...rest } = useItems<T & ValidatedItem, C>({
