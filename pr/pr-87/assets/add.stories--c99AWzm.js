@@ -1,4 +1,4 @@
-import{o as m,n as v,w as K,b as i,t as Q,v as se,a as O,i as I,m as re,l as N,c as U,u as ne,d as P,e as f,f as x,A as L}from"./iframe-C7j-l36P.js";import{s as le,r as de,a as ce,b as ue,i as _,c as me,d as pe,e as ge,v as ye,E as B,f as ve,u as w,g as p,t as y,n as g,h as fe,j as E,k as he,l as G,m as be}from"./inline-file-sxo4iAHF.js";import{a as F}from"./autocomplete-CyzYSstm.js";import{u as $e}from"./use-items-DXay52ag.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:a,width:o="24",height:s="24",styles:r}={})=>i`
+import{o as m,n as v,w as K,b as i,t as Q,v as se,a as O,i as I,m as re,l as N,c as U,u as ne,d as P,e as f,f as x,A as L}from"./iframe-B3v4pMAJ.js";import{s as le,r as de,a as ce,b as ue,i as _,c as me,d as pe,e as ge,v as ye,E as B,f as ve,u as w,g as p,t as y,n as g,h as fe,j as E,k as he,l as G,m as be}from"./inline-file-CEZb-dEv.js";import{a as F}from"./autocomplete-DXB7Yzsx.js";import{u as $e}from"./use-items-C6wLhUSf.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:a,width:o="24",height:s="24",styles:r}={})=>i`
   <svg
     slot=${m(e)}
     class=${`edit-02-icon ${a??""}`}
@@ -46,7 +46,7 @@ import{o as m,n as v,w as K,b as i,t as Q,v as se,a as O,i as I,m as re,l as N,c
 		size="sm"
 		?disabled=${!e}
 		@click=${e}
-		title=${t}
+		tooltip=${t}
 		aria-label=${t}
 	>
 		${Y()}
