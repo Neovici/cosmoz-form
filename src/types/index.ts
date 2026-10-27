@@ -154,4 +154,17 @@ export type Fields<T extends object, C extends object = object> = readonly {
 	[K in keyof T]-?: Readonly<Field<T, K, T[K], C>>;
 }[keyof T][];
 
+export type ValidatedField<
+	T extends object,
+	K extends keyof T,
+	V extends T[K] = T[K],
+	C extends object = object,
+> = Field<T, K, V, C> & {
+	error: false | string;
+};
+
+export type ValidatedFields<T extends object, C extends object = object> = readonly {
+	[K in keyof T]-?: Readonly<ValidatedField<T, K, T[K], C>>;
+}[keyof T][];
+
 export { InputBaseProps as InputBaseOpts } from '../inputs/base';

@@ -1,6 +1,6 @@
 import { array } from '@neovici/cosmoz-utils/array';
 
-import { Errors, Field, Fields, Validate } from '../types';
+import { Errors, Field, Fields, Validate, ValidatedFields } from '../types';
 
 export const ERROR: unique symbol = Symbol('error');
 
@@ -15,13 +15,14 @@ export const runValidation = <
 	values: T,
 	field: Field<T, K, V, C>,
 	context?: C,
-): string | undefined => {
+): false | string => {
 	for (const check of array(validate)) {
 		const error = check(value, values, field, context);
 		if (error) {
 			return error;
 		}
 	}
+	return false;
 };
 
 export const validateField = <
@@ -32,15 +33,16 @@ export const validateField = <
 	field: Field<T, K, T[K], C>,
 	values: T,
 	context?: C,
-) =>
-	field.validate &&
-	runValidation(
-		field.validate,
-		values[(field.path as K) ?? field.id],
-		values,
-		field,
-		context,
-	);
+): false | string =>
+	field.validate
+		? runValidation(
+				field.validate,
+				values[(field.path as K) ?? field.id],
+				values,
+				field,
+				context,
+			)
+		: false;
 
 export const validateFields = <T extends object, C extends object = object>(
 	fields: Fields<T, C>,
@@ -58,7 +60,10 @@ export const validateFieldsM = <T extends object, C extends object = object>(
 	fields: Fields<T, C>,
 	values: T,
 	context?: C,
-) => {
+): {
+	fields: ValidatedFields<T, C>;
+	invalid: boolean;
+} => {
 	const validated = fields.map((field) => ({
 		...field,
 		error: validateField(field, values, context),
@@ -73,11 +78,14 @@ export const validate = <T extends object, C extends object = object>(
 	fields: Fields<T, C>,
 	values?: T,
 	context?: C,
-) =>
+): {
+	fields: ValidatedFields<T, C>;
+	invalid: boolean;
+} =>
 	values
 		? validateFieldsM(fields, values, context)
 		: {
-				fields,
+				fields: fields as ValidatedFields<T, C>,
 				invalid: true,
 			};
 
