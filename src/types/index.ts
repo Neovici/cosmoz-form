@@ -108,9 +108,10 @@ export type Codec<
 	K extends keyof T,
 	V extends T[K],
 	C extends object = object,
+	S = unknown,
 > = readonly [
-	Invoked<T, Field<T, K, V, C>, V, unknown, C>,
-	Invoked<T, Field<T, K, V, C>, unknown, V, C>,
+	Invoked<T, Field<T, K, V, C>, V, S, C>,
+	Invoked<T, Field<T, K, V, C>, S, V, C>,
 ];
 
 export interface Field<
