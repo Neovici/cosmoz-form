@@ -58,7 +58,7 @@ export type Rule<
 	C extends object = object,
 > = (
 	value: V,
-	values?: T,
+	values: T,
 	field?: Field<T, K, V, C>,
 	context?: C,
 ) => false | string;
