@@ -2,7 +2,7 @@ import { invoke } from '@neovici/cosmoz-utils/function';
 import { html } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat.js';
 import { text } from '../inputs/common';
-import { Field, Fields, Renderable } from '../types';
+import { Field, Fields, Renderable, ValidatedFields } from '../types';
 import { UseValidatedForm } from '../use-validated-form-core';
 import { ERROR } from '../validation';
 
@@ -14,7 +14,7 @@ interface ValidatedField<
 	V extends T[K],
 	C extends object = object,
 > extends Field<T, K, V, C> {
-	error?: string;
+	error?: string | false;
 }
 
 interface RenderField<
@@ -22,7 +22,8 @@ interface RenderField<
 	K extends keyof T,
 	V extends T[K],
 	C extends object = object,
-> extends UseValidatedForm<T, C> {
+> extends Omit<UseValidatedForm<T, C>, 'fields'> {
+	fields?: ValidatedFields<T, C> | Fields<T, C>;
 	field: ValidatedField<T, K, V, C>;
 }
 
@@ -52,7 +53,9 @@ export const renderField = <
 export const renderFields = <T extends object, C extends object = object>({
 	fields,
 	...thru
-}: UseValidatedForm<T, C>): Renderable =>
+}: Omit<UseValidatedForm<T, C>, 'fields'> & {
+	fields?: ValidatedFields<T, C> | Fields<T, C>;
+}): Renderable =>
 	repeat(
 		fields ?? [],
 		({ id }) => id,
