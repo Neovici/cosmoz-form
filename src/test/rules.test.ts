@@ -28,7 +28,9 @@ suite('afterStartDate', () => {
 	});
 
 	test('passes while either date is missing', () => {
-		assert.isFalse(rule('2026-01-10'));
+		assert.isFalse(
+			rule('2026-01-10', { fromDate: '', toDate: '' }),
+		);
 		assert.isFalse(rule('', { fromDate: '2026-01-10', toDate: '' }));
 	});
 
