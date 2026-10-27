@@ -18,13 +18,67 @@ type OptionsOpts<T, V, C> = {
 	context: C;
 };
 
+/**
+ * The individual item behind an autocomplete value: for multi-select fields
+ * the value is an array of items, so the item is extracted from it.
+ */
+type OptionValue<V> = V extends readonly unknown[] ? V[number] : V;
+
+/**
+ * A single option the autocomplete offers: the raw value itself, or an object
+ * shaped per `valueProperty`/`textProperty` (commonly `{ id, text }`).
+ */
+export type AutocompleteOption<V> = OptionValue<V> | {
+	id: OptionValue<V>;
+	text?: string;
+};
+
+/**
+ * Context `cosmoz-autocomplete` passes to an item renderer, as
+ * `(item, index, opts)`. Renderers are forwarded opaquely to the element, so
+ * the option is typed (giving `V` presence end-to-end), but the renderer's
+ * return type stays permissive.
+ */
+export type AutocompleteItemRendererOpts<V> = {
+	items: AutocompleteOption<V>[];
+	position: { index: number; scroll?: boolean };
+	query?: string;
+	textual: (item: AutocompleteOption<V>) => string;
+	highlight: (index: number) => void;
+	select: (item: AutocompleteOption<V>) => void;
+	isSelected: (item: AutocompleteOption<V>) => void;
+};
+
+export type AutocompleteItemRenderer<V> = (
+	item: AutocompleteOption<V>,
+	index: number,
+	opts: AutocompleteItemRendererOpts<V>,
+) => unknown;
+
+/**
+ * Props `cosmoz-autocomplete` passes to a chip renderer, as a single object;
+ * `item` is `null` for the hidden overflow badge chip.
+ */
+export type AutocompleteChipRenderer<V> = (opts: {
+	item: AutocompleteOption<V> | null;
+	content?: unknown;
+	onClear?: false | (() => void);
+	disabled?: boolean;
+	className?: string;
+	slot?: string;
+	hidden?: boolean;
+}) => unknown;
+
 export interface AutocompleteProps<
 	T extends object,
 	K extends keyof T,
 	V extends T[K],
 	C extends object,
 > {
-	options?: Resolvable<unknown[] | false | undefined, [OptionsOpts<T, V, C>]>;
+	options?: Resolvable<
+		AutocompleteOption<V>[] | false | undefined,
+		[OptionsOpts<T, V, C>]
+	>;
 	mode?: 'select';
 	variant?: 'cell';
 	compact?: boolean;
@@ -37,8 +91,8 @@ export interface AutocompleteProps<
 	wrap?: boolean;
 	showSingle?: boolean;
 	preserveOrder?: boolean;
-	itemRenderer?: unknown;
-	chipRenderer?: unknown;
+	itemRenderer?: AutocompleteItemRenderer<V>;
+	chipRenderer?: AutocompleteChipRenderer<V>;
 	required?: boolean;
 	textual?: unknown;
 	externalSearch?: boolean;
