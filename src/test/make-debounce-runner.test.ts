@@ -192,6 +192,23 @@ suite('makeDebounceRunner', () => {
 		assert.isNull(result);
 	});
 
+	test('a rule that ignores the signal cannot deliver its result after cancel()', async () => {
+		let release!: () => void;
+		const ruleIgnoringSignal: AsyncRule<S> = async () => {
+			await new Promise<void>((resolve) => {
+				release = resolve;
+			});
+			return { name: 'stale' };
+		};
+
+		const cancelled = runner.run(ruleIgnoringSignal, {}, noop);
+		await clock.tickAsync(50);
+		runner.cancel();
+		release();
+
+		assert.isNull(await cancelled);
+	});
+
 	test('non-abort errors from the fn are re-thrown', async () => {
 		const boom: AsyncRule<S> = async () => {
 			throw new Error('network error');

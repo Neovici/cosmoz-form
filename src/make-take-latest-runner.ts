@@ -10,16 +10,21 @@ export const makeTakeLatestRunner = <
 
 	return {
 		run: async (fn, values, onIntermediate, opts) => {
+			const controller = new AbortController();
 			ac?.abort(); // cancel previous (takeLatest / switchMap)
-			ac = new AbortController();
-			const asyncOpts = {
-				update: onIntermediate,
-				signal: ac.signal,
-				index: opts?.index,
-				context: opts?.context,
-			};
+			ac = controller;
+			const { signal } = controller;
+
 			try {
-				return await fn(values, asyncOpts);
+				const result = await fn(values, {
+					update: onIntermediate,
+					signal,
+					index: opts?.index,
+					context: opts?.context,
+				});
+				// A rule that ignores `signal` may still resolve normally after a
+				// newer run took over (or cancel() fired). Drop that stale result.
+				return signal.aborted ? null : result;
 			} catch (e) {
 				// AbortError from delay() or fetch() when cancelled — not a real error
 				if (e instanceof DOMException && e.name === 'AbortError') return null;
