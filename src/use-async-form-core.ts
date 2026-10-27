@@ -32,6 +32,12 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  * never reaches the error path. Rules should rethrow signal errors, not swallow
  * them, so cancellation stays silent.
  *
+ * Rules must be defined once — module scope, or useMemo/useRef — never inline:
+ * runner and dependency state is keyed by rule identity, so a rule object
+ * re-created each render is treated as a new rule and re-fires every render.
+ * With error/patch feedback that can freeze the component. Violating this is
+ * undefined behavior; the hook does not defensively re-key.
+ *
  * Usage:
  *   const form = useValidatedForm({ fields, initial, rules, context });
  *   const { processing } = useAsyncFormCore(form, asyncRules);
