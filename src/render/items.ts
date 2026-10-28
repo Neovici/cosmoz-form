@@ -21,6 +21,7 @@ export const renderRemove = (remove: () => void, label = 'Remove') =>
 		class="remove"
 		variant="tertiary"
 		size="sm"
+		icon-only
 		?disabled=${!remove}
 		@click=${remove}
 		tooltip=${label}
@@ -36,6 +37,7 @@ export const renderRemovePlaceholder = () =>
 		class="remove remove-placeholder"
 		variant="tertiary"
 		size="sm"
+		icon-only
 		aria-hidden="true"
 		inert
 	>
