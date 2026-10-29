@@ -1,4 +1,4 @@
-import{o as y,n as P,w as Mt,b as x,q as rt,e as Z,A as dt,r as Nt,k as W,s as Gn,x as mn,p as E,g as pt,y as me,z as Un,B as ye,C as we,D as Kn,c as S,E as Jn,i as F,j as ct,t as te,m as xe,f as Y,d as N,F as gn,G as pn,H as We,I as ze,u as Zn,h as to,l as eo,J as no,a as Bt}from"./iframe-iq47y892.js";const oo={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},ro=t=>typeof t=="string"&&oo.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=ro(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},ao=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>x`
+import{o as y,n as P,w as Mt,b as x,q as rt,e as Z,A as dt,r as Nt,k as W,s as Gn,x as mn,p as E,g as pt,y as me,z as Un,B as ye,C as we,D as Kn,c as S,E as Jn,i as F,j as ct,t as te,m as xe,f as Y,d as N,F as gn,G as pn,H as We,I as ze,u as Zn,h as to,l as eo,J as no,a as Bt}from"./iframe-Dr_8UuLu.js";const oo={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},ro=t=>typeof t=="string"&&oo.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=ro(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},ao=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>x`
   <svg
     slot=${y(t)}
     class=${`alert-circle-icon ${n??""}`}
@@ -232,14 +232,14 @@ import{o as y,n as P,w as Mt,b as x,q as rt,e as Z,A as dt,r as Nt,k as W,s as G
 
 	::slotted(iron-icon) {
 		pointer-events: none;
-		width: 20px;
-		height: 20px;
+		width: var(--cosmoz-button-icon-size, var(--cz-icon-size-lg, 1.25rem));
+		height: var(--cosmoz-button-icon-size, var(--cz-icon-size-lg, 1.25rem));
 		flex: none;
 	}
 
 	::slotted(svg) {
-		width: 16px;
-		height: 16px;
+		width: var(--cosmoz-button-icon-size, var(--cz-icon-size-sm, 1rem));
+		height: var(--cosmoz-button-icon-size, var(--cz-icon-size-sm, 1rem));
 		flex-shrink: 0;
 	}
 
@@ -260,8 +260,8 @@ import{o as y,n as P,w as Mt,b as x,q as rt,e as Z,A as dt,r as Nt,k as W,s as G
 	}
 
 	:host([size='sm']) ::slotted(svg) {
-		width: 14px;
-		height: 14px;
+		width: var(--cosmoz-button-icon-size, var(--cz-icon-size-xs, 0.875rem));
+		height: var(--cosmoz-button-icon-size, var(--cz-icon-size-xs, 0.875rem));
 	}
 
 	:host([size='lg']) .button {
@@ -278,8 +278,8 @@ import{o as y,n as P,w as Mt,b as x,q as rt,e as Z,A as dt,r as Nt,k as W,s as G
 	}
 
 	:host([size='xl']) ::slotted(svg) {
-		width: 18px;
-		height: 18px;
+		width: var(--cosmoz-button-icon-size, var(--cz-icon-size-md, 1.125rem));
+		height: var(--cosmoz-button-icon-size, var(--cz-icon-size-md, 1.125rem));
 	}
 
 	:host([icon-only]) .button {
@@ -302,15 +302,6 @@ import{o as y,n as P,w as Mt,b as x,q as rt,e as Z,A as dt,r as Nt,k as W,s as G
 
 	:host([icon-only]) ::slotted(svg) {
 		margin: 0;
-	}
-
-	/* Preserve the supplied geometry of standalone icons. */
-	:host([icon-only]) ::slotted(svg[width]) {
-		width: auto;
-	}
-
-	:host([icon-only]) ::slotted(svg[height]) {
-		height: auto;
 	}
 
 	/* Variants */
@@ -389,6 +380,48 @@ import{o as y,n as P,w as Mt,b as x,q as rt,e as Z,A as dt,r as Nt,k as W,s as G
 		}
 	}
 
+	:host([variant='success']) .button {
+		--_pressed-bg: var(
+			--cz-color-bg-success-solid-hover,
+			color-mix(in oklab, var(--cz-color-bg-success-solid), black 12%)
+		);
+		background: var(--_sheen), var(--cz-color-bg-success-solid);
+		color: var(--cz-color-white);
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.06),
+			inset 0 0 0 1px light-dark(rgb(10 13 18 / 0.2), transparent),
+			var(--_lift);
+
+		&:hover {
+			background-color: var(--_pressed-bg);
+		}
+
+		&:focus-visible {
+			outline-color: var(--cz-color-success-500);
+		}
+	}
+
+	:host([variant='warning']) .button {
+		--_pressed-bg: var(
+			--cz-color-bg-warning-solid-hover,
+			color-mix(in oklab, var(--cz-color-bg-warning-solid), black 12%)
+		);
+		background: var(--_sheen), var(--cz-color-bg-warning-solid);
+		color: var(--cz-color-white);
+		box-shadow:
+			inset 0 1px 0 rgb(255 255 255 / 0.06),
+			inset 0 0 0 1px light-dark(rgb(10 13 18 / 0.2), transparent),
+			var(--_lift);
+
+		&:hover {
+			background-color: var(--_pressed-bg);
+		}
+
+		&:focus-visible {
+			outline-color: var(--cz-color-warning-500);
+		}
+	}
+
 	:host([variant='link']) .button {
 		height: auto;
 		padding: 0;
@@ -441,7 +474,9 @@ import{o as y,n as P,w as Mt,b as x,q as rt,e as Z,A as dt,r as Nt,k as W,s as G
 
 	:host(:not([variant])[aria-pressed='true']) .button,
 	:host([variant='primary'][aria-pressed='true']) .button,
-	:host([variant='destructive'][aria-pressed='true']) .button {
+	:host([variant='destructive'][aria-pressed='true']) .button,
+	:host([variant='success'][aria-pressed='true']) .button,
+	:host([variant='warning'][aria-pressed='true']) .button {
 		background-image: none;
 		box-shadow: var(--cz-shadow-glass-pressed, var(--cz-shadow-pressed-3d));
 	}
