@@ -35,8 +35,16 @@ export const styles = css`
 		display: flex;
 		width: 100%;
 	}
+	/* Never narrower than the columns' minimums; the list scrolls sideways instead. */
+	.headers,
+	.item {
+		min-width: min-content;
+	}
+	/* Every row splits the width like the headers do; an input's own content
+	   (a suffix, a warning icon) never widens its column in one row only. */
 	.input {
 		flex: 1 1 0px;
+		min-width: 0;
 	}
 	.item > .input {
 		margin: var(--cz-spacing);

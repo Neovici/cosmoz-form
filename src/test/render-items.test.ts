@@ -76,6 +76,79 @@ suite('renderItems', () => {
 			);
 		});
 
+		test('a suffix in one row does not shift the columns of that row', async () => {
+			const host = await fixture<HTMLDivElement>(
+				html`<div style="width: 300px"></div>`,
+			);
+			const root = host.attachShadow({ mode: 'open' });
+			const suffixed = [
+				{ id: 'a', header: 'A' },
+				{
+					id: 'b',
+					header: 'B',
+					suffix: (_: unknown, values?: Item) =>
+						values?.c ? 'SEKSEKSEKSEKSEK' : '',
+				},
+				{ id: 'c', header: 'C' },
+			] as Fields<Item>;
+			render(
+				html`<style>
+						${renderItemsStyles({ fields: suffixed })}
+					</style>
+					${renderItems({
+						items: [{ a: '1' }, { a: '2', c: 'x' }],
+						fields: suffixed,
+						update: () => undefined,
+						scroller: false,
+					} as unknown as Parameters<typeof renderItems>[0])}`,
+				root,
+			);
+			await waitUntil(() => root.querySelectorAll('.item').length === 2);
+			await new Promise(requestAnimationFrame);
+			const [plain, withSuffix] = root.querySelectorAll('.item');
+
+			assert.deepEqual(lefts(withSuffix, '.input'), lefts(plain, '.input'));
+			assert.deepEqual(
+				lefts(root.querySelector('.headers')!, '.header'),
+				lefts(plain, '.input'),
+			);
+		});
+
+		test('a list narrower than its columns scrolls sideways, headers included', async () => {
+			const host = await fixture<HTMLDivElement>(
+				html`<div style="width: 200px"></div>`,
+			);
+			const root = host.attachShadow({ mode: 'open' });
+			const wide = fields.map((field) => ({
+				...field,
+				styles: { 'min-width': '120px' },
+			})) as Fields<Item>;
+			render(
+				html`<style>
+						${renderItemsStyles({ fields: wide })}
+					</style>
+					${renderItems({
+						items: [{ a: '1' }],
+						fields: wide,
+						update: () => undefined,
+						scroller: false,
+					} as unknown as Parameters<typeof renderItems>[0])}`,
+				root,
+			);
+			await waitUntil(() => root.querySelectorAll('.item').length === 1);
+			await new Promise(requestAnimationFrame);
+			const items = root.querySelector('.items')!;
+			const row = root.querySelector('.item')!;
+
+			const headers = root.querySelector('.headers')!;
+
+			assert.isAbove(items.scrollWidth, items.clientWidth);
+			// The header strip and the row span the scrolled width, not just the view.
+			assert.closeTo(headers.scrollWidth, headers.clientWidth, 1);
+			assert.closeTo(row.scrollWidth, row.clientWidth, 1);
+			assert.deepEqual(lefts(headers, '.header'), lefts(row, '.input'));
+		});
+
 		test('the remove button sits on the middle of the input controls', async () => {
 			const root = await renderList();
 			const row = root.querySelector('.item')!;
