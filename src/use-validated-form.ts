@@ -1,5 +1,5 @@
+import { invoke } from '@neovici/cosmoz-utils/function';
 import { useState } from '@pionjs/pion';
-import { invoke } from './helpers';
 import type { Fields } from './types';
 import { processInitial } from './use-form';
 import { FormValues } from './use-form-core';

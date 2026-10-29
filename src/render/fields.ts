@@ -1,6 +1,6 @@
+import { invoke } from '@neovici/cosmoz-utils/function';
 import { html } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat.js';
-import { invoke } from '../helpers';
 import { text } from '../inputs/common';
 import { Field, Fields, Renderable } from '../types';
 import { UseValidatedForm } from '../use-validated-form-core';
