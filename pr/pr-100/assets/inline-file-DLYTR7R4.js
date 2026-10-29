@@ -1,4 +1,4 @@
-import{o as $,n as P,w as Mt,b as w,q as Z,e as tt,A as dt,r as Nt,k as W,s as hn,p as E,g as pt,x as me,y as Qn,z as ye,B as we,C as Gn,c as S,D as Un,i as F,j as ct,t as te,m as xe,f as Y,d as N,E as mn,F as gn,G as We,H as ze,u as Kn,h as Jn,l as Zn,I as to,a as Bt}from"./iframe-A4r8uMHQ.js";const eo={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},no=t=>typeof t=="string"&&eo.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=no(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},oo=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>w`
+import{o as $,n as P,w as Mt,b as w,q as Z,e as tt,A as dt,r as Nt,k as W,s as hn,p as E,g as pt,x as me,y as Qn,z as ye,B as we,C as Gn,c as S,D as Un,i as F,j as ct,t as te,m as xe,f as Y,d as N,E as mn,F as gn,G as We,H as ze,u as Kn,h as Jn,l as Zn,I as to,a as Bt}from"./iframe-DdGTUiyW.js";const eo={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},no=t=>typeof t=="string"&&eo.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=no(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},oo=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>w`
   <svg
     slot=${$(t)}
     class=${`alert-circle-icon ${n??""}`}
@@ -688,8 +688,16 @@ import{o as $,n as P,w as Mt,b as w,q as Z,e as tt,A as dt,r as Nt,k as W,s as h
 		display: flex;
 		width: 100%;
 	}
+	/* Never narrower than the columns' minimums; the list scrolls sideways instead. */
+	.headers,
+	.item {
+		min-width: min-content;
+	}
+	/* Every row splits the width like the headers do; an input's own content
+	   (a suffix, a warning icon) never widens its column in one row only. */
 	.input {
 		flex: 1 1 0px;
+		min-width: 0;
 	}
 	.item > .input {
 		margin: var(--cz-spacing);
