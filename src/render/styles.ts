@@ -1,20 +1,28 @@
 import { tagged as css } from '@neovici/cosmoz-utils';
 
 export const styles = css`
+	/* Stays in view while the rows scroll beneath it. */
 	.headers {
+		position: sticky;
+		inset-block-start: 0;
+		z-index: 1;
 		display: flex;
-		border-bottom: solid 1px var(--cz-color-border-primary);
-		font-size: var(--cz-text-base);
-		line-height: var(--cz-text-base-line-height);
-		font-weight: var(--cz-font-weight-regular);
-		color: var(--cz-color-text-secondary);
-		padding-block: calc(var(--cz-spacing) * 2.5);
 		width: 100%;
+		padding-block: calc(var(--cz-spacing) * 2);
+		border-bottom: 1px solid var(--cz-color-border-secondary);
+		background: var(--cz-color-bg-primary);
+		font-size: var(--cz-text-xs);
+		line-height: var(--cz-text-xs-line-height);
+		font-weight: var(--cz-font-weight-medium);
+		color: var(--cz-color-text-tertiary);
 	}
 	.header {
-		flex: auto;
-		margin-inline: var(--cz-spacing);
 		flex: 1 1 0px;
+		min-width: 0;
+		margin-inline: var(--cz-spacing);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.items {
 		min-height: 100px;

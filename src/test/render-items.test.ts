@@ -138,4 +138,39 @@ suite('renderItems', () => {
 			assert.notStrictEqual(addRow(), typedIn);
 		});
 	});
+
+	suite('headers', () => {
+		test('stay at the top of the list while its rows scroll', async () => {
+			const host = await fixture<HTMLDivElement>(
+				html`<div style="width: 600px"></div>`,
+			);
+			const root = host.attachShadow({ mode: 'open' });
+			render(
+				html`<style>
+						${renderItemsStyles({ fields })} .items {
+							height: 200px;
+						}
+					</style>
+					${renderItems({
+						items: Array.from({ length: 40 }, (_, i) => ({ a: String(i) })),
+						fields,
+						update: () => undefined,
+					} as unknown as Parameters<typeof renderItems>[0])}`,
+				root,
+			);
+			await waitUntil(() => root.querySelectorAll('.item').length > 0);
+			const items = root.querySelector('.items')!;
+			const headers = root.querySelector('.headers')!;
+
+			items.scrollTop = 400;
+			await new Promise(requestAnimationFrame);
+
+			assert.isAbove(items.scrollTop, 0);
+			assert.closeTo(
+				headers.getBoundingClientRect().top,
+				items.getBoundingClientRect().top,
+				1,
+			);
+		});
+	});
 });
