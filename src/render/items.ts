@@ -102,6 +102,10 @@ export interface RenderItems<T extends object, C extends object = object> {
 	keyFunction?: typeof defaultKeyFunction;
 	update: (index: number, value: Partial<T>) => void;
 	remove?: (index: number) => void;
+	/**
+	 * @deprecated `.items` is always the scroller; it scrolls once its height is
+	 * bounded and grows with its rows otherwise.
+	 */
 	scroller?: boolean;
 	style?: string;
 }
@@ -113,47 +117,41 @@ export const renderItems = <T extends object, C extends object = object>({
 	paste,
 	defaults,
 	keyFunction = defaultKeyFunction,
-	scroller = true,
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	scroller,
 	update,
 	style,
 	...thru
 }: RenderItems<T, C>) =>
+	// The headers sit outside the virtualized rows so they can stick to the
+	// top of the scroller; the virtualizer then scrolls with \`.items\`.
 	html`<div class="items" @paste=${paste} style=${style}>
-		${virtualize({
-			items: [
-				{ [key]: 0 } as unknown as T,
-				...items,
-				...(defaults ? [mkDefaults(defaults)] : []),
-			],
-			keyFunction,
-			renderItem: (item: T, index: number) => {
-				switch (true) {
-					case index === 0:
-						return html`<div class="headers">
-							${renderHeaders({ fields })}
-							${when(thru.remove != null, renderRemovePlaceholder)}
-						</div>`;
-
-					case defaults != null && index === items.length + 1:
-						return render(item, index - 1, {
-							...thru,
-							fields,
-							remove: undefined,
-							removePlaceholder: thru.remove != null,
-							update: (index, changes) =>
-								update(index, { ...item, ...changes }),
-						});
-
-					default:
-						return render(item, index - 1, {
-							...thru,
-							fields,
-							update,
-						});
-				}
-			},
-			scroller,
-		})}
+		<div class="headers">
+			${renderHeaders({ fields })}
+			${when(thru.remove != null, renderRemovePlaceholder)}
+		</div>
+		<div class="rows">
+			${virtualize({
+				items: [...items, ...(defaults ? [mkDefaults(defaults)] : [])],
+				keyFunction,
+				renderItem: (item: T, index: number) =>
+					defaults != null && index === items.length
+						? render(item, index, {
+								...thru,
+								fields,
+								remove: undefined,
+								removePlaceholder: thru.remove != null,
+								update: (index, changes) =>
+									update(index, { ...item, ...changes }),
+							})
+						: render(item, index, {
+								...thru,
+								fields,
+								update,
+							}),
+				scroller: false,
+			})}
+		</div>
 	</div>`;
 
 export const renderItemsStyles = <T extends object, C extends object = object>({
