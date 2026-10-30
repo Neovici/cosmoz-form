@@ -1,4 +1,4 @@
-import{o as b,b as w,n as A}from"./inline-file-B7kWqOin.js";import{b as p,e as E,g as v,f as R,d as L,n as S}from"./iframe-CKHYUURc.js";import{a as k}from"./autocomplete-8gy9rMd8.js";import"./preload-helper-PPVm8Dsz.js";const P=(t,e)=>new Promise((r,n)=>{if(t.aborted){n(new DOMException("Aborted","AbortError"));return}const i=setTimeout(r,e);t.addEventListener("abort",()=>{clearTimeout(i),n(new DOMException("Aborted","AbortError"))},{once:!0})}),F=t=>{let e=null,r=null,n=null;return{run:(i,o,d,s)=>new Promise((m,c)=>{n!==null&&(n.resolve(null),clearTimeout(e)),n={fn:i,values:o,index:s?.index,context:s?.context,resolve:m,reject:c},e=setTimeout(async()=>{const{fn:g,values:a,index:x,context:I,resolve:y,reject:T}=n;n=null,e=null,r=new AbortController;const{signal:h}=r,_={update:d,signal:h,index:x,context:I};try{const f=await g(a,_);y(h.aborted?null:f)}catch(f){f instanceof DOMException&&f.name==="AbortError"?y(null):T(f)}finally{r=null}},t)}),cancel:()=>{e!==null&&(clearTimeout(e),e=null),n!==null&&(n.resolve(null),n=null),r?.abort(),r=null}}},q=p`
+import{o as b,b as w,n as A}from"./inline-file-BY9pmlba.js";import{b as m,e as E,g as v,f as R,d as L,n as S}from"./iframe-Ko6GiHg7.js";import{a as k}from"./autocomplete-BuZD0cVM.js";import"./preload-helper-PPVm8Dsz.js";const P=(t,e)=>new Promise((s,n)=>{if(t.aborted){n(new DOMException("Aborted","AbortError"));return}const i=setTimeout(s,e);t.addEventListener("abort",()=>{clearTimeout(i),n(new DOMException("Aborted","AbortError"))},{once:!0})}),F=t=>{let e=null,s=null,n=null;return{run:(i,c,g,r)=>new Promise((f,l)=>{s?.abort(),s=null,n!==null&&(n.resolve(null),clearTimeout(e)),n={fn:i,values:c,index:r?.index,context:r?.context,resolve:f,reject:l},e=setTimeout(async()=>{const{fn:y,values:a,index:x,context:I,resolve:h,reject:T}=n;n=null,e=null;const u=new AbortController;s=u;const _={update:o=>{u.signal.aborted||g(o)},signal:u.signal,index:x,context:I};try{const o=await y(a,_);h(u.signal.aborted?null:o)}catch(o){u.signal.aborted||o instanceof DOMException&&o.name==="AbortError"?h(null):T(o)}finally{s===u&&(s=null)}},t)}),cancel:()=>{e!==null&&(clearTimeout(e),e=null),n!==null&&(n.resolve(null),n=null),s?.abort(),s=null}}},q=m`
     <style>
         .story-wrap {
             font-family: sans-serif;
@@ -26,7 +26,7 @@ import{o as b,b as w,n as A}from"./inline-file-B7kWqOin.js";import{b as p,e as E
             color: #1a56db;
         }
     </style>
-`,$={supplier:"",contactEmail:""},D=["Acme Corp","Globex","Initech"],O={"Acme Corp":"contact@acme.example",Globex:"hello@globex.example",Initech:"info@initech.example"},C=async(t,e)=>(await P(t,3e3),O[e]??""),U=[{id:"supplier",label:"Supplier (select)",input:k,options:D,mode:"select",preserveOrder:!0},{id:"contactEmail",label:"Contact email",disabled:!0}],M=()=>{const t=v({started:0,cancelled:0,resolved:0}),[,e]=R(0),r=L(()=>[async(s,{update:m,signal:c})=>{if(!s.supplier)return{contactEmail:""};t.current.started++,e(a=>a+1),m({contactEmail:"loading…"}),c.addEventListener("abort",()=>{t.current.cancelled++,e(a=>a+1)},{once:!0});const g=await C(c,s.supplier);return t.current.resolved++,e(a=>a+1),{contactEmail:g}},({supplier:s})=>[s]],[]),n=b({fields:U,initial:$,asyncRules:[r]}),{started:i,cancelled:o,resolved:d}=t.current;return p`
+`,$={supplier:"",contactEmail:""},D=["Acme Corp","Globex","Initech"],O={"Acme Corp":"contact@acme.example",Globex:"hello@globex.example",Initech:"info@initech.example"},C=async(t,e)=>(await P(t,3e3),O[e]??""),U=[{id:"supplier",label:"Supplier (select)",input:k,options:D,mode:"select",preserveOrder:!0},{id:"contactEmail",label:"Contact email",disabled:!0}],M=()=>{const t=v({started:0,cancelled:0,resolved:0}),[,e]=R(0),s=L(()=>[async(r,{update:f,signal:l})=>{if(!r.supplier)return{contactEmail:""};t.current.started++,e(a=>a+1),f({contactEmail:"loading…"}),l.addEventListener("abort",()=>{t.current.cancelled++,e(a=>a+1)},{once:!0});const y=await C(l,r.supplier);return t.current.resolved++,e(a=>a+1),{contactEmail:y}},({supplier:r})=>[r]],[]),n=b({fields:U,initial:$,asyncRules:[s]}),{started:i,cancelled:c,resolved:g}=t.current;return m`
         ${q}
         <div class="story-wrap">
             ${w(n)}
@@ -36,12 +36,12 @@ import{o as b,b as w,n as A}from"./inline-file-B7kWqOin.js";import{b as p,e as E
             </p>
             <div class="story-stats">
                 <span>Started: <strong>${i}</strong></span>
-                <span>Cancelled: <strong>${o}</strong></span>
-                <span>Resolved: <strong>${d}</strong></span>
+                <span>Cancelled: <strong>${c}</strong></span>
+                <span>Resolved: <strong>${g}</strong></span>
                 <span>Processing: <strong>${n.processing}</strong></span>
             </div>
         </div>
-    `};customElements.define("story-supplier-take-latest",E(M));const l=()=>p`<story-supplier-take-latest></story-supplier-take-latest>`;l.storyName="TakeLatest — supplier contact email";l.parameters={docs:{source:{language:"typescript",code:`// Form shape
+    `};customElements.define("story-supplier-take-latest",E(M));const p=()=>m`<story-supplier-take-latest></story-supplier-take-latest>`;p.storyName="TakeLatest — supplier contact email";p.parameters={docs:{source:{language:"typescript",code:`// Form shape
 type OrderForm = { supplier: string; contactEmail: string };
 
 const INITIAL: OrderForm = { supplier: '', contactEmail: '' };
@@ -77,7 +77,7 @@ const emailRule: AsyncItemRule<OrderForm> = [
 // form.processing is true while any async rule is in flight.
 // Use it to disable a save button or show a global spinner.
 const form = useValidatedForm$({ fields, initial, asyncRules: [emailRule] });
-// form.processing → true while fetching, false when settled`}}};const N={quantity:1,unitPrice:0,total:0,_pricingLoading:!1},Q=async(t,e)=>(await P(t,1e3),e>=50?8:e>=20?9.5:e>=10?11:13.5),z=[{id:"quantity",label:"Quantity",input:A,min:1,max:100,step:"1"},{id:"unitPrice",label:"Unit price (€)",disabled:!0,suffix:(t,e)=>S(e._pricingLoading,()=>p`<cosmoz-spinner></cosmoz-spinner>`)},{id:"total",label:"Total (€)",disabled:!0,rules:[[({quantity:t,unitPrice:e})=>({total:Math.round(t*e*100)/100}),({quantity:t,unitPrice:e})=>[t,e]]]},{id:"_pricingLoading",hidden:!0}],j=()=>{const t=v({started:0,resolved:0}),[,e]=R(0),r=L(()=>[async(s,{update:m,signal:c})=>{if(!s.quantity)return{unitPrice:0,_pricingLoading:!1};t.current.started++,e(a=>a+1),m({_pricingLoading:!0});const g=await Q(c,s.quantity);return t.current.resolved++,e(a=>a+1),{unitPrice:g,_pricingLoading:!1}},({quantity:s})=>[s],()=>F(500)],[]),n=b({fields:z,initial:N,asyncRules:[r]}),{started:i,resolved:o}=t.current,d=i-o;return p`
+// form.processing → true while fetching, false when settled`}}};const N={quantity:1,unitPrice:0,total:0,_pricingLoading:!1},Q=async(t,e)=>(await P(t,1e3),e>=50?8:e>=20?9.5:e>=10?11:13.5),z=[{id:"quantity",label:"Quantity",input:A,min:1,max:100,step:"1"},{id:"unitPrice",label:"Unit price (€)",disabled:!0,suffix:(t,e)=>S(e._pricingLoading,()=>m`<cosmoz-spinner></cosmoz-spinner>`)},{id:"total",label:"Total (€)",disabled:!0,rules:[[({quantity:t,unitPrice:e})=>({total:Math.round(t*e*100)/100}),({quantity:t,unitPrice:e})=>[t,e]]]},{id:"_pricingLoading",hidden:!0}],j=()=>{const t=v({started:0,resolved:0}),[,e]=R(0),s=L(()=>[async(r,{update:f,signal:l})=>{if(!r.quantity)return{unitPrice:0,_pricingLoading:!1};t.current.started++,e(a=>a+1),f({_pricingLoading:!0});const y=await Q(l,r.quantity);return t.current.resolved++,e(a=>a+1),{unitPrice:y,_pricingLoading:!1}},({quantity:r})=>[r],()=>F(500)],[]),n=b({fields:z,initial:N,asyncRules:[s]}),{started:i,resolved:c}=t.current,g=i-c;return m`
         ${q}
         <div class="story-wrap">
             ${w(n)}
@@ -88,12 +88,12 @@ const form = useValidatedForm$({ fields, initial, asyncRules: [emailRule] });
             </p>
             <div class="story-stats">
                 <span>Started: <strong>${i}</strong></span>
-                <span>Resolved: <strong>${o}</strong></span>
-                <span>In flight: <strong>${d}</strong></span>
+                <span>Resolved: <strong>${c}</strong></span>
+                <span>In flight: <strong>${g}</strong></span>
                 <span>Processing: <strong>${n.processing}</strong></span>
             </div>
         </div>
-    `};customElements.define("story-quote-debounce",E(j));const u=()=>p`<story-quote-debounce></story-quote-debounce>`;u.storyName="Debounce — quantity → unit price + total";u.parameters={docs:{source:{language:"typescript",code:`// Form shape — _pricingLoading is a UI-only flag, hidden from the rendered form
+    `};customElements.define("story-quote-debounce",E(j));const d=()=>m`<story-quote-debounce></story-quote-debounce>`;d.storyName="Debounce — quantity → unit price + total";d.parameters={docs:{source:{language:"typescript",code:`// Form shape — _pricingLoading is a UI-only flag, hidden from the rendered form
 type QuoteForm = {
   quantity: number;
   unitPrice: number;
@@ -151,4 +151,4 @@ const form = useValidatedForm$({
   rules: [totalRule],
   asyncRules: [pricingRule],
 });
-// form.processing → true while fetching, false when settled`}}};const B={title:"Async Rules",tags:["autodocs"],parameters:{docs:{canvas:{sourceState:"shown"}}}};l.parameters={...l.parameters,docs:{...l.parameters?.docs,source:{originalSource:"() => html`<story-supplier-take-latest></story-supplier-take-latest>`",...l.parameters?.docs?.source}}};u.parameters={...u.parameters,docs:{...u.parameters?.docs,source:{originalSource:"() => html`<story-quote-debounce></story-quote-debounce>`",...u.parameters?.docs?.source}}};const J=["TakeLatest","Debounce"];export{u as Debounce,l as TakeLatest,J as __namedExportsOrder,B as default};
+// form.processing → true while fetching, false when settled`}}};const B={title:"Async Rules",tags:["autodocs"],parameters:{docs:{canvas:{sourceState:"shown"}}}};p.parameters={...p.parameters,docs:{...p.parameters?.docs,source:{originalSource:"() => html`<story-supplier-take-latest></story-supplier-take-latest>`",...p.parameters?.docs?.source}}};d.parameters={...d.parameters,docs:{...d.parameters?.docs,source:{originalSource:"() => html`<story-quote-debounce></story-quote-debounce>`",...d.parameters?.docs?.source}}};const J=["TakeLatest","Debounce"];export{d as Debounce,p as TakeLatest,J as __namedExportsOrder,B as default};
