@@ -1,4 +1,4 @@
-import{o as k,n as P,w as Mt,b as x,q as lt,e as ot,A as yt,r as hn,p as E,k as Y,g as gt,s as me,x as Zt,y as Qn,z as we,B as ve,C as Gn,c as S,D as Un,i as A,j as st,t as te,m as xe,f as N,d as W,E as mn,F as gn,G as We,H as ze,u as Kn,h as Jn,l as Zn,I as to,a as It}from"./iframe-DOgQ35fB.js";const eo={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},no=t=>typeof t=="string"&&eo.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=no(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},oo=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>x`
+import{o as k,n as P,w as Mt,b as x,q as lt,e as ot,A as yt,r as hn,p as E,k as Y,g as gt,s as me,x as Zt,y as Qn,z as we,B as ve,C as Gn,c as S,D as Un,i as A,j as st,t as te,m as xe,f as N,d as W,E as mn,F as gn,G as We,H as ze,u as Kn,h as Jn,l as Zn,I as to,a as It}from"./iframe-CljkknJF.js";const eo={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},no=t=>typeof t=="string"&&eo.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=no(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},oo=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>x`
   <svg
     slot=${k(t)}
     class=${`alert-circle-icon ${n??""}`}
@@ -386,20 +386,28 @@ import{o as k,n as P,w as Mt,b as x,q as lt,e as ot,A as yt,r as hn,p as E,k as 
 `),Qi=({fields:t})=>st(t??[],({id:e})=>e,e=>{const n=A(e.header??e.label,void 0,{},e);return x`<div class="header" name="${e.id}" title="${n}">
 				${n}
 			</div>`}),Gi=te`
+	/* Stays in view while the rows scroll beneath it. */
 	.headers {
+		position: sticky;
+		inset-block-start: 0;
+		z-index: 1;
 		display: flex;
-		border-bottom: solid 1px var(--cz-color-border-primary);
-		font-size: var(--cz-text-base);
-		line-height: var(--cz-text-base-line-height);
-		font-weight: var(--cz-font-weight-regular);
-		color: var(--cz-color-text-secondary);
-		padding-block: calc(var(--cz-spacing) * 2.5);
 		width: 100%;
+		padding-block: calc(var(--cz-spacing) * 2);
+		border-bottom: 1px solid var(--cz-color-border-secondary);
+		background: var(--cz-color-bg-primary);
+		font-size: var(--cz-text-xs);
+		line-height: var(--cz-text-xs-line-height);
+		font-weight: var(--cz-font-weight-medium);
+		color: var(--cz-color-text-tertiary);
 	}
 	.header {
-		flex: auto;
-		margin-inline: var(--cz-spacing);
 		flex: 1 1 0px;
+		min-width: 0;
+		margin-inline: var(--cz-spacing);
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 	.items {
 		min-height: 100px;
@@ -412,8 +420,16 @@ import{o as k,n as P,w as Mt,b as x,q as lt,e as ot,A as yt,r as hn,p as E,k as 
 		display: flex;
 		width: 100%;
 	}
+	/* Never narrower than the columns' minimums; the list scrolls sideways instead. */
+	.headers,
+	.item {
+		min-width: min-content;
+	}
+	/* Every row splits the width like the headers do; an input's own content
+	   (a suffix, a warning icon) never widens its column in one row only. */
 	.input {
 		flex: 1 1 0px;
+		min-width: 0;
 	}
 	.item > .input {
 		margin: var(--cz-spacing);
