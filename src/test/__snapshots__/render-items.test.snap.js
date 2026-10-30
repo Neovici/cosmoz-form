@@ -1,9 +1,8 @@
 /* @web/test-runner snapshot v1 */
 export const snapshots = {};
 
-snapshots[
-	'renderItems remove button the remove button is named "Remove" by default'
-] = `<div class="items">
+snapshots["renderItems remove button the remove button is named \"Remove\" by default"] = 
+`<div class="items">
   <div class="headers">
     <div
       class="header"
@@ -29,6 +28,7 @@ snapshots[
     <cosmoz-button
       aria-hidden="true"
       class="remove remove-placeholder"
+      icon-only=""
       inert=""
       size="sm"
       variant="tertiary"
@@ -62,6 +62,7 @@ snapshots[
       <cosmoz-button
         aria-label="Remove"
         class="remove"
+        icon-only=""
         size="sm"
         tooltip="Remove"
         variant="tertiary"
@@ -92,6 +93,7 @@ snapshots[
       <cosmoz-button
         aria-hidden="true"
         class="remove remove-placeholder"
+        icon-only=""
         inert=""
         size="sm"
         variant="tertiary"
@@ -103,9 +105,8 @@ snapshots[
 `;
 /* end snapshot renderItems remove button the remove button is named "Remove" by default */
 
-snapshots[
-	'renderItems remove button a string removeLabel becomes the button name'
-] = `<div class="items">
+snapshots["renderItems remove button a string removeLabel becomes the button name"] = 
+`<div class="items">
   <div class="headers">
     <div
       class="header"
@@ -131,6 +132,7 @@ snapshots[
     <cosmoz-button
       aria-hidden="true"
       class="remove remove-placeholder"
+      icon-only=""
       inert=""
       size="sm"
       variant="tertiary"
@@ -164,6 +166,7 @@ snapshots[
       <cosmoz-button
         aria-label="Delete line"
         class="remove"
+        icon-only=""
         size="sm"
         tooltip="Delete line"
         variant="tertiary"
@@ -194,6 +197,7 @@ snapshots[
       <cosmoz-button
         aria-hidden="true"
         class="remove remove-placeholder"
+        icon-only=""
         inert=""
         size="sm"
         variant="tertiary"
@@ -205,9 +209,8 @@ snapshots[
 `;
 /* end snapshot renderItems remove button a string removeLabel becomes the button name */
 
-snapshots[
-	'renderItems remove button a function removeLabel builds the name from the row values'
-] = `<div class="items">
+snapshots["renderItems remove button a function removeLabel builds the name from the row values"] = 
+`<div class="items">
   <div class="headers">
     <div
       class="header"
@@ -233,6 +236,7 @@ snapshots[
     <cosmoz-button
       aria-hidden="true"
       class="remove remove-placeholder"
+      icon-only=""
       inert=""
       size="sm"
       variant="tertiary"
@@ -266,6 +270,7 @@ snapshots[
       <cosmoz-button
         aria-label="Remove 1"
         class="remove"
+        icon-only=""
         size="sm"
         tooltip="Remove 1"
         variant="tertiary"
@@ -296,6 +301,7 @@ snapshots[
       <cosmoz-button
         aria-hidden="true"
         class="remove remove-placeholder"
+        icon-only=""
         inert=""
         size="sm"
         variant="tertiary"
@@ -307,9 +313,8 @@ snapshots[
 `;
 /* end snapshot renderItems remove button a function removeLabel builds the name from the row values */
 
-snapshots[
-	'renderItems add row the add row becomes the new item and a fresh add row follows'
-] = `<div class="items">
+snapshots["renderItems add row the add row becomes the new item and a fresh add row follows"] = 
+`<div class="items">
   <div class="headers">
     <div
       class="header"
@@ -383,3 +388,4 @@ snapshots[
 </div>
 `;
 /* end snapshot renderItems add row the add row becomes the new item and a fresh add row follows */
+
