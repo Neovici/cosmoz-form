@@ -1,3 +1,15 @@
+## 4.6.0
+
+### Minor Changes
+
+- 4ce657b: The row remove button rendered by `renderItems` renders compact and square with `icon-only` (cosmoz-button v2's compact utility-button mode), and the invisible placeholder stays a twin of the button so rows without a remove button keep the columns aligned.
+- 6ddf11c: The row remove button rendered by `renderItems` gets an accessible name (`aria-label`, relayed by cosmoz-button into its native control) and a `tooltip`, falling back to `Remove`. `renderItems` accepts a new `removeLabel` option (string or a function of the row's values, e.g. `(values) => \`Remove ${values.a}\``), passed to `renderItem`and`renderRemove`.
+
+### Patch Changes
+
+- 9b7e427: Abort in-flight debounced rules when superseded and discard their stale intermediate updates and final results. Keep the active cancellation controller when older rules settle.
+- d07f674: The take-latest runner drops the result of a superseded or cancelled run when the rule ignores its signal, instead of applying the stale value.
+
 ## 4.5.0
 
 ### Minor Changes
