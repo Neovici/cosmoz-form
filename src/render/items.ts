@@ -16,13 +16,15 @@ const mkDefaults = <T extends object>(defaults: T) => {
 	return Object.assign(newly, { [key]: newly });
 };
 
-export const renderRemove = (remove: () => void) =>
+export const renderRemove = (remove: () => void, label = 'Remove') =>
 	html`<cosmoz-button
 		class="remove"
 		variant="tertiary"
 		size="sm"
 		?disabled=${!remove}
 		@click=${remove}
+		tooltip=${label}
+		aria-label=${label}
 	>
 		${trash01Icon()}
 	</cosmoz-button>`;
@@ -45,6 +47,9 @@ interface RenderOpts<T extends Item, C extends object = object> {
 	context?: C;
 	touched?: boolean;
 	remove?: (index: number) => void;
+	// Accessible name and native tooltip of the remove button; a function
+	// receives the row's values.
+	removeLabel?: string | ((values: T) => string);
 	// Reserve the remove-button gutter even though this row has no button, so
 	// it stays aligned with the removable rows.
 	removePlaceholder?: boolean;
@@ -57,6 +62,7 @@ export const renderItem = <T extends Item, C extends object = object>(
 		update,
 		remove,
 		removePlaceholder,
+		removeLabel,
 		fields,
 		context,
 		touched = false,
@@ -82,7 +88,10 @@ export const renderItem = <T extends Item, C extends object = object>(
 				onValues: noop,
 			}),
 			when(remove, (remove) =>
-				renderRemove(values && remove && (() => remove(index))),
+				renderRemove(
+					values && remove && (() => remove(index)),
+					invoke(removeLabel, values),
+				),
 			),
 			when(removePlaceholder, renderRemovePlaceholder),
 		]}
@@ -107,6 +116,9 @@ export interface RenderItems<T extends object, C extends object = object> {
 	 * bounded and grows with its rows otherwise.
 	 */
 	scroller?: boolean;
+	// Accessible name and native tooltip of the remove button; a function
+	// receives the row's values.
+	removeLabel?: string | ((values: T) => string);
 	style?: string;
 }
 
