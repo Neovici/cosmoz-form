@@ -1,6 +1,6 @@
-import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c as U,u as ne,d as P,e as f,f as C,A as L}from"./iframe-CljkknJF.js";import{s as le,r as de,a as ce,b as ue,i as _,c as me,d as pe,e as ge,v as ye,E as B,f as ve,u as w,g as m,t as y,n as g,h as fe,j as E,k as he,l as G,m as be}from"./inline-file-V0NitrTV.js";import{a as I}from"./autocomplete-Bnbdez5d.js";import{u as $e}from"./use-items-BsA67jWz.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:o,width:a="24",height:i="24",styles:r}={})=>s`
+import{o as m,n as v,w as K,b as s,t as Q,v as se,a as O,i as I,m as re,l as N,c as U,u as ne,d as P,e as f,f as C,A as L}from"./iframe-QaNSy80j.js";import{s as le,r as de,a as ce,b as ue,i as _,c as me,d as pe,e as ge,v as ye,E as B,f as ve,u as w,g as p,t as y,n as g,h as fe,j as E,k as he,l as G,m as be}from"./inline-file-Ce835ujH.js";import{a as F}from"./autocomplete-BUUzFK64.js";import{u as $e}from"./use-items-BMAXBfSW.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:o,width:a="24",height:i="24",styles:r}={})=>s`
   <svg
-    slot=${u(e)}
+    slot=${m(e)}
     class=${`edit-02-icon ${o??""}`}
     viewBox="0 0 24 24"
     preserveAspectRatio="xMidYMid meet"
@@ -12,7 +12,7 @@ import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c
     stroke-linejoin="round"
     width=${a}
     height=${i}
-    style=${u(r)}
+    style=${m(r)}
   >
     ${v(t,()=>K`<title>${t}</title>`)}
     <path
@@ -21,7 +21,7 @@ import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c
   </svg>
 `,Y=({slot:e,title:t,className:o,width:a="24",height:i="24",styles:r}={})=>s`
   <svg
-    slot=${u(e)}
+    slot=${m(e)}
     class=${`trash-01-icon ${o??""}`}
     viewBox="0 0 24 24"
     preserveAspectRatio="xMidYMid meet"
@@ -33,19 +33,21 @@ import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c
     stroke-linejoin="round"
     width=${a}
     height=${i}
-    style=${u(r)}
+    style=${m(r)}
   >
     ${v(t,()=>K`<title>${t}</title>`)}
     <path
       d="M16 6v-.8c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874C14.48 2 13.92 2 12.8 2h-1.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C8 3.52 8 4.08 8 5.2V6m2 5.5v5m4-5v5M3 6h18m-2 0v11.2c0 1.68 0 2.52-.327 3.162a3 3 0 0 1-1.311 1.311C16.72 22 15.88 22 14.2 22H9.8c-1.68 0-2.52 0-3.162-.327a3 3 0 0 1-1.311-1.311C5 19.72 5 18.88 5 17.2V6"
     />
   </svg>
-`,T=Symbol("key"),Se=e=>{const t={...e};return Object.assign(t,{[T]:t})},we=e=>s`<cosmoz-button
+`,T=Symbol("key"),Se=e=>{const t={...e};return Object.assign(t,{[T]:t})},we=(e,t="Remove")=>s`<cosmoz-button
 		class="remove"
 		variant="tertiary"
 		size="sm"
 		?disabled=${!e}
 		@click=${e}
+		tooltip=${t}
+		aria-label=${t}
 	>
 		${Y()}
 	</cosmoz-button>`,H=()=>s`<cosmoz-button
@@ -56,80 +58,80 @@ import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c
 		inert
 	>
 		${Y()}
-	</cosmoz-button>`,Ee=(e,t,{update:o,remove:a,removePlaceholder:i,fields:r,context:d,touched:c=!1,...n})=>s`<div class="item" data-index=${t}>
-		${[ue({...n,values:e,fields:r,context:d??{},touched:c,onChange:l=>o(t,{...R(l,e),[T]:e?.[T]??e}),invalid:!1,load:O,onReset:O,onValues:O}),v(a,l=>we(e&&l&&(()=>l(t)))),v(i,H)]}
-	</div>`,Ie=e=>e?.[T]??e,j=({items:e,fields:t,renderItem:o=Ee,paste:a,defaults:i,keyFunction:r=Ie,scroller:d,update:c,style:n,...l})=>s`<div class="items" @paste=${a} style=${n}>
+	</cosmoz-button>`,Ee=(e,t,{update:o,remove:a,removePlaceholder:i,removeLabel:r,fields:l,context:d,touched:n=!1,...c})=>s`<div class="item" data-index=${t}>
+		${[ue({...c,values:e,fields:l,context:d??{},touched:n,onChange:u=>o(t,{...I(u,e),[T]:e?.[T]??e}),invalid:!1,load:O,onReset:O,onValues:O}),v(a,u=>we(e&&u&&(()=>u(t)),I(r,e))),v(i,H)]}
+	</div>`,Ie=e=>e?.[T]??e,j=({items:e,fields:t,renderItem:o=Ee,paste:a,defaults:i,keyFunction:r=Ie,scroller:l,update:d,style:n,...c})=>s`<div class="items" @paste=${a} style=${n}>
 		<div class="headers">
 			${ce({fields:t})}
-			${v(l.remove!=null,H)}
+			${v(c.remove!=null,H)}
 		</div>
 		<div class="rows">
-			${se({items:[...e,...i?[Se(i)]:[]],keyFunction:r,renderItem:(p,x)=>i!=null&&x===e.length?o(p,x,{...l,fields:t,remove:void 0,removePlaceholder:l.remove!=null,update:(ae,ie)=>c(ae,{...p,...ie})}):o(p,x,{...l,fields:t,update:c}),scroller:!1})}
+			${se({items:[...e,...i?[Se(i)]:[]],keyFunction:r,renderItem:(u,x)=>i!=null&&x===e.length?o(u,x,{...c,fields:t,remove:void 0,removePlaceholder:c.remove!=null,update:(ae,ie)=>d(ae,{...u,...ie})}):o(u,x,{...c,fields:t,update:d}),scroller:!1})}
 		</div>
 	</div>`,Fe=({fields:e})=>Q`
 	${le}
 	${de({fields:e})}
-`,J=_(({id:e,error:t,onChange:o,accept:a,multiple:i,value:r,values:d,autoReset:c})=>s`<div class="input input-file" name=${e}>
+`,J=_(({id:e,error:t,onChange:o,accept:a,multiple:i,value:r,values:l,autoReset:d})=>s`<div class="input input-file" name=${e}>
 			<input
 				class="file"
 				type="file"
 				name=${e}
 				?multiple=${i}
-				accept=${u(re(R(a,r,d)))}
-				@change=${n=>{o(Array.from(n.target.files??[])),c&&(n.target.value="")}}
+				accept=${m(re(I(a,r,l)))}
+				@change=${n=>{o(Array.from(n.target.files??[])),d&&(n.target.value="")}}
 			/>
 			${v(t,n=>s`<div class="failure">${n}</div>`)}
-		</div>`),ke=({id:e,label:t,error:o,disabled:a,warning:i,onChange:r,value:d,title:c,description:n})=>s`<cosmoz-toggle
+		</div>`),Re=({id:e,label:t,error:o,disabled:a,warning:i,onChange:r,value:l,title:d,description:n})=>s`<cosmoz-toggle
 		class="input input-toggle"
 		name=${e}
-		title=${u(c)}
+		title=${m(d)}
 		?disabled=${a}
 		.label=${t}
 		.error=${o}
-		.value=${N(d)}
-		@change=${l=>r(l.detail)}
+		.value=${N(l)}
+		@change=${c=>r(c.detail)}
 		>${[me(i),pe(n)]}</cosmoz-toggle
-	>`,Re=_(ke),Ce=e=>e===void 0||typeof e=="object",Te=e=>_(({id:t,label:o,variant:a,error:i,warning:r,disabled:d,onChange:c,value:n})=>{if(Ce(n))return[s`<cosmoz-input
+	>`,ke=_(Re),Ce=e=>e===void 0||typeof e=="object",Te=e=>_(({id:t,label:o,variant:a,error:i,warning:r,disabled:l,onChange:d,value:n})=>{if(Ce(n))return[s`<cosmoz-input
 					class="input input-date-range"
 					type=${e}
-					variant=${u(a)}
+					variant=${m(a)}
 					?data-warning=${!!r}
 					name=${String(t)+"From"}
-					?disabled=${d}
+					?disabled=${l}
 					?invalid=${!!i?.from}
 					.errorMessage=${i?.from}
 					.label=${U("From ({0})",{0:o})}
 					.value=${N(n?.from)}
-					.max=${u(n?.to)}
-					@change=${({target:l})=>c({...n,from:l.value})}
+					.max=${m(n?.to)}
+					@change=${({target:c})=>d({...n,from:c.value})}
 				></cosmoz-input>`,s`<cosmoz-input
 					class="input input-date-range"
 					type=${e}
-					variant=${u(a)}
+					variant=${m(a)}
 					?data-warning=${!!r}
 					name=${String(t)+"To"}
-					?disabled=${d}
+					?disabled=${l}
 					?invalid=${!!i?.to}
 					.errorMessage=${i?.to}
 					.label=${U("To ({0})",{0:o})}
 					.value=${N(n?.to)}
-					.min=${u(n?.from)}
-					@change=${({target:l})=>c({...n,to:l.value})}
-				></cosmoz-input>`]}),X=Te("date"),xe=e=>Number.isNaN(e)||typeof e!="number"?0:e,Oe=new Intl.NumberFormat(void 0,{minimumFractionDigits:2,maximumFractionDigits:2}),Pe=e=>Oe.format(xe(e)),Z=({value:e,values:t,field:o,error:a,context:i})=>{const{id:r,suffix:d,warning:c,label:n,variant:l,format:p=Pe}=o;return[s`<style>
+					.min=${m(n?.from)}
+					@change=${({target:c})=>d({...n,to:c.value})}
+				></cosmoz-input>`]}),X=Te("date"),xe=e=>Number.isNaN(e)||typeof e!="number"?0:e,Oe=new Intl.NumberFormat(void 0,{minimumFractionDigits:2,maximumFractionDigits:2}),Pe=e=>Oe.format(xe(e)),Z=({value:e,values:t,field:o,error:a,context:i})=>{const{id:r,suffix:l,warning:d,label:n,variant:c,format:u=Pe}=o;return[s`<style>
 			cosmoz-input[disabled] {
 				pointer-events: auto;
 			}
 		</style>`,s`<cosmoz-input
 			class="input input-common input-number"
-			variant=${u(l)}
+			variant=${m(c)}
 			.label=${n}
 			name="${r}"
 			disabled
-			.value=${p(e)}
+			.value=${u(e)}
 			?invalid=${!!a}
 			.errorMessage=${a}
-			>${ge({suffix:R(d,e,t,o,i),warning:R(c,e,t,o,i)})}</cosmoz-input
-		>`]},Ae=({initial:e,rules:t,fields:o,context:a,touched:i})=>{const r=ne({fields:o}),d=P(()=>[p=>({[B]:ye(r.fields,p,a)})],[r,a]),{items:c,...n}=$e({initial:e,rules:P(()=>[...t??[],d],[t,d]),context:a,touched:i}),l=P(()=>c.some(p=>p[B]),[c]);return{...n,items:c,invalid:l}},q=()=>Q`
+			>${ge({suffix:I(l,e,t,o,i),warning:I(d,e,t,o,i)})}</cosmoz-input
+		>`]},Ae=({initial:e,rules:t,fields:o,context:a,touched:i})=>{const r=ne({fields:o}),l=P(()=>[u=>({[B]:ye(r.fields,u,a)})],[r,a]),{items:d,...n}=$e({initial:e,rules:P(()=>[...t??[],l],[t,l]),context:a,touched:i}),c=P(()=>d.some(u=>u[B]),[d]);return{...n,items:d,invalid:c}},q=()=>Q`
 	:host {
 		display: flex;
 		flex-direction: column;
@@ -156,7 +158,7 @@ import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c
 	}
 
 	${ve}
-`,tt={title:"Add"},M=["Electronics","Clothing","Food","Books","Toys"],ze=["USD","EUR","GBP","JPY","CAD"],Ne=["new","sale","popular","limited","exclusive","seasonal"],ee={name:"",price:0,sku:"",active:!0,category:"",tags:[],attachments:[],document:void 0,dropFiles:[]},te=[{id:"name",label:"Product name",hint:"Best practice: keep it under 50 characters.",input:y,validate:[m,e=>e?!1:"Name is required"]},{id:"price",label:"Price",hint:"Enter the price in euros. Must be greater than 0.",input:g,min:0,validate:[m,e=>e>0?!1:"Price must be greater than 0"]},{id:"sku",label:"SKU",hint:"Stock Keeping Unit",input:y},{id:"category",label:"Category",input:I,options:M,mode:"select",preserveOrder:!0,validate:[m,e=>e?!1:"Category is required"]},{id:"tags",label:"Tags",input:I,options:Ne,preserveOrder:!0,validate:[m,e=>e.length>0?!1:"At least one tag is required"]},{id:"attachments",label:"Attachments",input:J,multiple:!0},{id:"document",label:"Document",input:fe},{id:"active",label:"Active",input:Re}],oe=[[e=>e.name?{}:{name:e.name}]],Le=()=>{const e=w({initial:ee,fields:te,rules:oe,touched:!0});return s`
+`,tt={title:"Add"},M=["Electronics","Clothing","Food","Books","Toys"],ze=["USD","EUR","GBP","JPY","CAD"],Ne=["new","sale","popular","limited","exclusive","seasonal"],ee={name:"",price:0,sku:"",active:!0,category:"",tags:[],attachments:[],document:void 0,dropFiles:[]},te=[{id:"name",label:"Product name",hint:"Best practice: keep it under 50 characters.",input:y,validate:[p,e=>e?!1:"Name is required"]},{id:"price",label:"Price",hint:"Enter the price in euros. Must be greater than 0.",input:g,min:0,validate:[p,e=>e>0?!1:"Price must be greater than 0"]},{id:"sku",label:"SKU",hint:"Stock Keeping Unit",input:y},{id:"category",label:"Category",input:F,options:M,mode:"select",preserveOrder:!0,validate:[p,e=>e?!1:"Category is required"]},{id:"tags",label:"Tags",input:F,options:Ne,preserveOrder:!0,validate:[p,e=>e.length>0?!1:"At least one tag is required"]},{id:"attachments",label:"Attachments",input:J,multiple:!0},{id:"document",label:"Document",input:fe},{id:"active",label:"Active",input:ke}],oe=[[e=>e.name?{}:{name:e.name}]],Le=()=>{const e=w({initial:ee,fields:te,rules:oe,touched:!0});return s`
         <style>
             ${q()}
         </style>
@@ -173,7 +175,7 @@ import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c
             ${E(e)}
             ${he({save$:t,onSave:a,disabled:e.invalid,title:"Save product"})}
         </div>
-    `};customElements.define("story-add-button",f(qe));const F=()=>s`<story-add-button></story-add-button>`,A={description:"Widget package",quantity:10,unitPrice:49.99,total:499.9,period:{from:"2026-01-01",to:"2026-06-30"}},Me=[{id:"description",label:"Description",input:y},{id:"quantity",label:"Quantity",input:g,min:1},{id:"unitPrice",label:"Unit price (€)",input:g,min:0},{id:"total",label:"Total (€)",input:Z},{id:"period",label:"Period",input:X}],Ue=[{id:"description",label:"Description",input:y,variant:"cell"},{id:"quantity",label:"Quantity",input:g,min:1,variant:"cell"},{id:"unitPrice",label:"Unit price (€)",input:g,min:0,variant:"cell"},{id:"total",label:"Total (€)",input:Z,variant:"cell"},{id:"period",label:"Period",input:X,variant:"cell"}],Be=[{id:"description",label:"Description",input:y,compact:!0},{id:"quantity",label:"Quantity",input:g,min:1,compact:!0},{id:"unitPrice",label:"Unit price (€)",input:g,min:0,compact:!0}],z=[[e=>({total:e.quantity*e.unitPrice}),e=>[e.quantity,e.unitPrice]]],je=()=>{const e=w({initial:A,fields:Me,rules:z,touched:!0}),t=w({initial:A,fields:Ue,rules:z,touched:!0}),o=w({initial:A,fields:Be,rules:z,touched:!0});return s`
+    `};customElements.define("story-add-button",f(qe));const R=()=>s`<story-add-button></story-add-button>`,A={description:"Widget package",quantity:10,unitPrice:49.99,total:499.9,period:{from:"2026-01-01",to:"2026-06-30"}},Me=[{id:"description",label:"Description",input:y},{id:"quantity",label:"Quantity",input:g,min:1},{id:"unitPrice",label:"Unit price (€)",input:g,min:0},{id:"total",label:"Total (€)",input:Z},{id:"period",label:"Period",input:X}],Ue=[{id:"description",label:"Description",input:y,variant:"cell"},{id:"quantity",label:"Quantity",input:g,min:1,variant:"cell"},{id:"unitPrice",label:"Unit price (€)",input:g,min:0,variant:"cell"},{id:"total",label:"Total (€)",input:Z,variant:"cell"},{id:"period",label:"Period",input:X,variant:"cell"}],Be=[{id:"description",label:"Description",input:y,compact:!0},{id:"quantity",label:"Quantity",input:g,min:1,compact:!0},{id:"unitPrice",label:"Unit price (€)",input:g,min:0,compact:!0}],z=[[e=>({total:e.quantity*e.unitPrice}),e=>[e.quantity,e.unitPrice]]],je=()=>{const e=w({initial:A,fields:Me,rules:z,touched:!0}),t=w({initial:A,fields:Ue,rules:z,touched:!0}),o=w({initial:A,fields:Be,rules:z,touched:!0});return s`
         <style>
             ${q()} .table-grid {
                 display: grid;
@@ -208,7 +210,7 @@ import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c
             </p>
             ${E(o)}
         </div>
-    `};customElements.define("story-add-daterange",f(je));const b=()=>s`<story-add-daterange></story-add-daterange>`;b.storyName="Date range, read-only & cell variant";const Ve={supplier:"",invoiceNumber:"",message:"",category:"",currency:[],tags:[]},We=[{id:"supplier",label:"Supplier",input:y,validate:[m]},{id:"invoiceNumber",label:"Invoice number",input:y,validate:[m]},{id:"category",label:"Category",input:I,options:M,mode:"select",preserveOrder:!0,validate:[m]},{id:"currency",label:"Currency",input:I,options:ze,preserveOrder:!0,validate:[m]},{id:"message",label:"Comment",input:be,rows:3,validate:[m]}],Ke=()=>{const[e,t]=C(""),[o,a]=C(void 0);return s`
+    `};customElements.define("story-add-daterange",f(je));const b=()=>s`<story-add-daterange></story-add-daterange>`;b.storyName="Date range, read-only & cell variant";const Ve={supplier:"",invoiceNumber:"",message:"",category:"",currency:[],tags:[]},We=[{id:"supplier",label:"Supplier",input:y,validate:[p]},{id:"invoiceNumber",label:"Invoice number",input:y,validate:[p]},{id:"category",label:"Category",input:F,options:M,mode:"select",preserveOrder:!0,validate:[p]},{id:"currency",label:"Currency",input:F,options:ze,preserveOrder:!0,validate:[p]},{id:"message",label:"Comment",input:be,rows:3,validate:[p]}],Ke=()=>{const[e,t]=C(""),[o,a]=C(void 0);return s`
         <div class="story-stack">
             <h3 class="story-section-title">Form Dialog</h3>
             <p class="story-label">
@@ -218,14 +220,14 @@ import{o as u,n as v,w as K,b as s,t as Q,v as se,a as O,i as R,m as re,l as N,c
             <button @click=${()=>{a({heading:"Change and reimport invoice",subtitle:"Are you sure you want to re-import this invoice?",description:s`<p>
                 Please review the invoice details and make any necessary changes before
                 reimporting. Ensure that all required fields are filled out correctly.
-            </p>`,icon:De(),fields:We,initial:Ve,saveText:"OK",onSave:async r=>{await new Promise(d=>setTimeout(d,2e3)),t(JSON.stringify(r,null,2)),a(void 0)},onClose:()=>a(void 0)})}}>Open dialog</button>
+            </p>`,icon:De(),fields:We,initial:Ve,saveText:"OK",onSave:async r=>{await new Promise(l=>setTimeout(l,2e3)),t(JSON.stringify(r,null,2)),a(void 0)},onClose:()=>a(void 0)})}}>Open dialog</button>
             ${o?G(o):L}
             ${e?s`<pre>${e}</pre>`:L}
         </div>
     `};customElements.define("story-add-form-dialog",f(Ke));const $=()=>s`<story-add-form-dialog></story-add-form-dialog>`;$.storyName="Form Dialog";const V=[`Row 1078: Category 'Sheeeesh' is not valid.
 Expected one of: Electronics, Clothing, Food, Books, Toys.
 Package size 'huge' is not valid. Expected one of: S, M, L, XL.`,"Row 1079: Category 'Sheeeesh' is not valid. Expected one of: Electronics, Clothing, Food, Books, Toys.","Row 1080: Category 'Sheeeesh' is not valid. Expected one of: Electronics, Clothing, Food, Books, Toys."],Qe=()=>{const[e,t]=C(void 0),o=a=>{t({heading:"Import products",fields:[{id:"file",label:"File",accept:".xlsx",input:J}],initial:{file:[]},saveText:"OK",onSave:async()=>{const i=V.join(" ");if(!a)throw new Error(i);const r=new Error("The file contains 3 errors");throw r.content=s`<div><b>${r.message}</b></div>
-                    ${V.map(d=>s`<div>${d}</div>`)}`,r},onClose:()=>t(void 0)})};return s`
+                    ${V.map(l=>s`<div>${l}</div>`)}`,r},onClose:()=>t(void 0)})};return s`
         <div class="story-stack">
             <h3 class="story-section-title">Form Dialog — long save failure</h3>
             <p class="story-label">
@@ -237,7 +239,7 @@ Package size 'huge' is not valid. Expected one of: S, M, L, XL.`,"Row 1079: Cate
             <button @click=${()=>o(!0)}>Rich failure</button>
             ${e?G(e):L}
         </div>
-    `};customElements.define("story-add-form-dialog-failure",f(Qe));const D=()=>s`<story-add-form-dialog-failure></story-add-form-dialog-failure>`;D.storyName="Form Dialog — Save Failure";const Ge=[{quantity:5,unitPrice:12.5},{quantity:2,unitPrice:29.99},{quantity:10,unitPrice:4}],k=[{id:"description",variant:"cell",label:"Description",input:I,options:M,mode:"select",preserveOrder:!0,validate:m},{id:"quantity",label:"Qty",input:g,min:1,variant:"cell"},{id:"unitPrice",label:"Unit price (€)",input:g,min:0,variant:"cell"}],W={quantity:1,unitPrice:0},Ye=()=>{const{items:e,update:t,remove:o,append:a}=Ae({initial:Ge,fields:k,touched:!0});return s`
+    `};customElements.define("story-add-form-dialog-failure",f(Qe));const D=()=>s`<story-add-form-dialog-failure></story-add-form-dialog-failure>`;D.storyName="Form Dialog — Save Failure";const Ge=[{quantity:5,unitPrice:12.5},{quantity:2,unitPrice:29.99},{quantity:10,unitPrice:4}],k=[{id:"description",variant:"cell",label:"Description",input:F,options:M,mode:"select",preserveOrder:!0,validate:p},{id:"quantity",label:"Qty",input:g,min:1,variant:"cell"},{id:"unitPrice",label:"Unit price (€)",input:g,min:0,variant:"cell"}],W={quantity:1,unitPrice:0},Ye=()=>{const{items:e,update:t,remove:o,append:a}=Ae({initial:Ge,fields:k,touched:!0});return s`
         <style>
             ${Fe({fields:k})} .item {
                 display: flex;
@@ -261,4 +263,4 @@ Package size 'huge' is not valid. Expected one of: S, M, L, XL.`,"Row 1079: Cate
             </p>
             ${j({items:e,fields:k,update:t,touched:!0})}
         </div>
-    `};customElements.define("story-add-items",f(Ye));const S=()=>s`<story-add-items></story-add-items>`;S.storyName="Items list";h.parameters={...h.parameters,docs:{...h.parameters?.docs,source:{originalSource:"() => html`<story-add-fields></story-add-fields>`",...h.parameters?.docs?.source}}};F.parameters={...F.parameters,docs:{...F.parameters?.docs,source:{originalSource:"() => html`<story-add-button></story-add-button>`",...F.parameters?.docs?.source}}};b.parameters={...b.parameters,docs:{...b.parameters?.docs,source:{originalSource:"() => html`<story-add-daterange></story-add-daterange>`",...b.parameters?.docs?.source}}};$.parameters={...$.parameters,docs:{...$.parameters?.docs,source:{originalSource:"() => html`<story-add-form-dialog></story-add-form-dialog>`",...$.parameters?.docs?.source}}};D.parameters={...D.parameters,docs:{...D.parameters?.docs,source:{originalSource:"() => html`<story-add-form-dialog-failure></story-add-form-dialog-failure>`",...D.parameters?.docs?.source}}};S.parameters={...S.parameters,docs:{...S.parameters?.docs,source:{originalSource:"() => html`<story-add-items></story-add-items>`",...S.parameters?.docs?.source}}};const ot=["BasicFields","WithButton","DateRangeAndReadOnly","FormDialog","FormDialogFailure","Items"];export{h as BasicFields,b as DateRangeAndReadOnly,$ as FormDialog,D as FormDialogFailure,S as Items,F as WithButton,ot as __namedExportsOrder,tt as default};
+    `};customElements.define("story-add-items",f(Ye));const S=()=>s`<story-add-items></story-add-items>`;S.storyName="Items list";h.parameters={...h.parameters,docs:{...h.parameters?.docs,source:{originalSource:"() => html`<story-add-fields></story-add-fields>`",...h.parameters?.docs?.source}}};R.parameters={...R.parameters,docs:{...R.parameters?.docs,source:{originalSource:"() => html`<story-add-button></story-add-button>`",...R.parameters?.docs?.source}}};b.parameters={...b.parameters,docs:{...b.parameters?.docs,source:{originalSource:"() => html`<story-add-daterange></story-add-daterange>`",...b.parameters?.docs?.source}}};$.parameters={...$.parameters,docs:{...$.parameters?.docs,source:{originalSource:"() => html`<story-add-form-dialog></story-add-form-dialog>`",...$.parameters?.docs?.source}}};D.parameters={...D.parameters,docs:{...D.parameters?.docs,source:{originalSource:"() => html`<story-add-form-dialog-failure></story-add-form-dialog-failure>`",...D.parameters?.docs?.source}}};S.parameters={...S.parameters,docs:{...S.parameters?.docs,source:{originalSource:"() => html`<story-add-items></story-add-items>`",...S.parameters?.docs?.source}}};const ot=["BasicFields","WithButton","DateRangeAndReadOnly","FormDialog","FormDialogFailure","Items"];export{h as BasicFields,b as DateRangeAndReadOnly,$ as FormDialog,D as FormDialogFailure,S as Items,R as WithButton,ot as __namedExportsOrder,tt as default};
