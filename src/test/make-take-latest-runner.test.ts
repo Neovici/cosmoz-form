@@ -99,6 +99,52 @@ suite('makeTakeLatestRunner', () => {
 		assert.isNull(result);
 	});
 
+	test('rule that ignores signal resolving late after a newer run resolves null', async () => {
+		const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+		// Ignores opts.signal: never observes abort, resolves normally when superseded.
+		const ignoresSignal: AsyncRule<S> = async () => {
+			await sleep(30);
+			return { from: 'stale' };
+		};
+
+		const stale = runner.run(ignoresSignal, {}, noop);
+		const latest = runner.run(returns({ from: 'latest' }), {}, noop);
+
+		assert.deepEqual(await latest, { from: 'latest' });
+		assert.isNull(await stale, 'signal-ignoring stale run must resolve null');
+	});
+
+	test('latest run result passes through when stale signal-ignoring run resolved earlier', async () => {
+		const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+		const ignoresSignal: AsyncRule<S> = async () => {
+			await sleep(10);
+			return { from: 'stale' };
+		};
+		const latest: AsyncRule<S> = async () => {
+			await sleep(40);
+			return { from: 'latest' };
+		};
+
+		const [staleResult, latestResult] = await Promise.all([
+			runner.run(ignoresSignal, {}, noop),
+			runner.run(latest, {}, noop),
+		]);
+
+		assert.isNull(staleResult, 'stale result is dropped');
+		assert.deepEqual(latestResult, { from: 'latest' });
+	});
+
+	test('bare DOMException AbortError resolves null without cancel()', async () => {
+		const aborting: AsyncRule<S> = async () => {
+			throw new DOMException('The operation was aborted.', 'AbortError');
+		};
+
+		const result = await runner.run(aborting, {}, noop);
+		assert.isNull(result);
+	});
+
 	test('opts.signal is the live AbortController signal', async () => {
 		let receivedSignal: AbortSignal | undefined;
 
