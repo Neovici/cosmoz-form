@@ -11,7 +11,7 @@ import {
 } from './use-validated-form-core';
 
 interface Props<T extends object, C extends object = object> {
-	initial: Readonly<T>;
+	initial: Readonly<T> | (() => Readonly<T>);
 	fields?: Fields<T, C> | (() => Fields<T, C>);
 	rules?: readonly ItemRule<T, C>[];
 	context?: C;
@@ -24,7 +24,7 @@ export const useValidatedForm = <T extends object, C extends object = object>(
 	const [state, setState] = useState<FormValues<T>>(() => {
 		const fields = invoke(options.fields) ?? [],
 			allRules = computeRules(fields, options.rules),
-			ini = processInitial(options.initial, allRules, options.context);
+			ini = processInitial(invoke(options.initial), allRules, options.context);
 
 		return [ini, ini];
 	});
