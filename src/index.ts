@@ -32,6 +32,9 @@ export type {
 //   makeTakeLatestRunner  cancels the previous run when a new one arrives (switchMap)
 //   makeDebounceRunner    waits for silence before running; resets timer on each call (debounce + switchMap)
 //
+// A custom runner must implement the cancelled-run guards specified on AsyncRunner;
+// a runner without them is broken, not a supported alternative.
+//
 // Future ideas:
 //   makeThrottleRunner    fires immediately, queues one trailing call (runs when in-flight finishes)
 //   makeExhaustRunner     ignores new calls while one is in-flight (exhaustMap)

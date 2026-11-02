@@ -10,10 +10,10 @@ export type AsyncOpts<T, C extends object = object> = {
 	 * AbortSignal that fires when the runner cancels this invocation
 	 * (takeLatest supersession, debounce discard, or unmount).
 	 * Pass to `fetch()`, `delay()`, or any other cancellable operation — and
-	 * rethrow the 'AbortError' they throw on cancel. The default runners drop
-	 * a cancelled run's final patch and suppress its update() calls, but only
-	 * a propagating abort keeps the rule from doing any work at all after
-	 * cancel (catch-driven side effects, custom runners without those guards).
+	 * rethrow the 'AbortError' they throw on cancel. Runners drop a cancelled
+	 * run's final patch and suppress its update() calls — guards specified on
+	 * `AsyncRunner` — but only a propagating abort keeps the rule from doing
+	 * any work at all after cancel (catch-driven side effects).
 	 */
 	signal: AbortSignal;
 	/**
@@ -47,13 +47,15 @@ export type AsyncOpts<T, C extends object = object> = {
  * }
  *
  * Cancellation: pass `signal` into every awaited call and let the
- * 'AbortError' it throws on cancel propagate. The default runners silence a
- * cancelled run end-to-end: its final patch resolves `null` and its
- * `update()` calls are suppressed once aborted. A rule that swallows the
- * abort instead (e.g. a broad try/catch returning a fallback) keeps running
- * its recovery logic for what is not a failure — side effects fire, and on
- * custom runners without the default guards the stale patch lands as if the
- * run had won. In a local catch, discriminate with `signal.aborted`:
+ * 'AbortError' it throws on cancel propagate. Runners silence a cancelled
+ * run end-to-end: its final patch resolves `null` and its `update()` calls
+ * are suppressed once aborted. That is the contract every runner must
+ * implement (see `AsyncRunner`) — a cancelled run's patch can never land,
+ * whether the rule respects the signal, ignores it, or swallows the abort
+ * in a catch. A rule that swallows the abort instead (e.g. a broad
+ * try/catch returning a fallback) keeps running its recovery logic for
+ * what is not a failure — side effects fire. In a local catch, discriminate
+ * with `signal.aborted`:
  * @example
  * async function resilientRule(values, { signal }) {
  *   try {
@@ -77,6 +79,22 @@ export type OnIntermediate<T> = (patch: Partial<T>) => void;
 
 /**
  * Shared interface for all async runner strategies.
+ *
+ * The cancelled-run guards below are part of this contract, not extras.
+ * A custom runner must:
+ * 1. hand the rule an `AbortSignal` that fires on supersession or cancel, so
+ *    cancellable work dies up front;
+ * 2. suppress `onIntermediate` (wired as `opts.update`) once a run is aborted;
+ * 3. resolve `run()` as `null` once aborted — including when the rule
+ *    resolves normally after cancel (it ignored the signal or caught the
+ *    abort), and when cancellation itself raises `AbortError`; only a genuine
+ *    pre-cancel failure propagates to `onError`.
+ *
+ * Guard-less custom runners should not exist: a stale patch that lands or
+ * races a newer run is a failure of the runner implementation, never a
+ * supported mode. The built-ins (`makeTakeLatestRunner`,
+ * `makeDebounceRunner`) are the reference implementations.
+ *
  * @template T - the form/item value type
  * @template C - the context type
  */
