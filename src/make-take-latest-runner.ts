@@ -11,15 +11,12 @@ export const makeTakeLatestRunner = <
 	return {
 		run: async (fn, values, onIntermediate, opts) => {
 			const controller = new AbortController();
-			ac?.abort(); // cancel previous (takeLatest / switchMap)
+			ac?.abort();
 			ac = controller;
 			const { signal } = controller;
 
 			try {
 				const result = await fn(values, {
-					// Suppressed once cancelled, mirroring the debounce runner: a
-					// stale run (ignored signal) or a rule catch handling the abort
-					// must not write state and race the re-run.
 					update: (patch: Partial<T>) => {
 						if (!signal.aborted) onIntermediate(patch);
 					},
@@ -27,13 +24,8 @@ export const makeTakeLatestRunner = <
 					index: opts?.index,
 					context: opts?.context,
 				});
-				// A rule that ignores `signal` may still resolve normally after a
-				// newer run took over (or cancel() fired). Drop that stale result.
 				return signal.aborted ? null : result;
 			} catch (e) {
-				// AbortError from delay() or fetch() when cancelled — not a real
-				// error; also silence anything thrown after cancel (mirrors the
-				// debounce runner).
 				if (
 					signal.aborted ||
 					(e instanceof DOMException && e.name === 'AbortError')
