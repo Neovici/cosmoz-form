@@ -20,6 +20,15 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  * touched. Intermediate patches (from opts.update(...)) reach onChange like
  * any other patch, and sync rules then run on top of them, which is expected.
  *
+ * Loading-state contract: patches pushed via opts.update(...) are merged at
+ * once and are never rolled back. Cancelling a run (takeLatest supersession,
+ * debounce discard, unmount) only drops its final patch (resolved as null);
+ * what the run already pushed stays in state. The rule owns clearing: emit the
+ * flag in EVERY terminal patch — final return, early return, and the onError
+ * patch (error patches are applied exactly like async results). Prefer a
+ * placeholder in the target field over a separate flag: the winning run's
+ * final patch then overwrites the placeholder anyway.
+ *
  * Error handling precedence when a rule rejects:
  *   1. the rule's own `onError` (4th tuple member) — a returned partial patch is
  *      applied like any async result (no touch), and hook-level handling is skipped;

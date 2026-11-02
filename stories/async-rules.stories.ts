@@ -129,7 +129,9 @@ const TakeLatestDemo = () => {
 			${renderFields(form)}
 			<p class="story-hint">
 				Select a supplier, then quickly select a different one before 3 s — only
-				the final selection's email appears. The first fetch is cancelled.
+				the final selection's email appears. The first fetch is cancelled. The
+				loading placeholder is never rolled back — it stays until the winning
+				fetch settles.
 			</p>
 			<div class="story-stats">
 				<span>Started: <strong>${started}</strong></span>
@@ -177,7 +179,9 @@ const fetchContactEmail = async (
 const emailRule: AsyncItemRule<OrderForm> = [
   async (current, { update, signal }) => {
     if (!current.supplier) return { contactEmail: '' };
-    update({ contactEmail: 'loading…' }); // intermediate patch
+    update({ contactEmail: 'loading…' }); // intermediate patch — merged immediately;
+    // a cancelled run keeps what it pushed (nothing rolls it back) —
+    // the re-run's final patch clears it below
     const email = await fetchContactEmail(signal, current.supplier);
     return { contactEmail: email };
   },
@@ -299,6 +303,11 @@ const DebounceDemo = () => {
 				stop. Rapid changes are debounced. Total updates instantly via a sync
 				rule once the price arrives.
 			</p>
+			<p class="story-hint">
+				Switch quantity again mid-lookup and the older call is cancelled — its
+				flag stays put. Calls discarded before the rule body runs push no flag
+				at all.
+			</p>
 			<div class="story-stats">
 				<span>Started: <strong>${started}</strong></span>
 				<span>Resolved: <strong>${resolved}</strong></span>
@@ -350,7 +359,11 @@ const totalRule: ItemRule<QuoteForm> = [
 ];
 
 // Async rule — unit price is fetched 500 ms after quantity stops changing.
-// ctx.update() pushes the loading flag immediately; the final return clears it.
+// _pricingLoading is a separate loading flag. Patches pushed via ctx.update()
+// are merged immediately and NEVER rolled back — a cancelled run keeps what it
+// pushed (discarded debounce calls resolve before the rule body runs, so they
+// push no flag). The rule clears the flag itself in every terminal patch:
+// the early return, the final return, and any onError patch.
 const pricingRule: AsyncItemRule<QuoteForm> = [
   async (current, { update, signal }) => {
     if (!current.quantity) return { unitPrice: 0, _pricingLoading: false };

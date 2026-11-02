@@ -4,7 +4,11 @@
  * @template C - the context type
  */
 export type AsyncOpts<T, C extends object = object> = {
-	/** Emit an intermediate partial patch immediately (e.g. a loading state). */
+	/**
+	 * Emit an intermediate partial patch immediately (e.g. a loading state).
+	 * Merged at once, never rolled back — even when this run is later
+	 * cancelled (the next run must clear it, see the `AsyncRule` contract).
+	 */
 	update: (patch: Partial<T>) => void;
 	/**
 	 * AbortSignal that is aborted when this invocation is cancelled
@@ -45,6 +49,14 @@ export type AsyncOpts<T, C extends object = object> = {
  *   const email = await fetchEmail(signal, values.supplierId);
  *   return { contactEmail: email };
  * }
+ *
+ * The patch pushed via `update` is never rolled back: a cancelled run keeps
+ * what it pushed (only its final patch is dropped) and only the winning run's
+ * patches land afterwards. Clear any loading state in EVERY terminal patch —
+ * early return, final return, and the rule's `onError` patch (applied exactly
+ * like an async result). A separate flag (e.g. `{ busy: true }` via `update`)
+ * follows the same contract; a placeholder in the target field sidesteps it
+ * because the final patch overwrites the field anyway.
  *
  * Cancellation: pass `signal` into every awaited call and let the
  * 'AbortError' they throw on cancel propagate. A cancelled run is not a
