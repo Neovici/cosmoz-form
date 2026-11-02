@@ -29,15 +29,15 @@ export type {
 	OnIntermediate,
 } from './async-rule';
 // Async runners — choose the concurrency strategy that fits your use case:
-//   makeTakeLatestRunner  cancels the previous run when a new one arrives (switchMap)
-//   makeDebounceRunner    waits for silence before running; resets timer on each call (debounce + switchMap)
+//   makeTakeLatestRunner  previous run is cancelled when a new one arrives (switchMap)
+//   makeDebounceRunner    run starts after silence; timer reset on each call (debounce + switchMap)
 //
-// A custom runner must implement the cancelled-run guards specified on AsyncRunner;
-// a runner without them is broken, not a supported alternative.
+// A custom runner must satisfy the cancellation requirements of AsyncRunner;
+// a runner without them is out of contract, not a supported alternative.
 //
 // Future ideas:
-//   makeThrottleRunner    fires immediately, queues one trailing call (runs when in-flight finishes)
-//   makeExhaustRunner     ignores new calls while one is in-flight (exhaustMap)
+//   makeThrottleRunner    run starts immediately; one trailing call queued (after the in-flight run finishes)
+//   makeExhaustRunner     new calls dropped while one is in-flight (exhaustMap)
 export { makeDebounceRunner } from './make-debounce-runner';
 export type { DebounceRunner } from './make-debounce-runner';
 export { makeTakeLatestRunner } from './make-take-latest-runner';

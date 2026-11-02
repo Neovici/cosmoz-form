@@ -7,13 +7,13 @@ export type AsyncOpts<T, C extends object = object> = {
 	/** Emit an intermediate partial patch immediately (e.g. a loading state). */
 	update: (patch: Partial<T>) => void;
 	/**
-	 * AbortSignal that fires when the runner cancels this invocation
+	 * AbortSignal that is aborted when this invocation is cancelled
 	 * (takeLatest supersession, debounce discard, or unmount).
 	 * Pass to `fetch()`, `delay()`, or any other cancellable operation — and
-	 * rethrow the 'AbortError' they throw on cancel. Runners drop a cancelled
-	 * run's final patch and suppress its update() calls — guards specified on
-	 * `AsyncRunner` — but only a propagating abort keeps the rule from doing
-	 * any work at all after cancel (catch-driven side effects).
+	 * rethrow the 'AbortError' they throw on cancel. Once aborted, this run's
+	 * final patch is discarded and its update() calls are ignored (see
+	 * `AsyncRunner`); work inside the rule body ends after cancel only
+	 * through a propagating abort (catch-driven side effects).
 	 */
 	signal: AbortSignal;
 	/**
@@ -48,13 +48,13 @@ export type AsyncOpts<T, C extends object = object> = {
  *
  * Cancellation: pass `signal` into every awaited call and let the
  * 'AbortError' it throws on cancel propagate. A cancelled run is not a
- * failure, and its outcome is not the rule's business: every runner must
- * implement the `AsyncRunner` contract, under which a cancelled run's
- * patch can never land — whether the rule respects the signal, ignores
- * it, or swallows the abort in a catch. Swallowing the abort anyway
- * (e.g. a broad try/catch returning a fallback) keeps the rule running
- * recovery logic for what is not a failure — side effects fire. In a
- * local catch, discriminate with `signal.aborted`:
+ * failure; its handling is defined in the `AsyncRunner` contract: once
+ * aborted, a run's patch is never applied to state — whether the rule
+ * respects the signal, ignores it, or swallows the abort in a catch.
+ * Swallowing the abort anyway (e.g. a broad try/catch returning a
+ * fallback) leaves recovery logic running for what is not a failure —
+ * side effects still execute. In a local catch, discriminate with
+ * `signal.aborted`:
  * @example
  * async function resilientRule(values, { signal }) {
  *   try {
@@ -79,20 +79,23 @@ export type OnIntermediate<T> = (patch: Partial<T>) => void;
 /**
  * Shared interface for all async runner strategies.
  *
- * The cancelled-run guards below are part of this contract, not extras.
+ * The cancellation requirements below are part of this contract, not extras.
  * A custom runner must:
- * 1. hand the rule an `AbortSignal` that fires on supersession or cancel, so
- *    cancellable work dies up front;
- * 2. suppress `onIntermediate` (wired as `opts.update`) once a run is aborted;
- * 3. resolve `run()` as `null` once aborted — including when the rule
- *    resolves normally after cancel (it ignored the signal or caught the
- *    abort), and when cancellation itself raises `AbortError`; only a genuine
- *    pre-cancel failure propagates to `onError`.
+ * 1. provide the rule with an `AbortSignal` that is aborted on supersession
+ *    or cancel, so cancellable work ends immediately;
+ * 2. pass no patches through `onIntermediate` (wired as `opts.update`) once
+ *    a run is aborted;
+ * 3. resolve `run()` as `null` once a run is aborted — also when the rule
+ *    resolves normally after cancel (ignored signal, or the abort caught in
+ *    a rule-side catch), and when the only rejection is the `AbortError`
+ *    thrown on cancel; a failure raised before the cancel propagates to
+ *    `onError`.
  *
- * Guard-less custom runners should not exist: a stale patch that lands or
- * races a newer run is a failure of the runner implementation, never a
- * supported mode. The built-ins (`makeTakeLatestRunner`,
- * `makeDebounceRunner`) are the reference implementations.
+ * Implementations without these requirements should not exist: an aborted
+ * run's patch applied to state — or applied while a newer run is in flight —
+ * is a defect of the implementation, never a supported mode. The built-ins
+ * (`makeTakeLatestRunner`, `makeDebounceRunner`) are the reference
+ * implementations.
  *
  * @template T - the form/item value type
  * @template C - the context type
@@ -130,7 +133,7 @@ export type AsyncItemRule<T, C extends object = object> = readonly [
 ];
 
 /**
- * Cancellable delay. Rejects with `AbortError` if `signal` fires before `ms` elapses.
+ * Cancellable delay. Rejects with `AbortError` if `signal` is aborted before `ms` elapses.
  *
  * @param signal - AbortSignal to cancel the delay early
  * @param ms - milliseconds to wait
