@@ -47,14 +47,12 @@ export type AsyncOpts<T, C extends object = object> = {
  * }
  *
  * Cancellation: pass `signal` into every awaited call and let the
- * 'AbortError' it throws on cancel propagate. A cancelled run is not a
- * failure; its handling is defined in the `AsyncRunner` contract: once
- * aborted, a run's patch is never applied to state — whether the rule
- * respects the signal, ignores it, or swallows the abort in a catch.
- * Swallowing the abort anyway (e.g. a broad try/catch returning a
- * fallback) leaves recovery logic running for what is not a failure —
- * side effects still execute. In a local catch, discriminate with
- * `signal.aborted`:
+ * 'AbortError' they throw on cancel propagate. A cancelled run is not a
+ * failure — once aborted, anything the run outputs (update() or the final
+ * patch) is ignored (see `AsyncRunner`), however the rule treats the abort.
+ * Absorbing the abort in a catch still leaves the statements after it
+ * executing; out of a local catch, rethrow on `signal.aborted` and keep
+ * recovery for real failures:
  * @example
  * async function resilientRule(values, { signal }) {
  *   try {
@@ -79,21 +77,21 @@ export type OnIntermediate<T> = (patch: Partial<T>) => void;
 /**
  * Shared interface for all async runner strategies.
  *
- * The cancellation requirements below are part of this contract, not extras.
- * A custom runner must:
- * 1. provide the rule with an `AbortSignal` that is aborted on supersession
- *    or cancel, so cancellable work ends immediately;
- * 2. pass no patches through `onIntermediate` (wired as `opts.update`) once
- *    a run is aborted;
- * 3. resolve `run()` as `null` once a run is aborted — also when the rule
- *    resolves normally after cancel (ignored signal, or the abort caught in
- *    a rule-side catch), and when the only rejection is the `AbortError`
- *    thrown on cancel; a failure raised before the cancel propagates to
+ * Implementing a custom runner — the requirements below belong to this
+ * contract, not extras:
+ * 1. the rule is passed an `AbortSignal` aborted on supersession or cancel,
+ *    so cancellable work ends immediately;
+ * 2. once a run is aborted, nothing more passes through `onIntermediate`
+ *    (wired as `opts.update`);
+ * 3. once a run is aborted, `run()` resolves as `null` — also when the rule
+ *    resolves after cancel (ignored signal, or the abort caught by a
+ *    rule-side catch), and when its only rejection is the `AbortError`
+ *    thrown on cancel. A failure raised before the cancel propagates to
  *    `onError`.
  *
- * Implementations without these requirements should not exist: an aborted
- * run's patch applied to state — or applied while a newer run is in flight —
- * is a defect of the implementation, never a supported mode. The built-ins
+ * Runners without these requirements should not exist: an aborted run's
+ * outputs applied to state, or applied while a newer run is in flight, are
+ * a defect of the implementation, never a supported mode. The built-ins
  * (`makeTakeLatestRunner`, `makeDebounceRunner`) are the reference
  * implementations.
  *
