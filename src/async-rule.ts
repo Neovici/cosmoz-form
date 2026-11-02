@@ -47,21 +47,20 @@ export type AsyncOpts<T, C extends object = object> = {
  * }
  *
  * Cancellation: pass `signal` into every awaited call and let the
- * 'AbortError' it throws on cancel propagate. Runners silence a cancelled
- * run end-to-end: its final patch resolves `null` and its `update()` calls
- * are suppressed once aborted. That is the contract every runner must
- * implement (see `AsyncRunner`) — a cancelled run's patch can never land,
- * whether the rule respects the signal, ignores it, or swallows the abort
- * in a catch. A rule that swallows the abort instead (e.g. a broad
- * try/catch returning a fallback) keeps running its recovery logic for
- * what is not a failure — side effects fire. In a local catch, discriminate
- * with `signal.aborted`:
+ * 'AbortError' it throws on cancel propagate. A cancelled run is not a
+ * failure, and its outcome is not the rule's business: every runner must
+ * implement the `AsyncRunner` contract, under which a cancelled run's
+ * patch can never land — whether the rule respects the signal, ignores
+ * it, or swallows the abort in a catch. Swallowing the abort anyway
+ * (e.g. a broad try/catch returning a fallback) keeps the rule running
+ * recovery logic for what is not a failure — side effects fire. In a
+ * local catch, discriminate with `signal.aborted`:
  * @example
  * async function resilientRule(values, { signal }) {
  *   try {
  *     return { x: await fetchX(signal, values.id) };
  *   } catch (e) {
- *     if (signal.aborted) throw e; // cancelled — runner stays silent
+ *     if (signal.aborted) throw e; // cancelled — not a failure; report upstream
  *     return { x: 'fallback' };    // real failure — recover locally
  *   }
  * }
