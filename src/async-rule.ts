@@ -10,10 +10,10 @@ export type AsyncOpts<T, C extends object = object> = {
 	 * AbortSignal that is aborted when this invocation is cancelled
 	 * (takeLatest supersession, debounce discard, or unmount).
 	 * Pass to `fetch()`, `delay()`, or any other cancellable operation — and
-	 * rethrow the 'AbortError' they throw on cancel. Once aborted, this run's
-	 * final patch is discarded and its update() calls are ignored (see
-	 * `AsyncRunner`); work inside the rule body ends after cancel only
-	 * through a propagating abort (catch-driven side effects).
+	 * rethrow the 'AbortError' they throw on cancel. Once aborted, anything
+	 * this run outputs — via update() or the final patch — is ignored (see
+	 * `AsyncRunner`). Throw the 'AbortError' to stop executing the rest of
+	 * the body.
 	 */
 	signal: AbortSignal;
 	/**
