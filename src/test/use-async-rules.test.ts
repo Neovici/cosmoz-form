@@ -9,7 +9,7 @@ import { useAsyncRules } from '../use-items/use-async-rules';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type TestItem = { name: string; derived?: string };
+type TestItem = { name: string; derived?: string; busy?: boolean };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -150,6 +150,56 @@ suite('useAsyncRules (items)', () => {
 			{ timeout: 2000 },
 		);
 		assert.equal(result.current.items[1].derived, 'B-done-1');
+	});
+
+	test('cancelled item run keeps its loading patch — the re-run clears it', async () => {
+		// A flies short, the re-run (B) flies long: the gap between the flight
+		// times is the observable cancel window — a leaked final patch from the
+		// cancelled run would land there.
+		const flagRule: AsyncItemRule<TestItem> = [
+			async (current, { update, signal, index }) => {
+				update({ busy: true, derived: 'loading-' + index });
+				await delay(signal, current.name === 'A' ? 60 : 400);
+				return { busy: false, derived: current.name + '-done-' + index };
+			},
+			({ name }, idx) => [name, idx],
+		];
+
+		const { result } = await renderHook(() => {
+			const core = useItems<TestItem>({ initial: [{ name: 'A' }] });
+			useAsyncRules(core.items, [flagRule], core.update);
+			return core;
+		});
+
+		// intermediate patch is merged on the item, before the flight resolves
+		await waitUntil(() => result.current.items[0]?.busy === true);
+		assert.equal(result.current.items[0].derived, 'loading-0');
+
+		// deps change mid-flight — cancels A's run, starts B's
+		result.current.update(0, { name: 'B' });
+		// A's flight WOULD have resolved at ~60ms: nothing may land there.
+		// Nothing rolls back the loading patch the cancelled run pushed.
+		await tick(120);
+		assert.equal(
+			result.current.items[0].derived,
+			'loading-0',
+			'cancelled run final patch must not land',
+		);
+		assert.isTrue(
+			result.current.items[0].busy,
+			'loading patch must not be rolled back by cancellation',
+		);
+
+		// the re-run owns the item state now — its final patch clears the flag
+		await waitUntil(
+			() => result.current.items[0]?.derived === 'B-done-0',
+			'B-done-0 should appear',
+			{ timeout: 2000 },
+		);
+		assert.isFalse(
+			result.current.items[0].busy,
+			're-run final patch cleared the flag',
+		);
 	});
 
 	test('onError called with (err, rule, index)', async () => {

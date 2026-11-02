@@ -11,6 +11,7 @@ import { useForm } from '../use-form';
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type TestForm = { name: string; city: string };
+type TestFlagForm = { name: string; city: string; busy: boolean };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -123,6 +124,99 @@ suite('useAsyncFormCore', () => {
 			'Alice-done should appear',
 			{ timeout: 2000 },
 		);
+	});
+
+	test('cancelled run keeps its loading patch — the re-run clears it (busy flag)', async () => {
+		// Alice flies short, her re-run (Bob) flies long: the gap between the two
+		// flight times is the observable cancel window — if the cancelled run's
+		// final patch leaked through, it would land mid-window.
+		const flagRule: AsyncItemRule<TestFlagForm> = [
+			async (current, { update, signal }) => {
+				update({ busy: true, city: 'loading...' });
+				await delay(signal, current.name === 'Alice' ? 60 : 400);
+				return { busy: false, city: current.name + '-done' };
+			},
+			({ name }) => [name],
+		];
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestFlagForm>({
+				name: 'Alice',
+				city: '',
+				busy: false,
+			});
+			useAsyncFormCore(form, [flagRule]);
+			return form;
+		});
+
+		// intermediate patch is merged immediately, before the flight resolves
+		await waitUntil(() => result.current.values.busy === true);
+		assert.equal(result.current.values.city, 'loading...');
+
+		// deps change mid-flight — cancels Alice's run, starts Bob's
+		result.current.onChange({ name: 'Bob' });
+		// Alice's flight WOULD have resolved at ~60ms: nothing may land there.
+		// A cancelled run resolves null, and nothing rolls back what it pushed.
+		await tick(120);
+		assert.equal(
+			result.current.values.city,
+			'loading...',
+			'cancelled run final patch must not land',
+		);
+		assert.isTrue(
+			result.current.values.busy,
+			'loading patch must not be rolled back by cancellation',
+		);
+
+		// the re-run owns the state now — its final patch clears the flag itself
+		await waitUntil(
+			() => result.current.values.city === 'Bob-done',
+			'Bob-done should appear',
+			{ timeout: 2000 },
+		);
+		assert.isFalse(
+			result.current.values.busy,
+			're-run final patch cleared the flag',
+		);
+	});
+
+	test('error patch clears the loading flag the failed run pushed', async () => {
+		const rule: AsyncItemRule<TestFlagForm> = [
+			async (_current, { update, signal }) => {
+				update({ busy: true, city: 'loading...' });
+				await delay(signal, 50);
+				throw new Error('fetch failed');
+			},
+			({ name }) => [name],
+			undefined,
+			// loading patches are never rolled back — every terminal patch must
+			// clear them, the onError patch included
+			() => ({ busy: false, city: 'recovered' }),
+		];
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestFlagForm>({
+				name: 'Alice',
+				city: '',
+				busy: false,
+			});
+			useAsyncFormCore(form, [rule]);
+			return form;
+		});
+
+		await waitUntil(() => result.current.values.busy === true);
+		assert.equal(result.current.values.city, 'loading...');
+
+		await waitUntil(
+			() => result.current.values.city === 'recovered',
+			'error patch should be applied',
+			{ timeout: 2000 },
+		);
+		assert.isFalse(
+			result.current.values.busy,
+			'error patch cleared the flag',
+		);
+		assert.isFalse(touched(result.current.values));
 	});
 
 	test('async patches keep a form the user already touched', async () => {
