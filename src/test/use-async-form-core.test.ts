@@ -1,6 +1,6 @@
 import { renderHook } from '@neovici/testing';
 import { assert, waitUntil } from '@open-wc/testing';
-import { spy } from 'sinon';
+import { spy, stub } from 'sinon';
 
 import { delay, type AsyncItemRule } from '../async-rule';
 import { makeDebounceRunner } from '../make-debounce-runner';
@@ -11,6 +11,7 @@ import { useForm } from '../use-form';
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type TestForm = { name: string; city: string };
+type TestFlagForm = { name: string; city: string; busy: boolean };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -23,6 +24,17 @@ suite('useAsyncFormCore', () => {
 	const cityFromName: AsyncItemRule<TestForm> = [
 		async (current) => ({ city: current.name + '-city' }),
 		({ name }) => [name],
+	];
+	// Rule that always throws — per-rule onError decides recovery or fallback
+	const boomWith = (
+		onError?: (err: unknown) => Partial<TestForm> | void,
+	): AsyncItemRule<TestForm> => [
+		async () => {
+			throw new Error('rule boom');
+		},
+		({ name }) => [name],
+		undefined,
+		onError,
 	];
 
 	test('rule runs on initialization (prev deps are null → runs)', async () => {
@@ -114,6 +126,99 @@ suite('useAsyncFormCore', () => {
 		);
 	});
 
+	test('cancelled run keeps its loading patch — the re-run clears it (busy flag)', async () => {
+		// Alice flies short, her re-run (Bob) flies long: the gap between the two
+		// flight times is the observable cancel window — if the cancelled run's
+		// final patch leaked through, it would land mid-window.
+		const flagRule: AsyncItemRule<TestFlagForm> = [
+			async (current, { update, signal }) => {
+				update({ busy: true, city: 'loading...' });
+				await delay(signal, current.name === 'Alice' ? 60 : 400);
+				return { busy: false, city: current.name + '-done' };
+			},
+			({ name }) => [name],
+		];
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestFlagForm>({
+				name: 'Alice',
+				city: '',
+				busy: false,
+			});
+			useAsyncFormCore(form, [flagRule]);
+			return form;
+		});
+
+		// intermediate patch is merged immediately, before the flight resolves
+		await waitUntil(() => result.current.values.busy === true);
+		assert.equal(result.current.values.city, 'loading...');
+
+		// deps change mid-flight — cancels Alice's run, starts Bob's
+		result.current.onChange({ name: 'Bob' });
+		// Alice's flight WOULD have resolved at ~60ms: nothing may land there.
+		// A cancelled run resolves null, and nothing rolls back what it pushed.
+		await tick(120);
+		assert.equal(
+			result.current.values.city,
+			'loading...',
+			'cancelled run final patch must not land',
+		);
+		assert.isTrue(
+			result.current.values.busy,
+			'loading patch must not be rolled back by cancellation',
+		);
+
+		// the re-run owns the state now — its final patch clears the flag itself
+		await waitUntil(
+			() => result.current.values.city === 'Bob-done',
+			'Bob-done should appear',
+			{ timeout: 2000 },
+		);
+		assert.isFalse(
+			result.current.values.busy,
+			're-run final patch cleared the flag',
+		);
+	});
+
+	test('error patch clears the loading flag the failed run pushed', async () => {
+		const rule: AsyncItemRule<TestFlagForm> = [
+			async (_current, { update, signal }) => {
+				update({ busy: true, city: 'loading...' });
+				await delay(signal, 50);
+				throw new Error('fetch failed');
+			},
+			({ name }) => [name],
+			undefined,
+			// loading patches are never rolled back — every terminal patch must
+			// clear them, the onError patch included
+			() => ({ busy: false, city: 'recovered' }),
+		];
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestFlagForm>({
+				name: 'Alice',
+				city: '',
+				busy: false,
+			});
+			useAsyncFormCore(form, [rule]);
+			return form;
+		});
+
+		await waitUntil(() => result.current.values.busy === true);
+		assert.equal(result.current.values.city, 'loading...');
+
+		await waitUntil(
+			() => result.current.values.city === 'recovered',
+			'error patch should be applied',
+			{ timeout: 2000 },
+		);
+		assert.isFalse(
+			result.current.values.busy,
+			'error patch cleared the flag',
+		);
+		assert.isFalse(touched(result.current.values));
+	});
+
 	test('async patches keep a form the user already touched', async () => {
 		const { result } = await renderHook(() => {
 			const form = useForm<TestForm>({ name: 'Alice', city: '' });
@@ -157,6 +262,102 @@ suite('useAsyncFormCore', () => {
 		assert.instanceOf(onError.args[0][0], Error);
 		assert.equal((onError.args[0][0] as Error).message, 'rule boom');
 		assert.equal(onError.args[0][1], boom);
+	});
+
+	test('rule onError returns a patch → applied (no touch), hook onError skipped', async () => {
+		const received: unknown[] = [];
+		const hookOnError = spy();
+		const ruleOnError = (err: unknown) => {
+			received.push(err);
+			return { city: 'recovered' };
+		};
+		// Built before renderHook → stable identity across re-renders (harness
+		// convention: inline rule objects would be re-created and re-run by the
+		// deps effect on every values change, looping with the recovered patch).
+		const recoverRule = boomWith(ruleOnError);
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			useAsyncFormCore(form, [recoverRule], { onError: hookOnError });
+			return form;
+		});
+
+		await waitUntil(() => result.current.values.city === 'recovered');
+		assert.equal((received[0] as Error).message, 'rule boom');
+		assert.isFalse(hookOnError.called, 'hook onError not called');
+		assert.isFalse(touched(result.current.values));
+	});
+
+	test('rule onError returns void → hook opts.onError patch applied', async () => {
+		const ruleOnError = spy();
+		const hookOnError = spy(() => ({ city: 'hook-recovered' }));
+		const rule = boomWith(ruleOnError);
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			useAsyncFormCore(form, [rule], { onError: hookOnError });
+			return form;
+		});
+
+		await waitUntil(() => result.current.values.city === 'hook-recovered');
+		assert.equal(ruleOnError.callCount, 1, 'rule onError ran first');
+		assert.isFalse(touched(result.current.values));
+	});
+
+	test('rule onError void + hook onError void → default console.error path', async () => {
+		const ruleOnError = spy();
+		const hookOnError = spy();
+		const rule = boomWith(ruleOnError);
+		const consoleError = stub(console, 'error');
+		try {
+			await renderHook(() => {
+				const form = useForm<TestForm>({ name: 'Alice', city: '' });
+				useAsyncFormCore(form, [rule], { onError: hookOnError });
+				return form;
+			});
+
+			await waitUntil(
+				() => consoleError.called,
+				'console.error should be called',
+			);
+			assert.equal(consoleError.args[0][0], '[cosmoz-form] async rule error:');
+			assert.instanceOf(consoleError.args[0][1], Error);
+		} finally {
+			consoleError.restore();
+		}
+		assert.equal(ruleOnError.callCount, 1);
+		assert.equal(hookOnError.callCount, 1, 'hook onError still invoked');
+	});
+
+	test('pending/processing bookkeeping still settles after errors', async () => {
+		const boomAfter = (ms: number, tag: string): AsyncItemRule<TestForm> => [
+			async (_current, { signal }) => {
+				await delay(signal, ms);
+				throw new Error('boom');
+			},
+			() => ['once'],
+			undefined,
+			() => ({ city: tag }),
+		];
+		// Both rules built before renderHook → stable identity
+		const ruleA = boomAfter(60, 'a-patch');
+		const ruleB = boomAfter(140, 'b-patch');
+
+		const { result } = await renderHook(() => {
+			const form = useForm<TestForm>({ name: 'Alice', city: '' });
+			return useAsyncFormCore(form, [ruleA, ruleB]);
+		});
+
+		await waitUntil(() => result.current.processing === true);
+		await tick(80); // first error applied, second rule still in flight
+		assert.isTrue(result.current.processing);
+		assert.equal(result.current.values.city, 'a-patch');
+		await waitUntil(() => result.current.processing === false, undefined, {
+			timeout: 2000,
+		});
+		assert.isFalse(result.current.processing);
+		assert.equal(result.current.values.city, 'b-patch');
+		assert.isFalse(touched(result.current.values));
 	});
 
 	test('uses runner factory from the rule — debounce semantics observed', async () => {
