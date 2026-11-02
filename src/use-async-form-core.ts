@@ -22,8 +22,10 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  *
  * Loading-state contract: patches pushed via opts.update(...) are merged at
  * once and are never rolled back. Cancelling a run (takeLatest supersession,
- * debounce discard, unmount) only drops its final patch (resolved as null);
- * what the run already pushed stays in state. The rule owns clearing: emit the
+ * debounce discard, unmount) drops everything it pushes after the cancel
+ * point — the final patch resolves as null and post-cancel update() calls
+ * are suppressed — while what it already pushed stays in state. The rule
+ * owns clearing: emit the
  * flag in EVERY terminal patch — final return, early return, and the onError
  * patch (error patches are applied exactly like async results). Prefer a
  * placeholder in the target field over a separate flag: the winning run's
@@ -36,10 +38,16 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  *   3. otherwise the default handler logs to console.error.
  * `opts.onError` is always invoked as fallback when the rule handler returns void.
  *
- * Note: the default runner (`makeTakeLatestRunner`) converts cancellations
- * (DOMException 'AbortError' from `delay(signal, ...)`/`fetch`) to `null`, which
- * never reaches the error path. Rules should rethrow signal errors, not swallow
- * them, so cancellation stays silent.
+ * Note: the default runners (`makeTakeLatestRunner`, `makeDebounceRunner`)
+ * silence cancellation end-to-end: a cancelled run resolves `null` — whether
+ * it rethrows 'AbortError' or ignores the signal — and its opts.update(...)
+ * calls are suppressed once aborted. No final patch, no intermediate patch,
+ * no error path from a cancelled run. Rules should STILL rethrow signal
+ * errors rather than swallow them: a rule catching the abort keeps running
+ * its recovery logic for a phantom failure — side effects fire, and custom
+ * runners without the default guards land its stale patch as if it had won.
+ * In a local catch, discriminate with `signal.aborted`: rethrow when aborted,
+ * recover with a patch only for real failures (see the `AsyncRule` contract).
  *
  * Rules must be defined once — module scope, or useMemo/useRef — never inline:
  * runner and dependency state is keyed by rule identity, so a rule object

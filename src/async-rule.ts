@@ -50,9 +50,9 @@ export type AsyncOpts<T, C extends object = object> = {
  *   return { contactEmail: email };
  * }
  *
- * The patch pushed via `update` is never rolled back: a cancelled run keeps
- * what it pushed (only its final patch is dropped) and only the winning run's
- * patches land afterwards. Clear any loading state in EVERY terminal patch —
+ * The patch pushed via `update` is never rolled back: whatever a run pushed
+ * before it was cancelled stays, everything it pushes after the cancel point
+ * is dropped, and only the winning run's patches land afterwards. Clear any loading state in EVERY terminal patch —
  * early return, final return, and the rule's `onError` patch (applied exactly
  * like an async result). A separate flag (e.g. `{ busy: true }` via `update`)
  * follows the same contract; a placeholder in the target field sidesteps it
