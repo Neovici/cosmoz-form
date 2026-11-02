@@ -21,12 +21,11 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  * any other patch, and sync rules then run on top of them, which is expected.
  *
  * Loading-state contract: patches pushed via opts.update(...) are merged at
- * once and are never rolled back. Cancelling a run (takeLatest supersession,
- * debounce discard, unmount) drops everything it pushes after the cancel
- * point — the final patch resolves as null and post-cancel update() calls
- * are suppressed — while what it already pushed stays in state. The rule
- * owns clearing: emit the
- * flag in EVERY terminal patch — final return, early return, and the onError
+ * once and are never rolled back. Once a run is cancelled (takeLatest
+ * supersession, debounce discard, unmount), everything it pushes after the
+ * cancel point is ignored — the final patch resolves as null — while what
+ * it already pushed stays in state. The rule owns clearing: emit the flag
+ * in every terminal patch — final return, early return, and the onError
  * patch (error patches are applied exactly like async results). Prefer a
  * placeholder in the target field over a separate flag: the winning run's
  * final patch then overwrites the placeholder anyway.
@@ -39,15 +38,15 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
  * `opts.onError` is always invoked as fallback when the rule handler returns void.
  *
  * Note: the default runners (`makeTakeLatestRunner`, `makeDebounceRunner`)
- * silence cancellation end-to-end: a cancelled run resolves `null` — whether
- * it rethrows 'AbortError' or ignores the signal — and its opts.update(...)
- * calls are suppressed once aborted. No final patch, no intermediate patch,
- * no error path from a cancelled run. Rules should STILL rethrow signal
- * errors rather than swallow them: a rule catching the abort keeps running
- * its recovery logic for a phantom failure — side effects fire, and custom
- * runners without the default guards land its stale patch as if it had won.
- * In a local catch, discriminate with `signal.aborted`: rethrow when aborted,
- * recover with a patch only for real failures (see the `AsyncRule` contract).
+ * implement the cancellation contract on `AsyncRunner`: once aborted,
+ * anything a run outputs — opts.update(...) calls or the final patch — is
+ * ignored, and `run()` resolves as `null`, with no error path from a
+ * cancelled run. Rules should still rethrow signal errors rather than
+ * swallow them: only an uncaught 'AbortError' stops the rest of the rule
+ * body; with the abort caught, the statements after the catch keep
+ * executing. In a local catch, discriminate with `signal.aborted`: rethrow
+ * when aborted, recover with a patch only for real failures (see the
+ * `AsyncRule` contract).
  *
  * Rules must be defined once — module scope, or useMemo/useRef — never inline:
  * runner and dependency state is keyed by rule identity, so a rule object

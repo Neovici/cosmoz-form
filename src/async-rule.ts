@@ -52,11 +52,12 @@ export type AsyncOpts<T, C extends object = object> = {
  *
  * The patch pushed via `update` is never rolled back: whatever a run pushed
  * before it was cancelled stays, everything it pushes after the cancel point
- * is dropped, and only the winning run's patches land afterwards. Clear any loading state in EVERY terminal patch —
- * early return, final return, and the rule's `onError` patch (applied exactly
- * like an async result). A separate flag (e.g. `{ busy: true }` via `update`)
- * follows the same contract; a placeholder in the target field sidesteps it
- * because the final patch overwrites the field anyway.
+ * is ignored, and only the winning run's patches are applied afterwards.
+ * Clear any loading state in every terminal patch — early return, final
+ * return, and the rule's `onError` patch (applied exactly like an async
+ * result). A separate flag (e.g. `{ busy: true }` via `update`) follows the
+ * same contract; a placeholder in the target field sidesteps it, because
+ * the final patch overwrites the field anyway.
  *
  * Cancellation: pass `signal` into every awaited call and let the
  * 'AbortError' they throw on cancel propagate. A cancelled run is not a
@@ -141,8 +142,10 @@ export type AsyncItemRule<T, C extends object = object> = readonly [
 	/**
 	 * The async rule body. Receives a snapshot of the current values plus
 	 * `AsyncOpts` (`update`, `signal`, `index`, `context`), and resolves with
-	 * a partial patch merged into state (no touch). Must rethrow signal errors
-	 * ('AbortError') rather than swallow them, so cancellation stays silent.
+	 * a partial patch merged into state (no touch). Must rethrow signal
+	 * errors ('AbortError') rather than swallow them — with the abort caught,
+	 * the statements after the catch keep executing; a cancelled run's
+	 * outputs are ignored regardless (see `AsyncRunner`).
 	 */
 	ruleFn: AsyncRule<T, C>,
 	/**
@@ -156,8 +159,9 @@ export type AsyncItemRule<T, C extends object = object> = readonly [
 	 * Optional runner factory — the cancellation strategy for this rule
 	 * (per item index in `useAsyncRules`). Defaults to `makeTakeLatestRunner`;
 	 * pass `() => makeDebounceRunner(ms)` for debounce, or a custom
-	 * `AsyncRunner`. Invoked once per rule (per (rule, index) pair in
-	 * `useAsyncRules`) — the closure holds the runner's cancellation state.
+	 * `AsyncRunner` satisfying the requirements on `AsyncRunner`. Invoked
+	 * once per rule (per (rule, index) pair in `useAsyncRules`) — the
+	 * closure holds the runner's cancellation state.
 	 */
 	runner?: () => AsyncRunner<T, C>,
 	/**
