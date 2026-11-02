@@ -138,8 +138,27 @@ export type AsyncRunner<T, C extends object = object> = {
  * @template C - the context type
  */
 export type AsyncItemRule<T, C extends object = object> = readonly [
+	/**
+	 * The async rule body. Receives a snapshot of the current values plus
+	 * `AsyncOpts` (`update`, `signal`, `index`, `context`), and resolves with
+	 * a partial patch merged into state (no touch). Must rethrow signal errors
+	 * ('AbortError') rather than swallow them, so cancellation stays silent.
+	 */
 	ruleFn: AsyncRule<T, C>,
+	/**
+	 * Dependency extractor. The rule re-fires only when the extracted deps
+	 * change (Object.is per element, same as sync rules). `depsFn(item, idx,
+	 * context)` per item in `useAsyncRules`, `depsFn(form.values, undefined,
+	 * context)` in `useAsyncFormCore`.
+	 */
 	depsFn: (current: T, index?: number, context?: C) => unknown[],
+	/**
+	 * Optional runner factory — the cancellation strategy for this rule
+	 * (per item index in `useAsyncRules`). Defaults to `makeTakeLatestRunner`;
+	 * pass `() => makeDebounceRunner(ms)` for debounce, or a custom
+	 * `AsyncRunner`. Invoked once per rule (per (rule, index) pair in
+	 * `useAsyncRules`) — the closure holds the runner's cancellation state.
+	 */
 	runner?: () => AsyncRunner<T, C>,
 	/**
 	 * Optional per-rule error handler (local recovery).
