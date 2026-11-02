@@ -7,9 +7,13 @@ export type AsyncOpts<T, C extends object = object> = {
 	/** Emit an intermediate partial patch immediately (e.g. a loading state). */
 	update: (patch: Partial<T>) => void;
 	/**
-	 * AbortSignal that fires when the runner cancels this invocation
+	 * AbortSignal that is aborted when this invocation is cancelled
 	 * (takeLatest supersession, debounce discard, or unmount).
-	 * Pass to `fetch()`, `delay()`, or any other cancellable operation.
+	 * Pass to `fetch()`, `delay()`, or any other cancellable operation — and
+	 * rethrow the 'AbortError' they throw on cancel. Once aborted, anything
+	 * this run outputs — via update() or the final patch — is ignored (see
+	 * `AsyncRunner`). Throw the 'AbortError' to stop executing the rest of
+	 * the body.
 	 */
 	signal: AbortSignal;
 	/**
@@ -41,6 +45,23 @@ export type AsyncOpts<T, C extends object = object> = {
  *   const email = await fetchEmail(signal, values.supplierId);
  *   return { contactEmail: email };
  * }
+ *
+ * Cancellation: pass `signal` into every awaited call and let the
+ * 'AbortError' they throw on cancel propagate. A cancelled run is not a
+ * failure — once aborted, anything the run outputs (update() or the final
+ * patch) is ignored (see `AsyncRunner`), however the rule treats the abort.
+ * Absorbing the abort in a catch still leaves the statements after it
+ * executing; out of a local catch, rethrow on `signal.aborted` and keep
+ * recovery for real failures:
+ * @example
+ * async function resilientRule(values, { signal }) {
+ *   try {
+ *     return { x: await fetchX(signal, values.id) };
+ *   } catch (e) {
+ *     if (signal.aborted) throw e; // cancelled — not a failure; report upstream
+ *     return { x: 'fallback' };    // real failure — recover locally
+ *   }
+ * }
  */
 export type AsyncRule<T, C extends object = object> = (
 	values: T,
@@ -55,6 +76,25 @@ export type OnIntermediate<T> = (patch: Partial<T>) => void;
 
 /**
  * Shared interface for all async runner strategies.
+ *
+ * Implementing a custom runner — the requirements below belong to this
+ * contract, not extras:
+ * 1. the rule is passed an `AbortSignal` aborted on supersession or cancel,
+ *    so cancellable work ends immediately;
+ * 2. once a run is aborted, nothing more passes through `onIntermediate`
+ *    (wired as `opts.update`);
+ * 3. once a run is aborted, `run()` resolves as `null` — also when the rule
+ *    resolves after cancel (ignored signal, or the abort caught by a
+ *    rule-side catch), and when its only rejection is the `AbortError`
+ *    thrown on cancel. A failure raised before the cancel propagates to
+ *    `onError`.
+ *
+ * Runners without these requirements should not exist: an aborted run's
+ * outputs applied to state, or applied while a newer run is in flight, are
+ * a defect of the implementation, never a supported mode. The built-ins
+ * (`makeTakeLatestRunner`, `makeDebounceRunner`) are the reference
+ * implementations.
+ *
  * @template T - the form/item value type
  * @template C - the context type
  */
@@ -91,7 +131,7 @@ export type AsyncItemRule<T, C extends object = object> = readonly [
 ];
 
 /**
- * Cancellable delay. Rejects with `AbortError` if `signal` fires before `ms` elapses.
+ * Cancellable delay. Rejects with `AbortError` if `signal` is aborted before `ms` elapses.
  *
  * @param signal - AbortSignal to cancel the delay early
  * @param ms - milliseconds to wait

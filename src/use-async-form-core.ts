@@ -12,13 +12,13 @@ const DEFAULT_ON_ERROR = (err: unknown) => {
 };
 
 /**
- * Composes with UseForm<T, C> to add async rules.
+ * Adds async rules on top of UseForm<T, C>.
  * Returns UseForm<T, C> & { processing } where processing is true while any
  * async rule is in flight.
  *
- * Async patches call onChange(patch, false) — they do not mark the form touched.
- * Intermediate patches (from opts.update(...)) go through onChange like any other
- * patch — sync rules cascade on top of them, which is expected.
+ * Async patches are passed to onChange(patch, false); the form is not marked
+ * touched. Intermediate patches (from opts.update(...)) reach onChange like
+ * any other patch, and sync rules then run on top of them, which is expected.
  *
  * Usage:
  *   const form = useValidatedForm({ fields, initial, rules, context });

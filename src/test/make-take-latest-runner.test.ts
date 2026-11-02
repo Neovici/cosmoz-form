@@ -20,6 +20,8 @@ const returns =
 	async () =>
 		value;
 
+const tick = (ms = 0) => new Promise<void>((r) => setTimeout(r, ms));
+
 // ── Suite ─────────────────────────────────────────────────────────────────────
 
 suite('makeTakeLatestRunner', () => {
@@ -113,6 +115,77 @@ suite('makeTakeLatestRunner', () => {
 
 		assert.deepEqual(await latest, { from: 'latest' });
 		assert.isNull(await stale, 'signal-ignoring stale run must resolve null');
+	});
+
+	test('suppresses stale patches and results even when the rule ignores abort', async () => {
+		const patches = spy();
+		let release!: () => void;
+
+		// Ignores opts.signal, pushes an intermediate and a final after being
+		// superseded — neither may reach state.
+		const first = runner.run(
+			async (_, { update }) => {
+				await new Promise<void>((resolve) => {
+					release = resolve;
+				});
+				update({ from: 'stale intermediate' });
+				return { from: 'stale final' };
+			},
+			{},
+			patches,
+		);
+		await tick(10);
+		const latest = runner.run(returns({ from: 'latest' }), {}, noop);
+
+		assert.deepEqual(await latest, { from: 'latest' });
+		release();
+		assert.isNull(await first, 'stale final is dropped');
+		assert.isFalse(patches.called, 'stale intermediate is suppressed');
+	});
+
+	test('update from a cancelled run is suppressed after the rule catches the abort', async () => {
+		const patches = spy();
+
+		const first = runner.run(
+			async (_, { update, signal }) => {
+				try {
+					await delay(signal, 5000);
+					return { from: 'first' };
+				} catch {
+					update({ from: 'catch fallback' });
+					return { from: 'catch fallback' };
+				}
+			},
+			{},
+			patches,
+		);
+		await tick(10);
+		const latest = runner.run(returns({ from: 'latest' }), {}, noop);
+
+		assert.deepEqual(await latest, { from: 'latest' });
+		assert.isNull(await first, 'swallowed abort still resolves null');
+		assert.isFalse(patches.called, 'catch-driven update is suppressed');
+	});
+
+	test('a real error raised after cancel resolves null, not re-thrown', async () => {
+		let release!: () => void;
+
+		const first = runner.run(
+			async (_, { signal }) => {
+				await new Promise<void>((resolve) => {
+					release = resolve;
+				});
+				if (signal.aborted) throw new Error('late failure');
+				return { from: 'first' };
+			},
+			{},
+			noop,
+		);
+		await tick(10);
+		runner.cancel();
+		release();
+
+		assert.isNull(await first, 'post-cancel errors stay on the cancel path');
 	});
 
 	test('latest run result passes through when stale signal-ignoring run resolved earlier', async () => {
