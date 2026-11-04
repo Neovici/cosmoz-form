@@ -2,7 +2,7 @@ import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
-import { useEffect } from '@pionjs/pion';
+import { useEffect, useHost } from '@pionjs/pion';
 import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
 import { guard } from 'lit-html/directives/guard.js';
@@ -41,7 +41,22 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			saveText = t('OK'),
 			error,
 		} = host,
-		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host);
+		{
+			onSave: save,
+			disabled,
+			save$,
+			progress,
+			...form
+		} = useValidatedForm$(host),
+		el = useHost(),
+		onSave = () => {
+			save();
+			if (!form.invalid) return;
+			const first = form.fields.find((f) => 'error' in f && f.error)?.id;
+			el.shadowRoot
+				?.querySelector<HTMLElement>(`[name="${String(first)}"]`)
+				?.focus();
+		};
 
 	useEffect(() => {
 		if (!auto) {

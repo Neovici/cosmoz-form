@@ -47,17 +47,20 @@ function useValidatedForm$<T extends object, C extends object = object>({
 	const { values, invalid } = form;
 	const [save$, setSave$] = useState<PromiseLike<unknown>>();
 	const [progress, setProgress] = useState<Progress>();
+	const [submitted, setSubmitted] = useState(false);
 	const empty = values == null || values === initial;
-	const disabled =
-		form.fields?.length > 0 && !(empty && allowEmpty) && (empty || invalid);
+	// An invalid form can be saved: the attempt reveals the errors instead.
+	// Only an empty form that may not be empty, with nothing to reveal, cannot.
+	const disabled = form.fields?.length > 0 && empty && !allowEmpty && !invalid;
 
 	return {
 		...form,
+		touched: submitted,
 		save$,
-		onSave: useCallback(
-			() => setSave$(onSave?.(values!, initial, setProgress)),
-			[onSave, values, initial],
-		),
+		onSave: useCallback(() => {
+			if (invalid) return setSubmitted(true);
+			setSave$(onSave?.(values!, initial, setProgress));
+		}, [onSave, values, initial, invalid]),
 		disabled,
 		processing,
 		progress,
