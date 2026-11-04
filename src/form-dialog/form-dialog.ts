@@ -1,6 +1,7 @@
 import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
+import { usePromise } from '@neovici/cosmoz-utils/hooks/use-promise';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect, useHost } from '@pionjs/pion';
 import { t } from 'i18next';
@@ -56,6 +57,24 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			el.shadowRoot
 				?.querySelector<HTMLElement>(`[name="${String(first)}"]`)
 				?.focus();
+		},
+		[, , saveState] = usePromise(save$),
+		saving = save$ != null && saveState === 'pending',
+		// Enter in a single-line input is the keyboard form of the Save button,
+		// unless another component already handled it (e.g. an open autocomplete).
+		onKeyDown = (e: KeyboardEvent) => {
+			if (
+				e.key !== 'Enter' ||
+				e.defaultPrevented ||
+				e.isComposing ||
+				!(e.composedPath()[0] instanceof HTMLInputElement) ||
+				disabled ||
+				saving
+			) {
+				return;
+			}
+			e.preventDefault();
+			onSave();
 		};
 
 	useEffect(() => {
@@ -97,7 +116,9 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			description,
 			() => html`<div class="description">${description}</div>`,
 		)}
-		<div class="form" part="form">${renderFields(form)}</div>
+		<div class="form" part="form" @keydown=${onKeyDown}>
+			${renderFields(form)}
+		</div>
 		${save$ ? renderFailure$(save$) : when(error, renderFailure)}
 		<div class="buttons">
 			${cancelFirst
