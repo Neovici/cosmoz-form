@@ -82,12 +82,17 @@ suite('cosmoz-form-dialog submits on Enter', () => {
 		assert.equal(count(), 1);
 	});
 
-	test('Enter does nothing while Save is disabled', async () => {
+	test('Enter on an invalid form reveals the errors like Save does', async () => {
 		const { onSave, count } = counting();
-		const { enter } = await open(onSave);
+		const { enter, control } = await open(onSave);
 		const e = await enter('name');
-		assert.isFalse(e.defaultPrevented);
+		assert.isTrue(e.defaultPrevented);
 		assert.equal(count(), 0);
+		await waitUntil(() =>
+			(control('name').getRootNode() as ShadowRoot).host.hasAttribute(
+				'invalid',
+			),
+		);
 	});
 
 	test('Enter that another component handled does not save', async () => {
