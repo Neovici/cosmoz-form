@@ -2,6 +2,7 @@ import { assert, fixture, nextFrame, waitUntil } from '@open-wc/testing';
 import { init } from 'i18next';
 import { html } from 'lit-html';
 import '../form-dialog/form-dialog';
+import { input } from '../inputs/base';
 import { required } from '../validation';
 
 init({ lng: 'en', resources: {} });
@@ -34,6 +35,7 @@ const open = async ({
 	return {
 		root,
 		save: () => root.querySelector<HTMLElement>('.buttons .save')!,
+		summary: () => root.querySelector('.failure')?.textContent?.trim(),
 		shown: (name: string) => field(name).hasAttribute('invalid'),
 		type: async (name: string, value: string) => {
 			const input =
@@ -98,6 +100,27 @@ suite('cosmoz-form-dialog reveals errors on save', () => {
 		await type('name', 'Acme');
 		save().click();
 		await waitUntil(() => count() === 1);
+	});
+
+	test('a failed save names the first error by the buttons until it is fixed', async () => {
+		const { save, summary, type } = await open();
+		assert.isUndefined(summary());
+		save().click();
+		await waitUntil(() => summary());
+		assert.match(summary()!, /^Name: /u);
+		await type('name', 'Acme');
+		await waitUntil(() => summary() === undefined);
+	});
+
+	test('the summary explains an error that a custom input does not show', async () => {
+		const silent = input(() => html`<div class="silent"></div>`);
+		const { save, summary } = await open({
+			fields: [
+				{ id: 'reason', input: silent, validate: () => 'Reason is required' },
+			],
+		});
+		save().click();
+		await waitUntil(() => summary() === 'Reason is required');
 	});
 
 	test('an empty form that may not be empty, with nothing to reveal, stays disabled', async () => {
