@@ -53,9 +53,22 @@ function useValidatedForm$<T extends object, C extends object = object>({
 	// Only an empty form that may not be empty, with nothing to reveal, cannot.
 	const disabled = form.fields?.length > 0 && empty && !allowEmpty && !invalid;
 
+	const { onReset, load } = form;
+
 	return {
 		...form,
 		touched: submitted,
+		onReset: useCallback(() => {
+			setSubmitted(false);
+			onReset();
+		}, [onReset]),
+		load: useCallback<typeof load>(
+			(...args) => {
+				setSubmitted(false);
+				load(...args);
+			},
+			[load],
+		),
 		save$,
 		onSave: useCallback(() => {
 			if (invalid) return setSubmitted(true);

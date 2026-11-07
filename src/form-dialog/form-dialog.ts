@@ -58,6 +58,13 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 				?.querySelector<HTMLElement>(`[name="${String(first)}"]`)
 				?.focus();
 		},
+		// Custom inputs may not render their error, so a failed attempt also
+		// names the first one next to the buttons.
+		firstError = form.touched
+			? form.fields.find(
+					(f): f is typeof f & { error: string } => 'error' in f && !!f.error,
+				)
+			: undefined,
 		[, , saveState] = usePromise(save$),
 		saving = save$ != null && saveState === 'pending',
 		// Enter in a single-line input is the keyboard form of the Save button,
@@ -120,6 +127,13 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			${renderFields(form)}
 		</div>
 		${save$ ? renderFailure$(save$) : when(error, renderFailure)}
+		${when(firstError, (f) =>
+			renderFailure({
+				message: String(f.error),
+				content:
+					typeof f.label === 'string' ? `${f.label}: ${f.error}` : f.error,
+			}),
+		)}
 		<div class="buttons">
 			${cancelFirst
 				? [cancelButton, confirmButton]
