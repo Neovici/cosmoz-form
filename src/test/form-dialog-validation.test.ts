@@ -112,6 +112,14 @@ suite('cosmoz-form-dialog reveals errors on save', () => {
 		await waitUntil(() => summary() === undefined);
 	});
 
+	test('the summary resolves a label given as a function', async () => {
+		const { save, summary } = await open({
+			fields: [{ id: 'name', label: () => 'Account', validate: required }],
+		});
+		save().click();
+		await waitUntil(() => summary()?.startsWith('Account: '));
+	});
+
 	test('the summary explains an error that a custom input does not show', async () => {
 		const silent = input(() => html`<div class="silent"></div>`);
 		const { save, summary } = await open({
