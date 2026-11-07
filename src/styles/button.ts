@@ -11,7 +11,7 @@ export default css`
 		flex: none;
 		border: none;
 		padding-inline: calc(var(--cz-spacing) * 4);
-		border-radius: var(--cz-radius-md);
+		border-radius: var(--cz-radius-control, var(--cz-radius-md));
 		min-height: 40px;
 		min-width: 78px;
 		font-family: inherit;
