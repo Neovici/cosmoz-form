@@ -1,3 +1,17 @@
+## 5.0.0
+
+### Major Changes
+
+- 543680e: feat(dialog): field errors are revealed by the first save attempt, not the first change. `useValidatedForm$` keeps Save enabled while the form is invalid; saving then reveals every error (live from there on), and `cosmoz-form-dialog` focuses the first invalid field. Save is only disabled for an empty form that may not be empty and has no error to reveal.
+
+  Breaking: `useValidatedForm$` no longer reports `touched` for a changed form, only for a submitted one; tests expecting a disabled Save on an invalid dialog, or errors before saving, need updating.
+
+### Minor Changes
+
+- 88982b2: feat(async): async rule errors can now be recovered with a patch via per-rule `onError` (4th tuple member) or hook-level `opts.onError` of `useAsyncFormCore`.
+- 92e7b7f: feat(dialog): Enter in a single-line input saves the form dialog, as the Save button would. Nothing happens while Save is disabled or a save is in flight, and Enter that another component already handled (an open autocomplete selecting its option, an IME composition) is left alone.
+- aaeb707: fix(async): for cancelled runs, takeLatest behaves like debounce — once aborted, a superseded run's final patch resolves as `null` and its `opts.update()` calls are ignored, so a cancelled run (signal-respecting, signal-ignoring, or error-swallowing) no longer ends with an applied patch or a conflict with the re-run.
+
 ## 4.6.0
 
 ### Minor Changes
