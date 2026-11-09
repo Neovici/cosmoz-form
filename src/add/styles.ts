@@ -16,7 +16,7 @@ export const renderAddStyles = () => css`
 		color: var(--cz-color-text-error);
 		background: var(--cz-color-bg-error);
 		border: 1px solid var(--cz-color-border-error-subtle);
-		border-radius: var(--cz-radius-lg);
+		border-radius: var(--cz-radius-info-box, var(--cz-radius-lg));
 		white-space: pre-wrap;
 		word-break: break-word;
 		max-height: 40vh;
