@@ -1,4 +1,4 @@
-import{o as M,n as P,w as Mt,b as z,q as lt,e as ot,A as yt,r as hn,p as E,k as Y,g as gt,s as ge,x as te,y as Qn,z as ve,B as xe,C as Gn,c as C,D as Un,i as F,j as st,t as ee,m as ze,f as W,d as N,E as Kn,F as Jn,G as mn,H as gn,I as We,J as $e,u as Zn,h as to,l as eo,K as no,a as It}from"./iframe-CyJ2VISl.js";const oo={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},ro=t=>typeof t=="string"&&oo.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=ro(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},ao=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>z`
+import{o as M,n as P,w as Mt,b as z,q as lt,e as ot,A as yt,r as hn,p as E,k as Y,g as gt,s as ge,x as te,y as Qn,z as ve,B as xe,C as Gn,c as C,D as Un,i as F,j as st,t as ee,m as ze,f as W,d as N,E as Kn,F as Jn,G as mn,H as gn,I as We,J as $e,u as Zn,h as to,l as eo,K as no,a as It}from"./iframe-BXt7nqph.js";const oo={isoBasic:/^\d{4}-\d{2}-\d{2}$/iu},ro=t=>typeof t=="string"&&oo.isoBasic.test(t)?new Date(`${t}T00:00`):new Date(t),q=t=>{if(t==null)return;if(t instanceof Date&&!isNaN(t.getTime()))return t;if(!(typeof t=="number"||typeof t=="string"))return;const e=ro(t);if(!(e instanceof Date&&isNaN(e.getTime())))return e},ao=({slot:t,title:e,className:n,width:o="24",height:r="24",styles:a}={})=>z`
   <svg
     slot=${M(t)}
     class=${`alert-circle-icon ${n??""}`}
@@ -569,7 +569,7 @@ import{o as M,n as P,w as Mt,b as z,q as lt,e as ot,A as yt,r as hn,p as E,k as 
 		color: var(--cz-color-text-error);
 		background: var(--cz-color-bg-error);
 		border: 1px solid var(--cz-color-border-error-subtle);
-		border-radius: var(--cz-radius-item, var(--cz-radius-lg));
+		border-radius: var(--cz-radius-callout, var(--cz-radius-lg));
 		/* spans the dialog body's content box; text inset by its own padding */
 		margin: calc(var(--cz-spacing) * 2) 0;
 		padding: calc(var(--cz-spacing) * 3);

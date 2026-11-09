@@ -1,4 +1,4 @@
-import{o as e,l as G,h as I,n as J,b as K}from"./iframe-CyJ2VISl.js";import{i as L,e as N}from"./inline-file-DZJ3RBQt.js";const S=L(({id:c,variant:s,compact:u,hint:d,label:h,error:a,required:f,warning:o,suffix:g,mode:i,disabled:y,onChange:b,options:$,limit:p,min:x,textProperty:k,valueProperty:q,value:t,values:l,itemRenderer:v,chipRenderer:w,keepOpened:z,keepQuery:C,placeholder:P,wrap:R,showSingle:H,preserveOrder:M,title:j,textual:A,description:B,externalSearch:D,itemHeight:E,content:n,context:m,...F})=>K`<cosmoz-autocomplete
+import{o as e,l as G,h as I,n as J,b as K}from"./iframe-BXt7nqph.js";import{i as L,e as N}from"./inline-file-DDo4Vk2u.js";const S=L(({id:c,variant:s,compact:u,hint:d,label:h,error:a,required:f,warning:o,suffix:g,mode:i,disabled:y,onChange:b,options:$,limit:p,min:x,textProperty:k,valueProperty:q,value:t,values:l,itemRenderer:v,chipRenderer:w,keepOpened:z,keepQuery:C,placeholder:P,wrap:R,showSingle:H,preserveOrder:M,title:j,textual:A,description:B,externalSearch:D,itemHeight:E,content:n,context:m,...F})=>K`<cosmoz-autocomplete
 			class="input input-autocomplete"
 			mode=${e(i)}
 			variant=${e(s)}

@@ -1,4 +1,4 @@
-import{o as m,n as v,w as K,b as s,t as Q,v as se,a as O,i as I,m as re,l as N,c as U,u as ne,d as P,e as f,f as C,A as L}from"./iframe-CyJ2VISl.js";import{s as le,r as de,a as ce,b as ue,i as _,c as me,d as pe,e as ge,v as ye,E as B,f as ve,u as w,g as p,t as y,n as g,h as fe,j as E,k as he,l as G,m as be}from"./inline-file-DZJ3RBQt.js";import{a as F}from"./autocomplete-CGQ-8uHu.js";import{u as $e}from"./use-items-AS5-ls81.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:o,width:a="24",height:i="24",styles:r}={})=>s`
+import{o as m,n as v,w as K,b as s,t as Q,v as se,a as O,i as I,m as re,l as N,c as U,u as ne,d as P,e as f,f as C,A as L}from"./iframe-BXt7nqph.js";import{s as le,r as de,a as ce,b as ue,i as _,c as me,d as pe,e as ge,v as ye,E as B,f as ve,u as w,g as p,t as y,n as g,h as fe,j as E,k as he,l as G,m as be}from"./inline-file-DDo4Vk2u.js";import{a as F}from"./autocomplete-DEaR4rDz.js";import{u as $e}from"./use-items-D1DLOryw.js";import"./preload-helper-PPVm8Dsz.js";const De=({slot:e,title:t,className:o,width:a="24",height:i="24",styles:r}={})=>s`
   <svg
     slot=${m(e)}
     class=${`edit-02-icon ${o??""}`}
@@ -148,7 +148,7 @@ import{o as m,n as v,w as K,b as s,t as Q,v as se,a as O,i as I,m as re,l as N,c
 		color: var(--cz-color-text-error);
 		background: var(--cz-color-bg-error);
 		border: 1px solid var(--cz-color-border-error-subtle);
-		border-radius: var(--cz-radius-item, var(--cz-radius-lg));
+		border-radius: var(--cz-radius-callout, var(--cz-radius-lg));
 		white-space: pre-wrap;
 		word-break: break-word;
 		max-height: 40vh;
