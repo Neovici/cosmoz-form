@@ -1,10 +1,9 @@
 import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
-import { invoke } from '@neovici/cosmoz-utils/function';
 import { usePromise } from '@neovici/cosmoz-utils/hooks/use-promise';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
-import { useEffect, useHost } from '@pionjs/pion';
+import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
 import { guard } from 'lit-html/directives/guard.js';
@@ -43,29 +42,7 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			saveText = t('OK'),
 			error,
 		} = host,
-		{
-			onSave: save,
-			disabled,
-			save$,
-			progress,
-			...form
-		} = useValidatedForm$(host),
-		el = useHost(),
-		onSave = () => {
-			save();
-			if (!form.invalid) return;
-			const first = form.fields.find((f) => 'error' in f && f.error)?.id;
-			el.shadowRoot
-				?.querySelector<HTMLElement>(`[name="${String(first)}"]`)
-				?.focus();
-		},
-		// Custom inputs may not render their error, so a failed attempt also
-		// names the first one next to the buttons.
-		firstError = form.touched
-			? form.fields.find(
-					(f): f is typeof f & { error: string } => 'error' in f && !!f.error,
-				)
-			: undefined,
+		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host),
 		[, , saveState] = usePromise(save$),
 		saving = save$ != null && saveState === 'pending',
 		// Enter in a single-line input is the keyboard form of the Save button,
@@ -128,17 +105,6 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			${renderFields(form)}
 		</div>
 		${save$ ? renderFailure$(save$) : when(error, renderFailure)}
-		${when(firstError, (f) =>
-			renderFailure({
-				message: String(f.error),
-				content: [
-					invoke(f.label, form.values?.[f.id], form.values, f, form.context),
-					f.error,
-				]
-					.filter(Boolean)
-					.join(': '),
-			}),
-		)}
 		<div class="buttons">
 			${cancelFirst
 				? [cancelButton, confirmButton]
