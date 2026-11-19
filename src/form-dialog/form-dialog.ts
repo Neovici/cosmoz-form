@@ -3,7 +3,7 @@ import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
 import { usePromise } from '@neovici/cosmoz-utils/hooks/use-promise';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
-import { useEffect, useHost } from '@pionjs/pion';
+import { useEffect } from '@pionjs/pion';
 import { t } from 'i18next';
 import { html, nothing } from 'lit-html';
 import { guard } from 'lit-html/directives/guard.js';
@@ -42,22 +42,7 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 			saveText = t('OK'),
 			error,
 		} = host,
-		{
-			onSave: save,
-			disabled,
-			save$,
-			progress,
-			...form
-		} = useValidatedForm$(host),
-		el = useHost(),
-		onSave = () => {
-			save();
-			if (!form.invalid) return;
-			const first = form.fields.find((f) => 'error' in f && f.error)?.id;
-			el.shadowRoot
-				?.querySelector<HTMLElement>(`[name="${String(first)}"]`)
-				?.focus();
-		},
+		{ onSave, disabled, save$, progress, ...form } = useValidatedForm$(host),
 		[, , saveState] = usePromise(save$),
 		saving = save$ != null && saveState === 'pending',
 		// Enter in a single-line input is the keyboard form of the Save button,
