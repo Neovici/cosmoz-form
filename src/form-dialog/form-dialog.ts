@@ -1,7 +1,6 @@
 import '@neovici/cosmoz-button';
 import { dialog, Props as DialogProps } from '@neovici/cosmoz-dialog';
 import '@neovici/cosmoz-dialog/loading';
-import { invoke } from '@neovici/cosmoz-utils/function';
 import { usePromise } from '@neovici/cosmoz-utils/hooks/use-promise';
 import { invoke$ } from '@neovici/cosmoz-utils/promise';
 import { useEffect, useHost } from '@pionjs/pion';
@@ -131,12 +130,8 @@ const FormDialog = <T extends object>(host: Props<T>) => {
 		${when(firstError, (f) =>
 			renderFailure({
 				message: String(f.error),
-				content: [
-					invoke(f.label, form.values?.[f.id], form.values, f, form.context),
-					f.error,
-				]
-					.filter(Boolean)
-					.join(': '),
+				content:
+					typeof f.label === 'string' ? `${f.label}: ${f.error}` : f.error,
 			}),
 		)}
 		<div class="buttons">
